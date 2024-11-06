@@ -56,9 +56,8 @@ VideoPlayer::VideoPlayer()
       _isPlaying(false),
       _isLooping(false),
       _isUserInputEnabled(true),
-      _styleType(StyleType::DEFAULT)
-{
-    // 增加索引
+      _styleType(StyleType::DEFAULT) {
+    // Add an index.
     _videoPlayerIndex = kVideoPlayerTag++;
     s_allVideoPlayers[_videoPlayerIndex] = this;
 
@@ -69,8 +68,7 @@ VideoPlayer::VideoPlayer()
     JSFunction::getFunction("VideoPlayer.createVideoPlayer").invoke<void>(_videoPlayerIndex);
 }
 
-VideoPlayer::~VideoPlayer()
-{
+VideoPlayer::~VideoPlayer() {
     if (_videoPlayerIndex != -1 && kVideoPlayerTag != -1) {
         JSFunction::getFunction("VideoPlayer.removeVideoPlayer").invoke<void>(_videoPlayerIndex);
         auto iter = s_allVideoPlayers.find(_videoPlayerIndex);
@@ -80,8 +78,7 @@ VideoPlayer::~VideoPlayer()
     }
 }
 
-void VideoPlayer::setFileName(const std::string &fileName)
-{
+void VideoPlayer::setFileName(const std::string &fileName) {
     _videoURL = FileUtils::getInstance()->fullPathForFilename(fileName);
     if (_videoURL[0] == '/') {
         _videoSource = VideoPlayer::Source::URL;
@@ -92,32 +89,27 @@ void VideoPlayer::setFileName(const std::string &fileName)
     }
 }
 
-void VideoPlayer::setURL(const std::string &videoUrl)
-{
+void VideoPlayer::setURL(const std::string &videoUrl) {
     _videoURL = videoUrl;
     _videoSource = VideoPlayer::Source::URL;
     JSFunction::getFunction("VideoPlayer.setURL").invoke<void>(_videoPlayerIndex, _videoURL, (int)_videoSource);
 }
 
-void VideoPlayer::setLooping(bool looping)
-{
+void VideoPlayer::setLooping(bool looping) {
     _isLooping = looping;
     JSFunction::getFunction("VideoPlayer.setLooping").invoke<void>(_videoPlayerIndex, _isLooping);
 }
 
-void VideoPlayer::setUserInputEnabled(bool enableInput)
-{
+void VideoPlayer::setUserInputEnabled(bool enableInput) {
     _isUserInputEnabled = enableInput;
     // todo:鸿蒙暂时不支持
 }
 
-void VideoPlayer::setStyle(StyleType style)
-{
+void VideoPlayer::setStyle(StyleType style) {
     _styleType = style;
 }
 
-void VideoPlayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
-{
+void VideoPlayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) {
     cocos2d::ui::Widget::draw(renderer, transform, flags);
 
     if (flags & FLAGS_TRANSFORM_DIRTY) {
@@ -134,21 +126,18 @@ void VideoPlayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags
 #endif
 }
 
-void VideoPlayer::setFullScreenEnabled(bool enabled)
-{
+void VideoPlayer::setFullScreenEnabled(bool enabled) {
     if (_fullScreenEnabled != enabled) {
         _fullScreenEnabled = enabled;
         JSFunction::getFunction("VideoPlayer.requestFullscreen").invoke<void>(_videoPlayerIndex, enabled);
     }
 }
 
-bool VideoPlayer::isFullScreenEnabled() const
-{
+bool VideoPlayer::isFullScreenEnabled() const {
     return _fullScreenEnabled;
 }
 
-void VideoPlayer::setKeepAspectRatioEnabled(bool enable)
-{
+void VideoPlayer::setKeepAspectRatioEnabled(bool enable) {
     if (_keepAspectRatioEnabled != enable) {
         _keepAspectRatioEnabled = enable;
         JSFunction::getFunction("VideoPlayer.setKeepAspectRatioEnabled").invoke<void>(_videoPlayerIndex, enable);
@@ -156,8 +145,7 @@ void VideoPlayer::setKeepAspectRatioEnabled(bool enable)
 }
 
 #if CC_VIDEOPLAYER_DEBUG_DRAW
-void VideoPlayer::drawDebugData()
-{
+void VideoPlayer::drawDebugData() {
     Director *director = Director::getInstance();
     CCASSERT(nullptr != director, "Director is null when setting matrix stack");
 
@@ -174,58 +162,49 @@ void VideoPlayer::drawDebugData()
 }
 #endif
 
-void VideoPlayer::play()
-{
+void VideoPlayer::play() {
     if (!_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.play").invoke<void>(_videoPlayerIndex);
     }
 }
 
-void VideoPlayer::pause()
-{
+void VideoPlayer::pause() {
     if (!_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.pause").invoke<void>(_videoPlayerIndex);
     }
 }
 
-void VideoPlayer::resume()
-{
+void VideoPlayer::resume() {
     if (!_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.play").invoke<void>(_videoPlayerIndex);
     }
 }
 
-void VideoPlayer::stop()
-{
+void VideoPlayer::stop() {
     if (!_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.stop").invoke<void>(_videoPlayerIndex);
     }
 }
 
-void VideoPlayer::seekTo(float sec)
-{
+void VideoPlayer::seekTo(float sec) {
     if (!_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.seekTo").invoke<void>(_videoPlayerIndex, (int)sec);
     }
 }
 
-bool VideoPlayer::isPlaying() const
-{
+bool VideoPlayer::isPlaying() const {
     return _isPlaying;
 }
 
-bool VideoPlayer::isLooping() const
-{
+bool VideoPlayer::isLooping() const {
     return _isLooping;
 }
 
-bool VideoPlayer::isUserInputEnabled() const
-{
+bool VideoPlayer::isUserInputEnabled() const {
     return _isUserInputEnabled;
 }
 
-void VideoPlayer::setVisible(bool visible)
-{
+void VideoPlayer::setVisible(bool visible) {
     cocos2d::ui::Widget::setVisible(visible);
 
     if (!visible || isRunning()) {
@@ -233,27 +212,23 @@ void VideoPlayer::setVisible(bool visible)
     }
 }
 
-void VideoPlayer::onEnter()
-{
+void VideoPlayer::onEnter() {
     Widget::onEnter();
     if (isVisible() && !_videoURL.empty()) {
         JSFunction::getFunction("VideoPlayer.setVisible").invoke<void>(_videoPlayerIndex, true);
     }
 }
 
-void VideoPlayer::onExit()
-{
+void VideoPlayer::onExit() {
     Widget::onExit();
     JSFunction::getFunction("VideoPlayer.setVisible").invoke<void>(_videoPlayerIndex, false);
 }
 
-void VideoPlayer::addEventListener(const VideoPlayer::ccVideoPlayerCallback &callback)
-{
+void VideoPlayer::addEventListener(const VideoPlayer::ccVideoPlayerCallback &callback) {
     _eventCallback = callback;
 }
 
-void VideoPlayer::onPlayEvent(int event)
-{
+void VideoPlayer::onPlayEvent(int event) {
     if (event == QUIT_FULLSCREEN) {
         _fullScreenEnabled = false;
     } else {
@@ -270,13 +245,11 @@ void VideoPlayer::onPlayEvent(int event)
     }
 }
 
-cocos2d::ui::Widget *VideoPlayer::createCloneInstance()
-{
+cocos2d::ui::Widget *VideoPlayer::createCloneInstance() {
     return VideoPlayer::create();
 }
 
-void VideoPlayer::copySpecialProperties(Widget *widget)
-{
+void VideoPlayer::copySpecialProperties(Widget *widget) {
     VideoPlayer *videoPlayer = dynamic_cast<VideoPlayer *>(widget);
     if (videoPlayer) {
         _isPlaying = videoPlayer->_isPlaying;
@@ -294,8 +267,7 @@ void VideoPlayer::copySpecialProperties(Widget *widget)
     }
 }
 
-void executeVideoCallback(int index, int event)
-{
+void executeVideoCallback(int index, int event) {
     auto it = s_allVideoPlayers.find(index);
     if (it != s_allVideoPlayers.end()) {
         s_allVideoPlayers[index]->onPlayEvent(event);

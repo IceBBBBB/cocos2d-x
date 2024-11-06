@@ -5,14 +5,11 @@
 
 using namespace cocos2d;
 
-extern "C"
-{
+extern "C" {
 
-void Cocos2dxRenderer_nativeInit(int w, int h)
-{
+void Cocos2dxRenderer_nativeInit(int w, int h) {
     OHOS_LOGD("Cocos2dxRenderer_nativeInit() - window width:[%{public}d], height:[%{public}d]", w, h);
-    if (!CCDirector::sharedDirector()->getOpenGLView())
-    {
+    if (!CCDirector::sharedDirector()->getOpenGLView()) {
         OHOS_LOGD("Cocos2dxRenderer_nativeInit() - branch 1");
         GLView *view = GLViewImpl::sharedOpenGLView();
         view->setFrameSize(w, h);
@@ -20,9 +17,7 @@ void Cocos2dxRenderer_nativeInit(int w, int h)
 
         AppDelegate *pAppDelegate = new AppDelegate();
         CCApplication::sharedApplication()->run();
-    }
-    else
-    {
+    } else {
         OHOS_LOGD("Cocos2dxRenderer_nativeInit() - branch 2");
         ccGLInvalidateStateCache();
         CCShaderCache::sharedShaderCache()->reloadDefaultShaders();

@@ -76,6 +76,8 @@ struct Index {
         libraryname: 'nativerender',
         controller: this.xcomponentController
       })
+        .focusable(true)
+        .focusOnTouch(true)
         .onLoad((context) => {
           console.log('[cocos] XComponent.onLoad Callback');
           this.cocosWorker.postMessage({ type: "abilityContextInit", data: GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_ABILITY_CONTEXT)});

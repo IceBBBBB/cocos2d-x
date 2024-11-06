@@ -1,4 +1,5 @@
 {
+  "modelVersion": "5.0.0",
   "license": "",
   "devDependencies": {},
   "author": "",
@@ -6,5 +7,6 @@
   "description": "Please describe the basic information.",
   "main": "",
   "version": "1.0.0",
+  "dynamicDependencies": {},
   "dependencies": {}
 }

@@ -7,7 +7,7 @@ import { BusinessError } from '@ohos.base';
 let log: Logger = new Logger(0x0001, "WebViewMsg");
 
 export class WebViewInfo {
-  public uniqueId : number = 0;
+  public uniqueId: number = 0;
   // position
   public x: number = 0;
   public y: number = 0;
@@ -17,12 +17,13 @@ export class WebViewInfo {
   // url
   public url: string = '';
   public isUrl: boolean = true;
-
   public viewTag: number = 0
   public zoomAccess: boolean = true
   public visible: boolean = true
   public opacity: number = 1
   public backgroundColor: number = 0xffffff;
+
+  public jsInterfaceScheme: string = "";
 
   public controller: web_webview.WebviewController = new web_webview.WebviewController()
 
@@ -36,7 +37,7 @@ export class WebViewInfo {
   }
 }
 
-function copyWebViewInfo(viewInfo: WebViewInfo) : WebViewInfo {
+function copyWebViewInfo(viewInfo: WebViewInfo): WebViewInfo {
   let newViewInfo: WebViewInfo = new WebViewInfo(viewInfo.x, viewInfo.y, viewInfo.w, viewInfo.h, viewInfo.viewTag);
   newViewInfo.url = viewInfo.url;
   newViewInfo.isUrl = viewInfo.isUrl;
@@ -45,13 +46,14 @@ function copyWebViewInfo(viewInfo: WebViewInfo) : WebViewInfo {
   newViewInfo.controller = viewInfo.controller;
   newViewInfo.opacity = viewInfo.opacity;
   newViewInfo.backgroundColor = viewInfo.backgroundColor;
+  newViewInfo.jsInterfaceScheme = viewInfo.jsInterfaceScheme;
   newViewInfo.uniqueId = 100000 - viewInfo.uniqueId; // support 50000 webView exist at the same time
   return newViewInfo;
 }
 
-function waitUtilControllerAttached() : Promise<number> {
+function waitUtilControllerAttached(): Promise<number> {
   return new Promise((resolve, reject) => {
-      resolve(1);
+    resolve(1);
   })
 }
 
@@ -82,6 +84,12 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         let tempInfoMap: Map<number, number> = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP);
         tempInfoMap.delete(eventData.viewTag);
       }
+      break;
+    }
+    case "setJavascriptInterfaceScheme": {
+      index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      webViewInfo.jsInterfaceScheme = eventData.jsInterfaceScheme;
       break;
     }
     case "loadData": {
@@ -116,10 +124,14 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.stop();
       break;
-    case "reload":
+    case "reload": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.refresh();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.refresh();
+      })
       break;
+    }
     case "canGoBack":
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       let result: number = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]
@@ -134,23 +146,31 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         .accessForward();
     // todo The value needs to be sent back to the worker thread.
       break;
-    case "goBack":
+    case "goBack": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.backward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.backward();
+      })
       break;
-    case "goForward":
+    }
+    case "goForward": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.forward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.forward();
+      })
       break;
+    }
     case "setWebViewRect": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      let tmpWebInfo :WebViewInfo= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      let tmpWebInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
       tmpWebInfo.x = px2vp(eventData.viewRect.x);
       tmpWebInfo.y = px2vp(eventData.viewRect.y);
       tmpWebInfo.w = px2vp(eventData.viewRect.w);
       tmpWebInfo.h = px2vp(eventData.viewRect.h);
-      let newViewInfo:WebViewInfo = copyWebViewInfo(tmpWebInfo);
-      let tempInfoArray :WebViewInfo[]= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
+      let newViewInfo: WebViewInfo = copyWebViewInfo(tmpWebInfo);
+      let tempInfoArray: WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
       tempInfoArray[index] = newViewInfo;
       break;
     }
@@ -160,10 +180,10 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         .visible == eventData.visible) {
         return;
       }
-      let tmpWebInfo:WebViewInfo= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      let tmpWebInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
       tmpWebInfo.visible = eventData.visible;
-      let newViewInfo:WebViewInfo = copyWebViewInfo(tmpWebInfo);
-      let tempInfoArray :WebViewInfo[]= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
+      let newViewInfo: WebViewInfo = copyWebViewInfo(tmpWebInfo);
+      let tempInfoArray: WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
       tempInfoArray[index] = newViewInfo;
       break;
     }
@@ -173,10 +193,10 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         .opacity == eventData.opacity) {
         return;
       }
-      let tmpWebInfo :WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      let tmpWebInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
       tmpWebInfo.opacity = eventData.opacity;
-      let newViewInfo :WebViewInfo= copyWebViewInfo(tmpWebInfo);
-      let tempInfoArray :WebViewInfo[]= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
+      let newViewInfo: WebViewInfo = copyWebViewInfo(tmpWebInfo);
+      let tempInfoArray: WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
       tempInfoArray[index] = newViewInfo;
       break;
     }
@@ -188,8 +208,8 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       }
       GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]
         .backgroundColor = Color.Transparent;
-      let newViewInfo :WebViewInfo= copyWebViewInfo(GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]);
-      let tempInfoArray :WebViewInfo[]= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
+      let newViewInfo: WebViewInfo = copyWebViewInfo(GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]);
+      let tempInfoArray: WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
       tempInfoArray[index] = newViewInfo;
       break;
     }
@@ -197,13 +217,13 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]
         .controller
-        .runJavaScript(eventData.js, (error:BusinessError, result:string) => {
+        .runJavaScript(eventData.js, (error: BusinessError, result: string) => {
           if (error) {
             log.warn("webView run JavaScript error:%{public}s", JSON.stringify(error));
             return;
           }
           if (result) {
-            GlobalContext.storeGlobalThis(GlobalContextConstants.COCOS2DX_WEB_RESULT,result)
+            GlobalContext.storeGlobalThis(GlobalContextConstants.COCOS2DX_WEB_RESULT, result)
             log.debug("webView run JavaScript result is %{public}s:", result);
           }
         })
@@ -215,10 +235,10 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         .zoomAccess == eventData.scalesPageToFit) {
         return;
       }
-      let tmpWebInfo:WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      let tmpWebInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
       tmpWebInfo.zoomAccess == eventData.scalesPageToFit
-      let newViewInfo:WebViewInfo = copyWebViewInfo(tmpWebInfo);
-      let tempInfoArray:WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
+      let newViewInfo: WebViewInfo = copyWebViewInfo(tmpWebInfo);
+      let tempInfoArray: WebViewInfo[] = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY);
       tempInfoArray[index] = newViewInfo;
     }
       break;

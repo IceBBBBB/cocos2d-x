@@ -66,6 +66,7 @@ export class NapiHelper {
     private static registerWebView(registerFunc : Function) {
         registerFunc('WebView.createWebView', WebView.createWebView);
         registerFunc('WebView.removeWebView', WebView.removeWebView);
+        registerFunc('WebView.setJavascriptInterfaceScheme', WebView.setJavascriptInterfaceScheme);
         registerFunc('WebView.loadData', WebView.loadData);
         registerFunc('WebView.loadURL', WebView.loadURL);
         registerFunc('WebView.loadFile', WebView.loadFile);

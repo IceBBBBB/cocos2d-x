@@ -98,7 +98,7 @@ public:
     void onMouseScroll(Event *event)
     {
         auto mouseEvent = static_cast<EventMouse*>(event);
-        float moveY = mouseEvent->getScrollY() * 20;
+        float moveY = mouseEvent->getScrollY();
 
         auto minOffset = this->minContainerOffset();
         auto maxOffset = this->maxContainerOffset();

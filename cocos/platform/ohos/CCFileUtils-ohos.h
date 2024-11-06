@@ -24,8 +24,7 @@ class ZipFile;
  */
 
 //! @brief  Helper class to handle file operations
-class CC_DLL FileUtilsOhos : public FileUtils
-{
+class CC_DLL FileUtilsOhos : public FileUtils {
     friend class FileUtils;
 public:
     FileUtilsOhos();

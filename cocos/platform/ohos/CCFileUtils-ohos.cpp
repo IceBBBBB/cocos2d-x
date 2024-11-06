@@ -25,13 +25,10 @@ void FileUtilsOhos::setassetmanager(NativeResourceManager* a) {
     cocos2d::FileUtilsOhos::nativeResourceManager_ = a;
 }
 
-FileUtils* FileUtils::getInstance()
-{
-    if (s_sharedFileUtils == nullptr)
-    {
+FileUtils* FileUtils::getInstance() {
+    if (s_sharedFileUtils == nullptr) {
         s_sharedFileUtils = new FileUtilsOhos();
-        if(!s_sharedFileUtils->init())
-        {
+        if(!s_sharedFileUtils->init()) {
           delete s_sharedFileUtils;
           s_sharedFileUtils = nullptr;
         }
@@ -39,24 +36,20 @@ FileUtils* FileUtils::getInstance()
     return s_sharedFileUtils;
 }
 
-FileUtilsOhos::FileUtilsOhos()
-{
+FileUtilsOhos::FileUtilsOhos() {
 }
 
-FileUtilsOhos::~FileUtilsOhos()
-{
+FileUtilsOhos::~FileUtilsOhos() {
 }
 
-bool FileUtilsOhos::init()
-{
+bool FileUtilsOhos::init() {
     DECLARE_GUARD;
     _defaultResRootPath = "";   
     OHOS_LOGI("FileUtilsOhos::init()");
     return FileUtils::init();
 }
 
-bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const
-{
+bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const {
     if (strFilePath.empty()) {
         return false;
     }
@@ -79,8 +72,7 @@ bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const
     return bFound;
 }
 
-bool FileUtilsOhos::isDirectoryExistInternal(const std::string& dirPath) const
-{
+bool FileUtilsOhos::isDirectoryExistInternal(const std::string& dirPath) const {
     if (dirPath.empty()) return false;
     std::string dirPathMf = dirPath[dirPath.length() - 1] == '/' ? dirPath.substr(0, dirPath.length() - 1) : dirPath;
 
@@ -104,8 +96,7 @@ bool FileUtilsOhos::isDirectoryExistInternal(const std::string& dirPath) const
     return false;
 }
 
-bool FileUtilsOhos::isAbsolutePath(const std::string& strPath) const
-{
+bool FileUtilsOhos::isAbsolutePath(const std::string& strPath) const {
     DECLARE_GUARD;
     if (strPath[0] == '/' || (!_defaultResRootPath.empty() && strPath.find(_defaultResRootPath) == 0)) {
         return true;
@@ -113,8 +104,7 @@ bool FileUtilsOhos::isAbsolutePath(const std::string& strPath) const
     return false;
 }
 
-long FileUtilsOhos::getFileSize(const std::string& filepath) const
-{
+long FileUtilsOhos::getFileSize(const std::string& filepath) const {
     DECLARE_GUARD;
 
     if(filepath[0] == '/') {
@@ -131,16 +121,14 @@ long FileUtilsOhos::getFileSize(const std::string& filepath) const
     return size;
 }
 
-std::vector<std::string> FileUtilsOhos::listFiles(const std::string& dirPath) const
-{
+std::vector<std::string> FileUtilsOhos::listFiles(const std::string& dirPath) const {
     if(!dirPath.empty() && dirPath[0] == '/') {
         return FileUtils::listFiles(dirPath);
     }
     return RawFileUtils::GetInstance().searchFiles(dirPath.c_str(), false);
 }
 
-FileUtils::Status FileUtilsOhos::getContents(const std::string& filename, ResizableBuffer* buffer) const
-{
+FileUtils::Status FileUtilsOhos::getContents(const std::string& filename, ResizableBuffer* buffer) const {
     if (filename.empty()) {
         OHOS_LOGD("FileUtilsOhos::getContents() - filename is empty");
         return FileUtils::Status::NotExists;
@@ -171,8 +159,7 @@ FileUtils::Status FileUtilsOhos::getContents(const std::string& filename, Resiza
            return FileUtils::Status::ReadFailed;
     }
 
-    if (!buffer->buffer())
-    {
+    if (!buffer->buffer()) {
         std::string msg = "Get data from file(";
         msg.append(filename).append(") failed!");
         OHOS_LOGD("%{public}s", msg.c_str());
@@ -201,8 +188,7 @@ FileUtils::Status FileUtilsOhos::getRawFileDescriptor(const std::string &filenam
     return FileUtils::Status::OK;
 }
 
-string FileUtilsOhos::getWritablePath() const
-{
+string FileUtilsOhos::getWritablePath() const {
     return ohWritablePath;
 }
 

@@ -7,7 +7,7 @@
   "main": "",
   "version": "1.0.0",
   "dependencies": {
-    "@ohos/libSysCapabilities": "../libSysCapabilities",
-    "libnativerender.so": "file:./src/main/cpp/types/libentry"
+    "libnativerender.so": "file:./src/main/cpp/types/libentry",
+    "@ohos/libSysCapabilities": "../libSysCapabilities"
   }
 }

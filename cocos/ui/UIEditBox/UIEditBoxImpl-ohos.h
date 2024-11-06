@@ -15,8 +15,7 @@ namespace ui {
 
     class EditBox;
 
-    class EditBoxImplOhos : public EditBoxImplCommon
-    {
+    class EditBoxImplOhos : public EditBoxImplCommon {
     public:
         /**
          * @js NA
@@ -48,6 +47,7 @@ namespace ui {
         virtual void setNativeMaxLength(int maxLength) override;
 
         static void hideAllEditBox();
+        static void onBeginCallBack(int index);
         static void onChangeCallBack(int index, const std::string& text);
         static void onEnterCallBack(int index, const std::string& text);
 

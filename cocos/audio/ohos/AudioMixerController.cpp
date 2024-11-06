@@ -34,15 +34,12 @@ THE SOFTWARE.
 
 namespace cocos2d { namespace experimental {
 
-AudioMixerController::AudioMixerController(int bufferSizeInFrames, int sampleRate, int channelCount)
-: _bufferSizeInFrames(bufferSizeInFrames), _sampleRate(sampleRate), _channelCount(channelCount), _mixer(nullptr), _isPaused(false), _isMixingFrame(false) {
+AudioMixerController::AudioMixerController(int sampleRate, int channelCount)
+: _sampleRate(sampleRate), _channelCount(channelCount), _mixer(nullptr), _isPaused(false), _isMixingFrame(false) {
     ALOGV("In the constructor of AudioMixerController!");
-
-    _mixingBuffer.size = (size_t)bufferSizeInFrames * 2 * channelCount;
-    // Don't use posix_memalign since it was added from API 16, it will crash on Android 2.3
-    // Therefore, for a workaround, we uses memalign here.
-    _mixingBuffer.buf = memalign(32, _mixingBuffer.size);
-    memset(_mixingBuffer.buf, 0, _mixingBuffer.size);
+    // For OHAudio, bluetooth buffer size is 17832 
+    int32_t maxBufferSize = 17832; 
+    _mixingBuffer.buf = memalign(32, maxBufferSize);
 }
 
 AudioMixerController::~AudioMixerController() {
@@ -56,7 +53,20 @@ AudioMixerController::~AudioMixerController() {
     free(_mixingBuffer.buf);
 }
 
-bool AudioMixerController::init() {
+void AudioMixerController::updateBufferSize(int bufferSize) {
+    _mixer->setBufferSize(bufferSize / _channelCount / 2);
+    _mixingBuffer.size = bufferSize;
+ 
+    uint32_t channelMask = audio_channel_out_mask_from_count(_channelCount);
+    int32_t name = _mixer->getTrackName(channelMask, AUDIO_FORMAT_PCM_16_BIT, AUDIO_SESSION_OUTPUT_MIX);
+    _mixer->setParameter(name, AudioMixer::TRACK, AudioMixer::MAIN_BUFFER,
+                         _mixingBuffer.buf);
+}
+ 
+bool AudioMixerController::init(int bufferSizeInFrames) {
+    _mixingBuffer.size = (size_t)bufferSizeInFrames * 2 * _channelCount;
+    memset(_mixingBuffer.buf, 0, _mixingBuffer.size);
+    _bufferSizeInFrames = bufferSizeInFrames;
     _mixer = new AudioMixer(_bufferSizeInFrames, _sampleRate);
     return _mixer != nullptr;
 }

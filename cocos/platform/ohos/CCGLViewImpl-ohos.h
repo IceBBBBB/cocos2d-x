@@ -8,8 +8,7 @@
 
 NS_CC_BEGIN
 
-class CC_DLL GLViewImpl : public GLView
-{
+class CC_DLL GLViewImpl : public GLView {
 public:
     enum class Orientation {
         PORTRAIT = 0,

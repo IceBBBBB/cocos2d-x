@@ -4,6 +4,8 @@ project(nativerender)
 set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../../..)
 set(CLASSES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../Classes)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -frtti -fexceptions -fsigned-char")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../resources/rawfile)
     set(res_raw_folders "${CMAKE_CURRENT_SOURCE_DIR}/../resources/rawfile")
@@ -20,7 +22,9 @@ endif()
 add_library(${PROJECT_NAME} SHARED  main.cpp
                                     napi_init.cpp)
 
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
+include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api
+                    ${COCOS2DX_ROOT_PATH}/external/lua/luajit/include
+                    )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CLASSES_PATH}
                                            PUBLIC ${COCOS2DX_ROOT_PATH}/cocos
                                            PUBLIC ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos)
@@ -28,4 +32,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CLASSES_PATH}
 add_subdirectory(${COCOS2DX_ROOT_PATH}/tests/lua-tests/project lua_test)
 find_library(hilog-lib hilog_ndk.z)
 find_library(libuv-lib uv)
-target_link_libraries(${PROJECT_NAME} PUBLIC lua_test ${hilog-lib} ${libuv-lib})
+target_link_libraries(${PROJECT_NAME} PUBLIC lua_test ext_luajit ${hilog-lib} ${libuv-lib})

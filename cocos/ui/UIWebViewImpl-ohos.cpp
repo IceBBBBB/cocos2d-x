@@ -62,7 +62,7 @@ namespace experimental {
         }
 
         void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
-            // TODO(qgh):OpenHarmony does not support this interface.
+            JSFunction::getFunction("WebView.setJavascriptInterfaceScheme").invoke<void>(_viewTag, scheme);
         }
 
         void WebViewImpl::loadData(const Data &data, const std::string &mimeType,

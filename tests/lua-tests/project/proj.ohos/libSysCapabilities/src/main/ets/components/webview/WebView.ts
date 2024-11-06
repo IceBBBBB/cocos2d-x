@@ -19,6 +19,12 @@ export class WebView {
         WebView.workerPort.postMessage(webViewMsgEntity);
     }
 
+    static setJavascriptInterfaceScheme(viewTag: number, jsInterfaceScheme: string) : void {
+        let webViewMsgEntity: WebViewMsgEntity = new WebViewMsgEntity(WebView.MODULE_NAME, 'setJavascriptInterfaceScheme', viewTag);
+        webViewMsgEntity.jsInterfaceScheme = jsInterfaceScheme;
+        WebView.workerPort.postMessage(webViewMsgEntity);
+    }
+
     static loadData(viewTag: number, data: string, mimeType: string, encoding: string, baseURL: string) : void {
         let webViewMsgEntity: WebViewMsgEntity = new WebViewMsgEntity(WebView.MODULE_NAME, 'loadData', viewTag);
         webViewMsgEntity.data = data;

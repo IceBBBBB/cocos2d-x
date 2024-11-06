@@ -26,8 +26,7 @@ EGLConfig getConfig(int version, EGLDisplay eglDisplay) {
     return configs;
 }
 
-void EGLCore::GLContextInit(void* window, int w, int h)
-{
+void EGLCore::GLContextInit(void* window, int w, int h) {
     OHOS_LOGD("EGLCore::GLContextInit window = %{public}p, w = %{public}d, h = %{public}d.", window, w, h);
     width_ = w;
     height_ = h;
@@ -75,13 +74,11 @@ void EGLCore::GLContextInit(void* window, int w, int h)
     }
 }
 
-void EGLCore::Update()
-{
+void EGLCore::Update() {
     eglSwapBuffers(mEGLDisplay, mEGLSurface);
 }
 
-bool EGLCore::checkGlError(const char* op)
-{
+bool EGLCore::checkGlError(const char* op) {
     OHOS_LOGE("EGL ERROR CODE = %{public}x", eglGetError());
     GLint error;
     for (error = glGetError(); error; error = glGetError()) {
@@ -89,4 +86,27 @@ bool EGLCore::checkGlError(const char* op)
         return true;
     }
     return false;
+}
+
+void EGLCore::destroySurface() {
+    if(!eglMakeCurrent(mEGLDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)) {
+        OHOS_LOGE("eglMakeCurrent error = %{public}d", eglGetError());
+    }
+    eglDestroySurface(mEGLDisplay, mEGLSurface);
+    mEGLSurface = nullptr;
+}
+
+void EGLCore::createSurface(void* window) {
+    mEglWindow = (EGLNativeWindowType)(window);
+    if(mEglWindow) {
+        mEGLSurface = eglCreateWindowSurface(mEGLDisplay, mEGLConfig, mEglWindow, NULL);
+        if(mEGLSurface == nullptr) {
+            OHOS_LOGE("EGL eglCreateWindowSurface eglSurface is null");
+            return;
+        }
+    }
+    if(!(eglMakeCurrent(mEGLDisplay, mEGLSurface, mEGLSurface, mEGLContext))){
+        OHOS_LOGE("eglMakeCurrent error = %{public}d", eglGetError());
+    }
+    return;
 }

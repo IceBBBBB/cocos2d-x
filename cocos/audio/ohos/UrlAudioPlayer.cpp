@@ -35,93 +35,71 @@ THE SOFTWARE.
 namespace {
 
 std::mutex __playerContainerMutex;//NOLINT(bugprone-reserved-identifier,readability-identifier-naming)
-std::vector<cocos2d::experimental::UrlAudioPlayer *> __playerContainer;//NOLINT(bugprone-reserved-identifier,readability-identifier-naming)
+std::map<OH_AVPlayer*, cocos2d::experimental::UrlAudioPlayer *> __playerContainer;//NOLINT(bugprone-reserved-identifier,readability-identifier-naming)
+
 std::once_flag __onceFlag;//NOLINT(bugprone-reserved-identifier,readability-identifier-naming)
 
 } // namespace
 
 namespace cocos2d { namespace experimental {
 
-class SLUrlAudioPlayerCallbackProxy {
-public:
-    static void playEventCallback(SLPlayItf caller, void *context, SLuint32 playEvent) {
-        auto *thiz = reinterpret_cast<UrlAudioPlayer *>(context);
-        // We must use a mutex for the whole block of the following function invocation.
-        std::lock_guard<std::mutex> lk(__playerContainerMutex);
-        auto iter = std::find(__playerContainer.begin(), __playerContainer.end(), thiz);
-        if (iter != __playerContainer.end()) {
-            thiz->playEventCallback(caller, playEvent);
-        }
-    }
-};
-
-UrlAudioPlayer::UrlAudioPlayer(SLEngineItf engineItf, SLObjectItf outputMixObject, ICallerThreadUtils *callerThreadUtils)
-: _engineItf(engineItf), _outputMixObj(outputMixObject), _callerThreadUtils(callerThreadUtils), _id(-1), _assetFd(nullptr), _playObj(nullptr), _playItf(nullptr), _seekItf(nullptr), _volumeItf(nullptr), _volume(0.0F), _duration(0.0F), _isLoop(false), _isAudioFocus(true), _state(State::INVALID), _playEventCallback(nullptr), _isDestroyed(std::make_shared<bool>(false)) {
-    std::call_once(__onceFlag, []() {
-        __playerContainer.reserve(10);
-    });
-
-    __playerContainerMutex.lock();
-    __playerContainer.push_back(this);
-    ALOGV("Current UrlAudioPlayer instance count: %d", (int)__playerContainer.size());
-    __playerContainerMutex.unlock();
-
+UrlAudioPlayer::UrlAudioPlayer(ICallerThreadUtils *callerThreadUtils)
+        : _callerThreadUtils(callerThreadUtils), _id(-1), _playObj(nullptr),_volume(0.0F), _duration(0.0F), _isLoop(false), _isAudioFocus(true), _state(State::INVALID), _playEventCallback(nullptr), _isDestroyed(std::make_shared<bool>(false))
+{
     _callerThreadId = callerThreadUtils->getCallerThreadId();
 }
 
-UrlAudioPlayer::~UrlAudioPlayer() {
-    ALOGV("~UrlAudioPlayer(): %p", this);
-
+UrlAudioPlayer::~UrlAudioPlayer()
+{
     __playerContainerMutex.lock();
-
-    auto iter = std::find(__playerContainer.begin(), __playerContainer.end(), this);
-    if (iter != __playerContainer.end()) {
-        __playerContainer.erase(iter);
+    
+    auto it = __playerContainer.begin();  
+    while(it != __playerContainer.end())  
+    {  
+        if(it->second == this)  
+        {  
+            it = __playerContainer.erase(it);  
+        }  
+        else  
+        {
+            it++;
+        }  
     }
 
     __playerContainerMutex.unlock();
 }
 
-void UrlAudioPlayer::playEventCallback(SLPlayItf caller, SLuint32 playEvent) {
-    CC_UNUSED_PARAM(caller);
-    // Note that it's on sub thread, please don't invoke OpenSLES API on sub thread
-    if (playEvent == SL_PLAYEVENT_HEADATEND) {
-        std::shared_ptr<bool> isDestroyed = _isDestroyed;
+void UrlAudioPlayer::playEventCallback() {
+    std::shared_ptr<bool> isDestroyed = _isDestroyed;
 
-        auto func = [this, isDestroyed]() {
-            // If it was destroyed, just return.
-            if (*isDestroyed) {
-                ALOGV("The UrlAudioPlayer (%p) was destroyed!", this);
-                return;
-            }
-
-            //Note that It's in the caller's thread (Cocos Thread)
-            // If state is already stopped, ignore the play over event.
-
-            if (_state == State::STOPPED) {
-                return;
-            }
-
-            //fix issue#8965:AudioEngine can't looping audio on Android 2.3.x
-            if (isLoop()) {
-                play();
-            } else {
-                setState(State::OVER);
-                if (_playEventCallback != nullptr) {
-                    _playEventCallback(State::OVER);
-                }
-
-                ALOGV("UrlAudioPlayer (%p) played over, destroy self ...", this);
-                destroy();
-                delete this;
-            }
-        };
-
-        if (_callerThreadId == std::this_thread::get_id()) {
-            func();
-        } else {
-            _callerThreadUtils->performFunctionInCallerThread(func);
+    auto func = [this, isDestroyed]() {
+        // If it was destroyed, just return.
+        if (*isDestroyed) {
+            ALOGV("The UrlAudioPlayer (%p) was destroyed!", this);
+            return;
         }
+
+        //Note that It's in the caller's thread (Cocos Thread)
+        // If state is already stopped, ignore the play over event.
+
+        if (_state == State::STOPPED) {
+            return;
+        }
+
+        setState(State::OVER);
+        if (_playEventCallback != nullptr) {
+            _playEventCallback(State::OVER);
+        }
+
+        ALOGV("UrlAudioPlayer (%p) played over, destroy self ...", this);
+        destroy();
+        delete this;
+    };
+
+    if (_callerThreadId == std::this_thread::get_id()) {
+        func();
+    } else {
+        _callerThreadUtils->performFunctionInCallerThread(func);
     }
 }
 
@@ -131,8 +109,11 @@ void UrlAudioPlayer::setPlayEventCallback(const PlayEventCallback &playEventCall
 
 void UrlAudioPlayer::stop() {
     ALOGV("UrlAudioPlayer::stop (%p, %d)", this, getId());
-    SLresult r = (*_playItf)->SetPlayState(_playItf, SL_PLAYSTATE_STOPPED);
-    SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::stop failed");
+    int32_t status = OH_AVPlayer_Stop(_playObj);
+    if(status != 0) {
+        ALOGE("UrlAudioPlayer::stop failed");
+        return;
+    }
 
     if (_state == State::PLAYING || _state == State::PAUSED) {
         setLoop(false);
@@ -151,8 +132,11 @@ void UrlAudioPlayer::stop() {
 
 void UrlAudioPlayer::pause() {
     if (_state == State::PLAYING) {
-        SLresult r = (*_playItf)->SetPlayState(_playItf, SL_PLAYSTATE_PAUSED);
-        SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::pause failed");
+        int32_t status = OH_AVPlayer_Pause(_playObj);
+        if(status != 0) {
+            ALOGE("UrlAudioPlayer::pause failed");
+            return;
+        }
         setState(State::PAUSED);
     } else {
         ALOGW("UrlAudioPlayer (%p, state:%d) isn't playing, could not invoke pause!", this, static_cast<int>(_state));
@@ -161,8 +145,11 @@ void UrlAudioPlayer::pause() {
 
 void UrlAudioPlayer::resume() {
     if (_state == State::PAUSED) {
-        SLresult r = (*_playItf)->SetPlayState(_playItf, SL_PLAYSTATE_PLAYING);
-        SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::resume failed");
+        int32_t status = OH_AVPlayer_Play(_playObj);
+        if(status != 0) {
+            ALOGE("UrlAudioPlayer::resume failed");
+            return;
+        }
         setState(State::PLAYING);
     } else {
         ALOGW("UrlAudioPlayer (%p, state:%d) isn't paused, could not invoke resume!", this, static_cast<int>(_state));
@@ -171,27 +158,29 @@ void UrlAudioPlayer::resume() {
 
 void UrlAudioPlayer::play() {
     if (_state == State::INITIALIZED || _state == State::PAUSED) {
-        SLresult r = (*_playItf)->SetPlayState(_playItf, SL_PLAYSTATE_PLAYING);
-        SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::play failed");
+        int32_t status = OH_AVPlayer_Play(_playObj);
+        if(status != 0) {
+            ALOGE("UrlAudioPlayer::play failed");
+            return;
+        }
         setState(State::PLAYING);
     } else {
         ALOGW("UrlAudioPlayer (%p, state:%d) isn't paused or initialized, could not invoke play!", this, static_cast<int>(_state));
     }
 }
 
-void UrlAudioPlayer::setVolumeToSLPlayer(float volume) {
-    int dbVolume = static_cast<int>(2000 * log10(volume));
-    if (dbVolume < SL_MILLIBEL_MIN) {
-        dbVolume = SL_MILLIBEL_MIN;
+void UrlAudioPlayer::setVolumeToAVPlayer(float volume)
+{
+    int32_t status = OH_AVPlayer_SetVolume(_playObj, volume, volume);
+    if(status != 0) {
+        ALOGE("UrlAudioPlayer::setVolume %d failed", volume);
     }
-    SLresult r = (*_volumeItf)->SetVolumeLevel(_volumeItf, dbVolume);
-    SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::setVolumeToSLPlayer %d failed", dbVolume);
 }
 
 void UrlAudioPlayer::setVolume(float volume) {
     _volume = volume;
     if (_isAudioFocus) {
-        setVolumeToSLPlayer(_volume);
+        setVolumeToAVPlayer(_volume);
     }
 }
 
@@ -202,7 +191,7 @@ float UrlAudioPlayer::getVolume() const {
 void UrlAudioPlayer::setAudioFocus(bool isFocus) {
     _isAudioFocus = isFocus;
     float volume = _isAudioFocus ? _volume : 0.0F;
-    setVolumeToSLPlayer(volume);
+    setVolumeToAVPlayer(volume);
 }
 
 float UrlAudioPlayer::getDuration() const {
@@ -210,42 +199,95 @@ float UrlAudioPlayer::getDuration() const {
         return _duration;
     }
 
-    SLmillisecond duration;
-    SLresult r = (*_playItf)->GetDuration(_playItf, &duration);
-    SL_RETURN_VAL_IF_FAILED(r, 0.0F, "UrlAudioPlayer::getDuration failed");
-
-    if (duration == SL_TIME_UNKNOWN) {
+    int32_t duration = 0;
+    int32_t status = OH_AVPlayer_GetDuration(_playObj, &duration);
+    if(status != 0) {
+        ALOGE("UrlAudioPlayer::getDuration failed");
         return -1.0F;
-    } else {// NOLINT(readability-else-after-return)
-        const_cast<UrlAudioPlayer *>(this)->_duration = duration / 1000.0F;
-
-        if (_duration <= 0) {
-            return -1.0F;
-        }
+    }
+    const_cast<UrlAudioPlayer *>(this)->_duration = duration / 1000.0F;
+    if (_duration <= 0) {
+        return -1.0F;
     }
     return _duration;
 }
 
 float UrlAudioPlayer::getPosition() const {
-    SLmillisecond millisecond;
-    SLresult r = (*_playItf)->GetPosition(_playItf, &millisecond);
-    SL_RETURN_VAL_IF_FAILED(r, 0.0F, "UrlAudioPlayer::getPosition failed");
-    return millisecond / 1000.0F;
+    int32_t currentTime = 0;
+    int status = OH_AVPlayer_GetCurrentTime(_playObj, &currentTime);
+    if(status != 0) {
+        ALOGE("UrlAudioPlayer::getPosition failed");
+        return -1.0F;
+    }
+    return currentTime / 1000.0F;
 }
 
-bool UrlAudioPlayer::setPosition(float pos) {
-    SLmillisecond millisecond = 1000.0F * pos;
-    SLresult r = (*_seekItf)->SetPosition(_seekItf, millisecond, SL_SEEKMODE_ACCURATE);
-    SL_RETURN_VAL_IF_FAILED(r, false, "UrlAudioPlayer::setPosition %f failed", pos);
+bool UrlAudioPlayer::setPosition(float pos)
+{
+    int32_t millisecond = 1000.0F * pos;
+    int status = OH_AVPlayer_Seek(_playObj, millisecond, AV_SEEK_NEXT_SYNC);
+    if(status != 0) {
+        ALOGE("UrlAudioPlayer::setPosition %f failed", pos);
+        return false;
+    }
     return true;
 }
 
-bool UrlAudioPlayer::prepare(const std::string &url, SLuint32 locatorType, std::shared_ptr<AssetFd> assetFd, int start,
-                             int length) {
+void UrlAudioPlayer::onInfo(OH_AVPlayer *player, AVPlayerOnInfoType type, int32_t extra)
+{
+    if (type == AV_INFO_TYPE_STATE_CHANGE) {
+        if (extra == AV_COMPLETED) {
+            auto it = __playerContainer.find(player);
+            if (it != __playerContainer.end())
+            {
+                UrlAudioPlayer *audioPlayer = it->second;
+                audioPlayer->playEventCallback();
+            }
+        }
+    }else if (type == AV_INFO_TYPE_INTERRUPT_EVENT) {
+        auto it = __playerContainer.find(player);
+        if (it != __playerContainer.end()) {
+            UrlAudioPlayer *audioPlayer = it->second;
+            if (extra == 1) {
+                audioPlayer->resume();
+            } else if (extra == 2) {
+                audioPlayer->pause();
+            } else {
+                ALOGV("UrlAudioPlayer was interrupted, hint type is %d", extra);
+            }
+        }
+    }
+}
+
+void UrlAudioPlayer::onError(OH_AVPlayer *player, int32_t errorCode, const char *errorMsg) {
+    ALOGE("UrlAudioPlayer play failed, errorCode is: %d, errorMsg is %s", errorCode, errorMsg);
+}
+
+bool UrlAudioPlayer::prepare(const std::string &url, std::shared_ptr<AssetFd> assetFd, int32_t start, int32_t length)
+{
     _url = url;
-    _assetFd = std::move(assetFd);
-    // OH上不支持，直接返回true
-    return true;
+    _assetFd = assetFd;
+    _playObj = OH_AVPlayer_Create();
+    __playerContainerMutex.lock();
+    __playerContainer[_playObj] = this;
+    __playerContainerMutex.unlock();
+
+    AVPlayerCallback callback;
+    callback.onInfo = this->onInfo;
+    callback.onError = this->onError;
+    OH_AVPlayer_SetPlayerCallback(_playObj, callback);
+    OH_AVPlayer_SetFDSource(_playObj, _assetFd->getFd(), start, length);
+    OH_AVPlayer_SetAudioRendererInfo(_playObj, OH_AudioStream_Usage::AUDIOSTREAM_USAGE_GAME);
+    OH_AVErrCode code = OH_AVPlayer_Prepare(_playObj);
+    
+    if (code == AV_ERR_OK) {
+        setState(State::INITIALIZED);
+        setVolume(1.0f);
+        return true;
+    } 
+
+    ALOGE("Oops, prepare error: %d", (int)code);
+    return false;
 }
 
 void UrlAudioPlayer::rewind() {
@@ -254,10 +296,10 @@ void UrlAudioPlayer::rewind() {
 
 void UrlAudioPlayer::setLoop(bool isLoop) {
     _isLoop = isLoop;
-
-    SLboolean loopEnable = _isLoop ? SL_BOOLEAN_TRUE : SL_BOOLEAN_FALSE;
-    SLresult r = (*_seekItf)->SetLoop(_seekItf, loopEnable, 0, SL_TIME_UNKNOWN);
-    SL_RETURN_IF_FAILED(r, "UrlAudioPlayer::setLoop %d failed", _isLoop ? 1 : 0);
+    int status = OH_AVPlayer_SetLooping(_playObj, _isLoop);
+    if(status != 0) {
+        ALOGE( "UrlAudioPlayer::setLoop %d failed", _isLoop ? 1 : 0);
+    }
 }
 
 bool UrlAudioPlayer::isLoop() const {
@@ -270,17 +312,24 @@ void UrlAudioPlayer::stopAll() {
     auto temp = __playerContainer;
     __playerContainerMutex.unlock();
 
-    for (auto &&player : temp) {
-        player->stop();
+    auto it = temp.begin();
+    while(it != temp.end())  
+    {  
+        UrlAudioPlayer* thiz = it->second;
+        thiz->stop();
+        it++;
     }
 }
 
-void UrlAudioPlayer::destroy() {
-    if (!*_isDestroyed) {
+void UrlAudioPlayer::destroy()
+{
+    if (!*_isDestroyed)
+    {
         *_isDestroyed = true;
-        ALOGV("UrlAudioPlayer::destroy() %p", this);
-        SL_DESTROY_OBJ(_playObj);
-        ALOGV("UrlAudioPlayer::destroy end");
+        OH_AVErrCode code = OH_AVPlayer_Release(_playObj);
+        if (code != AV_ERR_OK) {
+            ALOGE( "UrlAudioPlayer release failed, errcode is %d", code);
+        }
     }
 }
 

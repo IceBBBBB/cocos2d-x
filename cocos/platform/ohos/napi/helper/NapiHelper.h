@@ -19,15 +19,13 @@
 const static int BUFFER_SIZE = 1024 * 10;
 
 // Defines locks and semaphores.
-typedef struct ThreadLockInfo
-{
+typedef struct ThreadLockInfo {
     std::mutex mutex;
     std::condition_variable condition;
     bool ready = false;
 } ThreadLockInfo;
 
-typedef struct WorkParam
-{
+typedef struct WorkParam {
     napi_env env;
     napi_ref funcRef;
     std::string inParam;

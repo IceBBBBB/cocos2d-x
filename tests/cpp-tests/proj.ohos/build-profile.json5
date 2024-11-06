@@ -4,23 +4,22 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "compileSdkVersion": "4.0.0(10)",
-        "compatibleSdkVersion": "4.0.0(10)",
-        "targetSdkVersion": "4.0.0(10)",
+        "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS"
       }
     ],
     "signingConfigs": [
       {
         "name": "default",
+        "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\cocos2dx\\.ohos\\config\\openharmony\\auto_ohos_default_proj.ohos_ohos.cocos3.17.2.cpp.tests.cer",
-          "storePassword": "0000001BFBD5B9AB622E262D07CDA91D13014176A938590C567F342F1FCD177BD90E19B4F8D8EF8BDADF23",
+          "certpath": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_T2xNvYrObQHHDA-AQiL9u2iHLaALLXV5tVHYf8ysUs8=.cer",
+          "storePassword": "0000001B6BC5170A0CF5696DF7846589A501C3610D55BD53930FA97B8A5C8F6EEC6666F4816D385CF0B853",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B75B4A47AD2EE16B3EA1043EC5E283E47ADDCB662E3400EC5DD13114C6B2BEE28093029F3DC3B28",
-          "profile": "C:\\Users\\cocos2dx\\.ohos\\config\\openharmony\\auto_ohos_default_proj.ohos_ohos.cocos3.17.2.cpp.tests.p7b",
+          "keyPassword": "0000001B4FF65D84C73E2B5C9314EB2F0C0DD546E61E7D80D5F2A3EDF02D5406C8DB0FB7BF3EC40A4DD22A",
+          "profile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_T2xNvYrObQHHDA-AQiL9u2iHLaALLXV5tVHYf8ysUs8=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\cocos2dx\\.ohos\\config\\openharmony\\auto_ohos_default_proj.ohos_ohos.cocos3.17.2.cpp.tests.p12"
+          "storeFile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_T2xNvYrObQHHDA-AQiL9u2iHLaALLXV5tVHYf8ysUs8=.p12"
         }
       }
     ]

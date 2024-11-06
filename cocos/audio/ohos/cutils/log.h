@@ -455,12 +455,7 @@ extern "C" {
  * Log macro that allows you to specify a number for the priority.
  */
 #ifndef LOG_PRI
-#if CC_PLATFORM == CC_PLATFORM_ANDROID
-    #define LOG_PRI(priority, tag, ...) \
-        android_printLog(priority, tag, __VA_ARGS__)
-#elif CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
     #define LOG_PRI(priority, tag, ...) ((void)0)
-#endif
 #endif
 
 /*

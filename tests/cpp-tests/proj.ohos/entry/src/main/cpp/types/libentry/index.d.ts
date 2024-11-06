@@ -14,6 +14,8 @@ export interface CPPFunctions {
   nativeEngineStart: () => void;
   registerFunction: () => void;
   initAsyncInfo: () => void;
+  mouseWheelCB: (eventType: string, scrollY : number) => void;
+  editBoxOnFocusCB: (viewTag: number) => void;
   editBoxOnChangeCB: (viewTag: number, text: string) => void;
   editBoxOnEnterCB: (viewTag: number, text: string) => void;
   textFieldTTFOnChangeCB: (text: string) => void;

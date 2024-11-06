@@ -170,6 +170,16 @@ namespace ui {
         JSFunction::getFunction("CocosEditBox.hideAllEditBox").invoke<void>();
     }
 
+    void EditBoxImplOhos::onBeginCallBack(int index)
+    {
+        OHOS_LOGD("textinput editBoxEditingDidBegin");
+        auto it = s_allEditBoxes.find(index);
+        if (it != s_allEditBoxes.end())
+        {
+            s_allEditBoxes[index]->editBoxEditingDidBegin();
+        }
+    }
+
     void EditBoxImplOhos::onChangeCallBack(int index, const std::string& text)
     {
         OHOS_LOGD("textinput onChangeCallBack");

@@ -6,6 +6,34 @@
 #include "ui/UIEditBox/UIEditBoxImpl-ohos.h"
 #include "base/CCIMEDispatcher.h"
 
+napi_value InputNapi::editBoxOnFocusCB(napi_env env, napi_callback_info info) {
+
+    napi_status status;
+    size_t argc = 1;
+    napi_value args[1];
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
+    if (argc != 1) {
+        napi_throw_type_error(env, NULL, "Wrong number of arguments");
+        return nullptr;
+    }
+
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args[0], &valuetype);
+    if (status != napi_ok) {
+        return nullptr;
+    }
+    if (valuetype != napi_number) {
+        napi_throw_type_error(env, NULL, "Wrong arguments");
+        return nullptr;
+    }
+
+    int32_t index;
+    NAPI_CALL(env, napi_get_value_int32(env, args[0], &index));
+
+    cocos2d::ui::EditBoxImplOhos::onBeginCallBack(index);
+    return nullptr;
+}
+
 napi_value InputNapi::editBoxOnChangeCB(napi_env env, napi_callback_info info) {
 
     napi_status status;
@@ -88,53 +116,71 @@ napi_value InputNapi::editBoxOnEnterCB(napi_env env, napi_callback_info info) {
 
 napi_value InputNapi::textFieldTTFOnChangeCB(napi_env env, napi_callback_info info) {
 
-    napi_status status;
-    size_t argc = 1;
-    napi_value args[1];
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
-    if (argc != 1) {
+      napi_status status;
+      size_t argc = 1;
+      napi_value args[1];
+      NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
+      if (argc != 1) {
         napi_throw_type_error(env, NULL, "Wrong number of arguments");
         return nullptr;
-    }
-
-    napi_valuetype valuetype;
-    status = napi_typeof(env, args[0], &valuetype);
-    if (status != napi_ok) {
+      }
+    
+      napi_valuetype valuetype;
+      status = napi_typeof(env, args[0], &valuetype);
+      if (status != napi_ok) {
         return nullptr;
-    }
-    if (valuetype != napi_string) {
+      }
+      if (valuetype != napi_string) {
         napi_throw_type_error(env, NULL, "Wrong arguments");
         return nullptr;
-    }
-
-    const char* oldStr = cocos2d::IMEDispatcher::sharedDispatcher()->getContentText().c_str();
-    size_t pInt;
-    char text[256];
-    NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], text, 256, &pInt));
-
-    // Calculate the difference position
-    int oldIndex = 0;
-    int newIndex = 0;
-    while(oldIndex < strlen(oldStr) && newIndex < strlen(text)) {
-        if(oldStr[oldIndex] != text[newIndex]) {
-            break;
+      }
+    
+      auto dispatcher = cocos2d::IMEDispatcher::sharedDispatcher();
+      const std::string& oldContent = dispatcher->getContentText();
+      
+      size_t textLen;
+      char text[2560] = {0};
+      NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], text, 2560, &textLen));
+    
+      // 优化: 使用string_view避免不必要的字符串拷贝
+      std::string_view oldView(oldContent);
+      std::string_view newView(text, textLen);
+    
+      // 找到第一个不同的字符位置
+      size_t commonPrefixLen = 0;
+      const size_t minLen = std::min(oldView.length(), newView.length());
+      while (commonPrefixLen < minLen && oldView[commonPrefixLen] == newView[commonPrefixLen]) {
+        commonPrefixLen++;
+      }
+    
+      // 删除差异后的旧内容字符
+      const size_t charsToDelete = oldView.length() - commonPrefixLen;
+      const size_t deleteOperations = [&]() {
+        size_t count = 0;
+        size_t pos = oldView. length() - 1;
+        size_t remaining = charsToDelete;
+        while (remaining > 0) {
+            // 检查UTF-8中文字符(0xE0-0xEF开头的3字节字符）
+            bool isChineseChar = (pos >= 2 &&
+            (unsigned char)oldView [pos-2] >= 0xE0 &&
+            (unsigned char)oldView [pos-2] <= 0xEF);
+            remaining -= isChineseChar ? 3 : 1;
+            pos -= isChineseChar ? 3 : 1;
+            count++;
         }
-        oldIndex++;
-        newIndex++;
-    }
-
-    // Delete the characters after the difference position of the original character string.
-    int oldLength = strlen(oldStr);
-    for(; oldIndex < oldLength; oldIndex++) {
-        cocos2d::IMEDispatcher::sharedDispatcher()->dispatchDeleteBackward();
-    }
-
-    // Truncate the part after the difference position of the new character string and insert it.
-    if(strlen(text) > newIndex) {
-        std::string newStr(text, sizeof(text));
-        const char* modify = newStr.substr(newIndex).c_str();
-        cocos2d::IMEDispatcher::sharedDispatcher()->dispatchInsertText(modify, strlen(modify));
-    }
-
-    return nullptr;
+        return count; 
+      }();
+      //批量删除字符
+      for (size_t i = 0; i < deleteOperations; i++) {
+        dispatcher->dispatchDeleteBackward();
+      }
+      const size_t insertLen = newView.length() - commonPrefixLen;
+      // 插入差异后的新字符
+      if ( insertLen > 0) {
+        const char* newText = text + commonPrefixLen;
+        CCLOG("textFieldTTFOnChangeCB: Inserting %zu characters: %s", insertLen, newText);
+        dispatcher->dispatchInsertText(newText, insertLen);
+      }
+    
+      return nullptr;
 }

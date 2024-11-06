@@ -47,10 +47,9 @@ class LegacyThreadPool;
 
 class AudioPlayerProvider {
 public:
-    AudioPlayerProvider(SLEngineItf engineItf, SLObjectItf outputMixObject, int deviceSampleRate,
-                        int bufferSizeInFrames, const FdGetterCallback &fdGetterCallback,
-                        ICallerThreadUtils *callerThreadUtils);
-
+    AudioPlayerProvider(SLEngineItf engineItf, int deviceSampleRate,
+                        const FdGetterCallback &fdGetterCallback, ICallerThreadUtils *callerThreadUtils);
+ 
     virtual ~AudioPlayerProvider();
     bool isFileCached(const std::string &audioFilePath);
     IAudioPlayer *getAudioPlayer(const std::string &audioFilePath);

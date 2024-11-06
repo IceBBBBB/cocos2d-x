@@ -99,3 +99,16 @@ void AppDelegate::applicationWillEnterForeground()
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+    auto director = cocos2d::Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set ResolutionPolicy to a proper value. here use the original value when the game is started.
+        ResolutionPolicy resolutionPolicy = glview->getResolutionPolicy();
+        glview->setFrameSize(newWidth, newHeight);
+        // Set the design resolution to a proper value. here use a value different with the game is started. 
+        glview->setDesignResolutionSize(newWidth / 2, newHeight / 2, resolutionPolicy);
+    }
+}

@@ -103,7 +103,7 @@ public:
 
     void setBufferProvider(int name, AudioBufferProvider *bufferProvider);
     void process(int64_t pts);
-
+    void setBufferSize(size_t size);
     uint32_t trackNames() const { return mTrackNames; }
 
     size_t getUnreleasedFrames(int name) const;

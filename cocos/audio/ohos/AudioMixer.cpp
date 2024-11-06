@@ -871,6 +871,11 @@ void AudioMixer::process(int64_t pts) {
     mState.hook(&mState, pts);
 }
 
+ 
+void AudioMixer::setBufferSize(size_t size) {
+    mState.frameCount = size;
+}
+
 void AudioMixer::process__validate(state_t *state, int64_t pts) {//NOLINT
     ALOGW_IF(!state->needsChanged,
              "in process__validate() but nothing's invalid");

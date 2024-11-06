@@ -6,5 +6,6 @@
   "description": "Please describe the basic information.",
   "main": "index.ts",
   "version": "1.0.0",
+  "dynamicDependencies": {},
   "dependencies": {}
 }

@@ -16,8 +16,7 @@ class NapiManager {
 public:
     ~NapiManager() {}
 
-    static NapiManager* GetInstance()
-    {
+    static NapiManager* GetInstance() {
         return &NapiManager::manager_;
     }
 

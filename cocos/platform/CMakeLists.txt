@@ -48,6 +48,7 @@ elseif(OHOS)
         platform/ohos/napi/modules/RawFileUtils.cpp
         platform/ohos/napi/modules/TouchesNapi.cpp
         platform/ohos/napi/modules/InputNapi.cpp
+        platform/ohos/napi/modules/MouseNapi.cpp
         platform/ohos/napi/modules/WebViewNapi.cpp
         platform/ohos/napi/modules/SensorNapi.cpp
         platform/ohos/napi/modules/VideoPlayerNapi.cpp

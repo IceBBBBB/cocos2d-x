@@ -28,9 +28,11 @@ THE SOFTWARE.
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <map>
 #include "AssetFd.h"
 #include "IAudioPlayer.h"
-#include "OpenSLHelper.h"
+#include "cutils/log.h"
+#include "multimedia/player_framework/avplayer.h"
 
 namespace cocos2d { namespace experimental {
 
@@ -76,13 +78,14 @@ public:
 
     virtual void setPlayEventCallback(const PlayEventCallback &playEventCallback) override;
 
-    // Override Functions EndOv
+    UrlAudioPlayer(ICallerThreadUtils *callerThreadUtils);
 
-
-    UrlAudioPlayer(SLEngineItf engineItf, SLObjectItf outputMixObject, ICallerThreadUtils *callerThreadUtils);
     virtual ~UrlAudioPlayer();
 
-    bool prepare(const std::string &url, SLuint32 locatorType, std::shared_ptr<AssetFd> assetFd, int start, int length);
+    bool prepare(const std::string &url, std::shared_ptr<AssetFd> assetFd, int32_t start, int32_t length);
+
+    static void onInfo(OH_AVPlayer *player, AVPlayerOnInfoType type, int32_t extra);
+    static void onError(OH_AVPlayer *player, int32_t errorCode, const char *errorMsg);
 
     static void stopAll();
 
@@ -90,13 +93,11 @@ public:
 
     inline void setState(State state) { _state = state; };
 
-    void playEventCallback(SLPlayItf caller, SLuint32 playEvent);
+    void playEventCallback();
 
-    void setVolumeToSLPlayer(float volume);
+    void setVolumeToAVPlayer(float volume);
 
 private:
-    SLEngineItf _engineItf;
-    SLObjectItf _outputMixObj;
     ICallerThreadUtils *_callerThreadUtils;
 
     int _id;
@@ -104,10 +105,7 @@ private:
 
     std::shared_ptr<AssetFd> _assetFd;
 
-    SLObjectItf _playObj;
-    SLPlayItf _playItf;
-    SLSeekItf _seekItf;
-    SLVolumeItf _volumeItf;
+    OH_AVPlayer *_playObj;
 
     float _volume;
     float _duration;
@@ -120,7 +118,6 @@ private:
     std::thread::id _callerThreadId;
     std::shared_ptr<bool> _isDestroyed;
 
-    friend class SLUrlAudioPlayerCallbackProxy;
     friend class AudioPlayerProvider;
 };
 

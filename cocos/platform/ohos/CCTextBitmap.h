@@ -13,8 +13,7 @@
 #define DEFAULT_FONTSIZE 20
 
 NS_CC_BEGIN
-    class CCTextBitmap
-    {
+class CCTextBitmap {
     public:
         static const int HORIZONTALALIGN_LEFT = 1;
         static const int HORIZONTALALIGN_RIGHT = 2;
@@ -68,6 +67,6 @@ NS_CC_BEGIN
         OH_Drawing_FontCollection* _fontCollection{nullptr};
         OH_Drawing_TextStyle* _textStyle{nullptr};
         OH_Drawing_Typography *_typography{nullptr};
-    };
+};
 NS_CC_END
 #endif 

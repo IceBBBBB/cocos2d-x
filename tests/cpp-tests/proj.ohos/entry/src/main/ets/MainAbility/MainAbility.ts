@@ -10,29 +10,6 @@ const rawFileUtils: nativeRender.CPPFunctions = nativeRender.getContext(ContextT
 
 export default class MainAbility extends UIAbility {
     onCreate(want, launchParam) {
-        let windowClass = null;
-        try {
-            window.getLastWindow(this.context, (err, data) => {
-                if (err.code) {
-                    console.error('Failed to obtain last window. Cause:' + JSON.stringify(err));
-                    return;
-                }
-                windowClass = data;
-                // Set whether to display the status bar and navigation bar. If they are not displayed, [] is displayed.
-                let systemBarPromise = windowClass.setWindowSystemBarEnable([]);
-                // Whether the window layout is displayed in full screen mode
-                let fullScreenPromise = windowClass.setWindowLayoutFullScreen(true);
-                // Sets whether the screen is always on.
-                let keepScreenOnPromise = windowClass.setWindowKeepScreenOn(true);
-                Promise.all([systemBarPromise, fullScreenPromise, keepScreenOnPromise]).then(() => {
-                    console.info('Succeeded in setting the window');
-                }).catch((err) => {
-                    console.error('Failed to set the window, cause ' + JSON.stringify(err));
-                });
-            });
-        } catch (exception) {
-            console.error('Failed to get or set the window, cause ' + JSON.stringify(exception));
-        }
         nativeAppLifecycle.onCreate();
         GlobalContext.storeGlobalThis(GlobalContextConstants.COCOS2DX_ABILITY_CONTEXT, this.context);
         // Initializes the webView kernel of the system. This parameter is optional if it is not used.
@@ -54,6 +31,34 @@ export default class MainAbility extends UIAbility {
             }
             rawFileUtils.nativeResourceManagerInit(this.context.resourceManager);
             rawFileUtils.writablePathInit(this.context.filesDir);
+        });
+
+        windowStage.getMainWindow().then((windowIns: window.Window) => {
+            // Set whether to display the status bar and navigation bar. If they are not displayed, [] is displayed.
+            let systemBarPromise = windowIns.setWindowSystemBarEnable([]);
+            // Whether the window layout is displayed in full screen mode
+            let fullScreenPromise = windowIns.setWindowLayoutFullScreen(true);
+            // Sets whether the screen is always on.
+            let keepScreenOnPromise = windowIns.setWindowKeepScreenOn(true);
+            Promise.all([systemBarPromise, fullScreenPromise, keepScreenOnPromise]).then(() => {
+                console.info('Succeeded in setting the window');
+            }).catch((err) => {
+                console.error('Failed to set the window, cause ' + JSON.stringify(err));
+            });
+        })
+
+        windowStage.on("windowStageEvent", (data) => {
+            let stageEventType: window.WindowStageEventType = data;
+            switch (stageEventType) {
+                case window.WindowStageEventType.RESUMED:
+                    nativeAppLifecycle.onShow();
+                    break;
+                case window.WindowStageEventType.PAUSED:
+                    nativeAppLifecycle.onHide();
+                    break;
+                default:
+                    break;
+            }
         });
     }
 

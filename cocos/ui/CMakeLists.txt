@@ -72,18 +72,18 @@ elseif(ANDROID)
         )
 elseif(OHOS)
     set(COCOS_UI_SPECIFIC_HEADER
-            ui/UIWebView.h
-            ui/UIEditBox/UIEditBoxImpl-ohos.h
-            ui/UIWebViewImpl-ohos.h
-            ui/UIVideoPlayer.h
-            ui/UIVideoPlayer-ohos.h
-            )
+        ui/UIWebView.h
+        ui/UIEditBox/UIEditBoxImpl-ohos.h
+        ui/UIWebViewImpl-ohos.h
+        ui/UIVideoPlayer.h
+        ui/UIVideoPlayer-ohos.h
+        )
     set(COCOS_UI_SPECIFIC_SRC
-            ui/UIEditBox/UIEditBoxImpl-ohos.cpp
-            ui/UIWebViewImpl-ohos.cpp
-            ui/UIWebView.cpp
-            ui/UIVideoPlayer-ohos.cpp
-            )
+        ui/UIEditBox/UIEditBoxImpl-ohos.cpp
+        ui/UIWebViewImpl-ohos.cpp
+        ui/UIWebView.cpp
+        ui/UIVideoPlayer-ohos.cpp
+        )
 endif()
 
 set(COCOS_UI_HEADER

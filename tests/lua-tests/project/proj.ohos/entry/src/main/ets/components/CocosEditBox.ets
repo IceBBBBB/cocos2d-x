@@ -9,6 +9,7 @@ export struct CocosEditBox {
 
   build(){
     TextInput({text: this.textInputInfo.text, placeholder: this.textInputInfo.placeHolder})
+      .id('TextInput' + this.textInputInfo.viewTag)
       .position({x: px2vp(this.textInputInfo.x), y: px2vp(this.textInputInfo.y)})
       .size({width: px2vp(this.textInputInfo.w), height: px2vp(this.textInputInfo.h)})
       .padding({top: px2vp(this.textInputInfo.paddingH), right: px2vp(this.textInputInfo.paddingW),
@@ -24,6 +25,12 @@ export struct CocosEditBox {
       .backgroundColor(Color.Transparent)
       .visibility(this.textInputInfo.visible ? Visibility.Visible : Visibility.None)
       .showPasswordIcon(false)
+      .onVisibleAreaChange([0.0, 1.0], () => {
+        focusControl.requestFocus('TextInput' + this.textInputInfo.viewTag);
+      })
+      .onFocus(() => {
+        this.cocosWorker.postMessage({type: "editBoxOnFocus", viewTag: this.textInputInfo.viewTag});
+      })
       .onChange((value: string)=>{
         this.textInputInfo.text = value;
         this.cocosWorker.postMessage({type: "editBoxOnChange", viewTag: this.textInputInfo.viewTag, value: value});

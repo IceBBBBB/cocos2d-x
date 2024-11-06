@@ -42,6 +42,7 @@ public:
     static napi_value NapiChangeColor(napi_env env, napi_callback_info info);
     static napi_value NapiChangeColorWorker(napi_env env, napi_callback_info info);
 
+    static void MouseWheelCB(std::string eventType, double scrollY);
     // Callback, called by ACE XComponent
     void OnSurfaceCreated(OH_NativeXComponent* component, void* window);
 
@@ -49,7 +50,17 @@ public:
 
     void OnSurfaceDestroyed(OH_NativeXComponent* component, void* window);
 
+    void onSurfaceHide();
+    
+    void onSurfaceShow(void* window);
+
+    void DispatchKeyEvent(OH_NativeXComponent* component, void* window);
+
+    void DispatchMouseEvent(OH_NativeXComponent* component, void* window);
+
     void DispatchTouchEvent(OH_NativeXComponent* component, void* window, OH_NativeXComponent_TouchEvent* touchEvent);
+
+    void DispatchMouseWheelEvent();
 
     void OnCreateNative(napi_env env, uv_loop_t* loop);
     void OnShowNative();
@@ -57,8 +68,17 @@ public:
     void OnDestroyNative();
 
 public:
+    struct EventMouseWheelData {
+        float positonX;
+        float positonY;
+        double scrollY;
+    };
     static PluginRender* instance_;
     static OH_NativeXComponent_Callback callback_;
+    static OH_NativeXComponent_MouseEvent_Callback mouseCallback_;
+    static std::queue<OH_NativeXComponent_KeyEvent*> keyEventQueue_;
+    static std::queue<OH_NativeXComponent_MouseEvent> mouseEventQueue_;
+    static std::queue<EventMouseWheelData> mouseWheelEventQueue_;
 
     OH_NativeXComponent* component_{nullptr};
     uv_timer_t timerHandle_;

@@ -43,5 +43,3 @@ float float_from_gain(gain_minifloat_t a) {
     return ldexpf((exponent > 0 ? HIDDEN_BIT | mantissa : mantissa << 1) / ONE_FLOAT,
                   exponent - EXCESS);
 }
-
-

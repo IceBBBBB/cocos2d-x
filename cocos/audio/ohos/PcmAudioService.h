@@ -26,12 +26,14 @@ THE SOFTWARE.
 #pragma once
 
 #include "IAudioPlayer.h"
-#include "OpenSLHelper.h"
 #include "PcmData.h"
 
 #include <mutex>
 #include <condition_variable>
 #include "utils/Compat.h"
+#include "cutils/log.h"
+#include <ohaudio/native_audiostreambuilder.h>
+#include <ohaudio/native_audiorenderer.h>
 
 namespace cocos2d { namespace experimental {
 
@@ -44,34 +46,25 @@ public:
     inline int getSampleRate() const { return _sampleRate; };
 
 
-    PcmAudioService(SLEngineItf engineItf, SLObjectItf outputMixObject);
+    PcmAudioService();
 
     virtual ~PcmAudioService();
 
-    bool init(AudioMixerController *controller, int numChannels, int sampleRate, int bufferSizeInBytes);
-
-    bool enqueue();
-
-    void bqFetchBufferCallback(CCSLBufferQueueItf bq);
-
+    bool init(AudioMixerController* controller, int numChannels, int sampleRate, int* bufferSizeInBytes);
+    static int32_t AudioRendererOnWriteData(OH_AudioRenderer* renderer, void* userData, void* buffer, int32_t bufferLen);
+    static int32_t AudioRendererOnInterrupt(OH_AudioRenderer* renderer, void* userData, OH_AudioInterrupt_ForceType type, OH_AudioInterrupt_Hint hint);
+    
     void pause();
     void resume();
-
-    SLEngineItf _engineItf;
-    SLObjectItf _outputMixObj;
-
-    SLObjectItf _playObj;
-    SLPlayItf _playItf;
-    SLVolumeItf _volumeItf;
-    CCSLBufferQueueItf _bufferQueueItf;
 
     int _numChannels;
     int _sampleRate;
     int _bufferSizeInBytes;
 
     AudioMixerController *_controller;
+    OH_AudioRenderer *_audioRenderer;
+    OH_AudioStreamBuilder *_builder;
 
-    friend class SLPcmAudioPlayerCallbackProxy;
     friend class AudioPlayerProvider;
 };
 

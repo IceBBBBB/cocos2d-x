@@ -45,11 +45,13 @@ public:
         size_t size;
     };
 
-    AudioMixerController(int bufferSizeInFrames, int sampleRate, int channelCount);
+    AudioMixerController(int sampleRate, int channelCount);
+
+    void updateBufferSize(int bufferSize);
+
+    bool init(int bufferSizeInFrames);
 
     ~AudioMixerController();
-
-    bool init();
 
     bool addTrack(Track *track);
     bool hasPlayingTacks();

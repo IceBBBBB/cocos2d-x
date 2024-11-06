@@ -24,6 +24,9 @@ export struct CocosEditBox {
       .backgroundColor(Color.Transparent)
       .visibility(this.textInputInfo.visible ? Visibility.Visible : Visibility.None)
       .showPasswordIcon(false)
+      .onFocus(() => {
+        this.cocosWorker.postMessage({type: "editBoxOnFocus", viewTag: this.textInputInfo.viewTag});
+      })
       .onChange((value: string)=>{
         this.textInputInfo.text = value;
         this.cocosWorker.postMessage({type: "editBoxOnChange", viewTag: this.textInputInfo.viewTag, value: value});

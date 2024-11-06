@@ -52,7 +52,7 @@ using namespace cocos2d::experimental; //NOLINT
 
 namespace {
 AudioEngineImpl *gAudioImpl = nullptr;
-int outputSampleRate = 44100;
+int outputSampleRate = 48000;
 
 // TODO(hack) : There is currently a bug in the opensles module,
 // so openharmony must configure a fixed size, otherwise the callback will be suspended
@@ -128,13 +128,11 @@ AudioEngineImpl::~AudioEngineImpl() {
         (*_engineObject)->Destroy(_engineObject);
     }
 
-    if (_onPauseListener != nullptr)
-    {
+    if (_onPauseListener != nullptr) {
         Director::getInstance()->getEventDispatcher()->removeEventListener(_onPauseListener);
     }
 
-    if (_onResumeListener != nullptr)
-    {
+    if (_onResumeListener != nullptr) {
        Director::getInstance()->getEventDispatcher()->removeEventListener(_onResumeListener);
     }
 
@@ -165,23 +163,7 @@ bool AudioEngineImpl::init() {
             break;
         }
 
-        // create output mix
-        const SLInterfaceID outputMixIIDs[] = {};
-        const SLboolean outputMixReqs[] = {};
-        result = (*_engineEngine)->CreateOutputMix(_engineEngine, &_outputMixObject, 0, outputMixIIDs, outputMixReqs);
-        if (SL_RESULT_SUCCESS != result) {
-            ALOGE("create output mix fail");
-            break;
-        }
-
-        // realize the output mix
-        result = (*_outputMixObject)->Realize(_outputMixObject, SL_BOOLEAN_FALSE);
-        if (SL_RESULT_SUCCESS != result) {
-            ALOGE("realize the output mix fail");
-            break;
-        }
-
-        _audioPlayerProvider = new AudioPlayerProvider(_engineEngine, _outputMixObject, outputSampleRate, bufferSizeInFrames, fdGetter, &gCallerThreadUtils);
+        _audioPlayerProvider = new AudioPlayerProvider(_engineEngine, outputSampleRate, fdGetter, &gCallerThreadUtils);
 
         _onPauseListener = Director::getInstance()->getEventDispatcher()->addCustomEventListener(EVENT_COME_TO_BACKGROUND, CC_CALLBACK_1(AudioEngineImpl::onEnterBackground, this));
 
@@ -193,8 +175,7 @@ bool AudioEngineImpl::init() {
     return ret;
 }
 
-void AudioEngineImpl::onEnterBackground(EventCustom* event)
-{
+void AudioEngineImpl::onEnterBackground(EventCustom* event) {
     // _audioPlayerProvider->pause() pauses AudioMixer and PcmAudioService,
     // but UrlAudioPlayers could not be paused.
     if (_audioPlayerProvider != nullptr)
@@ -203,30 +184,25 @@ void AudioEngineImpl::onEnterBackground(EventCustom* event)
     }
 
     // pause UrlAudioPlayers which are playing.
-    for (auto&& e : _audioPlayers)
-    {
+    for (auto&& e : _audioPlayers) {
         auto player = e.second;
         if (dynamic_cast<UrlAudioPlayer*>(player) != nullptr
-            && player->getState() == IAudioPlayer::State::PLAYING)
-        {
+            && player->getState() == IAudioPlayer::State::PLAYING) {
             _urlAudioPlayersNeedResume.emplace(e.first, player);
             player->pause();
         }
     }
 }
 
-void AudioEngineImpl::onEnterForeground(EventCustom* event)
-{
+void AudioEngineImpl::onEnterForeground(EventCustom* event) {
     // _audioPlayerProvider->resume() resumes AudioMixer and PcmAudioService,
     // but UrlAudioPlayers could not be resumed.
-    if (_audioPlayerProvider != nullptr)
-    {
+    if (_audioPlayerProvider != nullptr) {
         _audioPlayerProvider->resume();
     }
 
     // resume UrlAudioPlayers
-    for (auto&& iter : _urlAudioPlayersNeedResume)
-    {
+    for (auto&& iter : _urlAudioPlayersNeedResume) {
         iter.second->resume();
     }
     _urlAudioPlayersNeedResume.clear();
@@ -243,7 +219,7 @@ int AudioEngineImpl::play2d(const std::string &filePath, bool loop, float volume
     auto audioId = AudioEngine::INVALID_AUDIO_ID;
 
     do {
-        if (_engineEngine == nullptr || _audioPlayerProvider == nullptr) {
+        if (_audioPlayerProvider == nullptr) {
             break;
         }
 

@@ -33,7 +33,6 @@ static napi_module nativerenderModule = {
 /*
  * Module register function
  */
-extern "C" __attribute__((constructor)) void RegisterModule(void)
-{
+extern "C" __attribute__((constructor)) void RegisterModule(void) {
     napi_module_register(&nativerenderModule);
 }

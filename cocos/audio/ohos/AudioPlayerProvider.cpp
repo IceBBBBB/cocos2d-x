@@ -69,17 +69,17 @@ static AudioFileIndicator gAudioFileIndicator[] = {
     {".ogg", 128000},
     {".mp3", 160000}};
 
-AudioPlayerProvider::AudioPlayerProvider(SLEngineItf engineItf, SLObjectItf outputMixObject,
-                                         int deviceSampleRate, int bufferSizeInFrames,
+AudioPlayerProvider::AudioPlayerProvider(SLEngineItf engineItf, int deviceSampleRate,
+ 
                                          const FdGetterCallback &fdGetterCallback, //NOLINT(modernize-pass-by-value)
                                          ICallerThreadUtils *callerThreadUtils)
-: _engineItf(engineItf), _outputMixObject(outputMixObject), _deviceSampleRate(deviceSampleRate), _bufferSizeInFrames(bufferSizeInFrames), _fdGetterCallback(fdGetterCallback), _callerThreadUtils(callerThreadUtils), _pcmAudioService(nullptr), _mixController(nullptr), _threadPool(LegacyThreadPool::newCachedThreadPool(1, 8, 5, 2, 2)) {
-    ALOGI("deviceSampleRate: %{public}d, bufferSizeInFrames: %{public}d", _deviceSampleRate, _bufferSizeInFrames);
+: _engineItf(engineItf), _deviceSampleRate(deviceSampleRate), _fdGetterCallback(fdGetterCallback), _callerThreadUtils(callerThreadUtils), _pcmAudioService(nullptr), _mixController(nullptr), _threadPool(LegacyThreadPool::newCachedThreadPool(1, 8, 5, 2, 2)) {
+    ALOGI("deviceSampleRate: %d", _deviceSampleRate);
     if (getSystemAPILevel() >= 17) {
-        _mixController = new AudioMixerController(_bufferSizeInFrames, _deviceSampleRate, 2);
-        _mixController->init();
-        _pcmAudioService = new PcmAudioService(engineItf, outputMixObject);
-        _pcmAudioService->init(_mixController, CHANNEL_NUMBERS, deviceSampleRate, bufferSizeInFrames * 2);
+        _mixController = new AudioMixerController(_deviceSampleRate, 2);
+        _pcmAudioService = new PcmAudioService();
+        _pcmAudioService->init(_mixController, CHANNEL_NUMBERS, deviceSampleRate, &_bufferSizeInFrames);
+        _mixController->init(_bufferSizeInFrames);
     }
 
     ALOG_ASSERT(callerThreadUtils != nullptr, "Caller thread utils parameter should not be nullptr!");
@@ -299,36 +299,49 @@ void AudioPlayerProvider::preloadEffect(const AudioFileInfo &info, const Preload
     }
 }
 
-AudioPlayerProvider::AudioFileInfo AudioPlayerProvider::getFileInfo(
-    const std::string &audioFilePath) {
+AudioPlayerProvider::AudioFileInfo AudioPlayerProvider::getFileInfo(const std::string &audioFilePath) 
+{
     AudioFileInfo info;
     long fileSize = 0; //NOLINT(google-runtime-int)
     off_t start = 0;
-    off_t length = 0;
     int assetFd = -1;
 
-
-    RawFileDescriptor descriptor;
-    FileUtilsOhos *utils = dynamic_cast<FileUtilsOhos*>(FileUtils::getInstance());
-    utils->getRawFileDescriptor(audioFilePath, descriptor);
-
-    info.url     = audioFilePath;
-    info.assetFd = std::make_shared<AssetFd>(descriptor.fd);
-    info.start   = descriptor.start;
-    info.length  = descriptor.length;
-    
-    ALOGV("(%{public}s) file size: %{public}ld", audioFilePath.c_str(), fileSize);
-
+    if(audioFilePath[0]!='/'){
+        RawFileDescriptor descriptor;
+        FileUtilsOhos *utils = dynamic_cast<FileUtilsOhos *>(FileUtils::getInstance());
+        FileUtils::Status result = utils->getRawFileDescriptor(audioFilePath, descriptor);
+        if(result != FileUtils::Status::OK|| descriptor.fd <= 0){
+            ALOGE("Failed to open file descriptor for '%s'", audioFilePath.c_str());
+            return info;
+        }
+        assetFd = descriptor.fd;
+        start = descriptor.start;
+        fileSize = descriptor.length;
+    }else{
+        FILE *fp = fopen(audioFilePath.c_str(),"rb");
+        if(fp!=nullptr){
+            fseek(fp,0,SEEK_END);
+            fileSize = ftell(fp);
+            fclose(fp);
+        }else{
+            return info;
+        }
+    }
+    info.url = audioFilePath;
+    info.assetFd = std::make_shared<AssetFd>(assetFd);
+    info.start = start;
+    info.length = fileSize;
+    ALOGI("AudioPlayerProvide::getFileInfo(%{public}s) file size:%{public}ld,fd is %d",audioFilePath.c_str(), fileSize,assetFd);
     return info;
 }
 
 bool AudioPlayerProvider::isSmallFile(const AudioFileInfo &info) { //NOLINT(readability-convert-member-functions-to-static)
-#if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
-    // TODO(qgh): OpenHarmony system does not support this function yet
-    return true;
-#endif
     //REFINE: If file size is smaller than 100k, we think it's a small file. This value should be set by developers.
     auto &audioFileInfo = const_cast<AudioFileInfo &>(info);
+    if(audioFileInfo.url[0] == '/') {
+        // avplayer does not support playing audio files in sandbox path currently.
+         return true;
+    }
     size_t judgeCount = sizeof(gAudioFileIndicator) / sizeof(gAudioFileIndicator[0]);
     size_t pos = audioFileInfo.url.rfind('.');
     std::string extension;
@@ -395,13 +408,13 @@ UrlAudioPlayer *AudioPlayerProvider::createUrlAudioPlayer(
         return nullptr;
     }
 
-    SLuint32 locatorType = SL_DATALOCATOR_URI;
-
-
-    auto    *urlPlayer   = new (std::nothrow) UrlAudioPlayer(_engineItf, _outputMixObject, _callerThreadUtils);
-    bool     ret         = urlPlayer->prepare(info.url, locatorType, info.assetFd, info.start, info.length);
+    auto *urlPlayer = new (std::nothrow) UrlAudioPlayer(_callerThreadUtils);
+    bool ret = urlPlayer->prepare(info.url, info.assetFd, info.start, info.length);
     if (!ret) {
-        SL_SAFE_DELETE(urlPlayer);
+        if (urlPlayer != nullptr) { 
+            delete urlPlayer;
+            urlPlayer = nullptr; 
+        }
     }
     return urlPlayer;
 }

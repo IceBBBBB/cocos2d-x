@@ -33,8 +33,7 @@ void initExtensions() {
 
 NS_CC_BEGIN
 
-GLViewImpl* GLViewImpl::createWithRect(const std::string& viewName, Rect rect, float frameZoomFactor)
-{
+GLViewImpl* GLViewImpl::createWithRect(const std::string& viewName, Rect rect, float frameZoomFactor) {
     auto ret = new GLViewImpl;
     if(ret && ret->initWithRect(viewName, rect, frameZoomFactor)) {
         ret->autorelease();
@@ -44,8 +43,7 @@ GLViewImpl* GLViewImpl::createWithRect(const std::string& viewName, Rect rect, f
     return nullptr;
 }
 
-GLViewImpl* GLViewImpl::create(const std::string& viewName)
-{
+GLViewImpl* GLViewImpl::create(const std::string& viewName) {
     auto ret = new GLViewImpl;
     if(ret && ret->initWithFullScreen(viewName)) {
         ret->autorelease();
@@ -55,8 +53,7 @@ GLViewImpl* GLViewImpl::create(const std::string& viewName)
     return nullptr;
 }
 
-GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName)
-{
+GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName) {
     auto ret = new GLViewImpl();
     if(ret && ret->initWithFullScreen(viewName)) {
         ret->autorelease();
@@ -66,49 +63,40 @@ GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName)
     return nullptr;
 }
 
-GLViewImpl::GLViewImpl()
-{
+GLViewImpl::GLViewImpl() {
     initExtensions();
 }
 
-GLViewImpl::~GLViewImpl()
-{
+GLViewImpl::~GLViewImpl() {
 
 }
 
-bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor)
-{
+bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float frameZoomFactor) {
     return true;
 }
 
-bool GLViewImpl::initWithFullScreen(const std::string& viewName)
-{
+bool GLViewImpl::initWithFullScreen(const std::string& viewName) {
     return true;
 }
 
-bool GLViewImpl::isOpenGLReady()
-{
+bool GLViewImpl::isOpenGLReady() {
     return (_screenSize.width != 0 && _screenSize.height != 0);
 }
 
-void GLViewImpl::end()
-{
+void GLViewImpl::end() {
     OHOS_LOGD("GLViewImpl terminateProcess");
     Js_Cocos2dxHelper::terminateProcess();
 }
 
-void GLViewImpl::swapBuffers()
-{
+void GLViewImpl::swapBuffers() {
 }
 
-GLViewImpl* GLViewImpl::sharedOpenGLView()
-{
+GLViewImpl* GLViewImpl::sharedOpenGLView() {
     static GLViewImpl instance;
     return &instance;
 }
 
-void GLViewImpl::setIMEKeyboardState(bool bOpen)
-{
+void GLViewImpl::setIMEKeyboardState(bool bOpen) {
     if (bOpen) {
         std::string pszText = cocos2d::IMEDispatcher::sharedDispatcher()->getContentText();
         JSFunction::getFunction("DiaLog.showTextInputDialog").invoke<void>(pszText);

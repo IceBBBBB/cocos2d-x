@@ -6,6 +6,7 @@
 
 #include "modules/RawFileUtils.h"
 #include "modules/InputNapi.h"
+#include "modules/MouseNapi.h"
 #include "modules/WebViewNapi.h"
 #include "modules/SensorNapi.h"
 #include "modules/VideoPlayerNapi.h"
@@ -27,6 +28,7 @@ enum ContextType {
     WORKER_INIT,
     NATIVE_API,
     INPUT_NAPI,
+    MOUSE_NAPI,
     WEBVIEW_NAPI,
     VIDEOPLAYER_NAPI,
     SENSOR_API
@@ -34,8 +36,7 @@ enum ContextType {
 
 NapiManager NapiManager::manager_;
 
-napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
     napi_status status;
     napi_value exports;
     size_t argc = 1;
@@ -63,8 +64,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_create_object(env, &exports));
 
     switch (value) {
-        case APP_LIFECYCLE:
-            {
+        case APP_LIFECYCLE: {
                 /****  application life cycle: onCreate, onShow, onHide, onDestroy ******/
                 OHOS_LOGD("GetContext APP_LIFECYCLE");
                 napi_property_descriptor desc[] = {
@@ -77,8 +77,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case JS_PAGE_LIFECYCLE:
-            {
+        case JS_PAGE_LIFECYCLE: {
                 /****************  JS Page Lifecycle ****************************/
                 OHOS_LOGD("GetContext JS_PAGE_LIFECYCLE");
                 napi_property_descriptor desc[] = {
@@ -88,8 +87,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case RAW_FILE_UTILS:
-            {
+        case RAW_FILE_UTILS: {
                 /****************  Rawfile ****************************/
                 OHOS_LOGD("GetContext RAW_FILE_UTILS");
                 napi_property_descriptor desc[] = {
@@ -100,8 +98,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
 
             }
             break;
-        case WORKER_INIT:
-            {
+        case WORKER_INIT: {
                 OHOS_LOGD("NapiManager::GetContext WORKER_INIT");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("workerInit", NapiManager::napiWorkerInit),
@@ -109,8 +106,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case NATIVE_API:
-            {
+        case NATIVE_API: {
                 OHOS_LOGD("NapiManager::GetContext NATIVE_RENDER_API");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("nativeEngineStart", NapiManager::napiNativeEngineStart),
@@ -120,10 +116,10 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case INPUT_NAPI:
-            {
+        case INPUT_NAPI: {
                 OHOS_LOGD("NapiManager::GetContext INPUT_NAPI");
                 napi_property_descriptor desc[] = {
+                    DECLARE_NAPI_FUNCTION("editBoxOnFocusCB", InputNapi::editBoxOnFocusCB),
                     DECLARE_NAPI_FUNCTION("editBoxOnChangeCB", InputNapi::editBoxOnChangeCB),
                     DECLARE_NAPI_FUNCTION("editBoxOnEnterCB", InputNapi::editBoxOnEnterCB),
                     DECLARE_NAPI_FUNCTION("textFieldTTFOnChangeCB", InputNapi::textFieldTTFOnChangeCB),
@@ -131,8 +127,15 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case WEBVIEW_NAPI:
-            {
+        case MOUSE_NAPI: {
+                OHOS_LOGD("NapiManager::GetContext INPUT_NAPI");
+                napi_property_descriptor desc[] = {
+                    DECLARE_NAPI_FUNCTION("mouseWheelCB", MouseNapi::mouseWheelCB),
+                };
+                NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
+            }
+            break;
+        case WEBVIEW_NAPI: {
                 OHOS_LOGD("NapiManager::GetContext WEBVIEW_NAPI");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("shouldStartLoading", WebViewNapi::shouldStartLoading),
@@ -143,8 +146,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-		case VIDEOPLAYER_NAPI:
-            {
+		case VIDEOPLAYER_NAPI: {
                 OHOS_LOGE("VideoPlayerNapi::Export");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onVideoCallBack", VideoPlayerNapi::onVideoCallBack),
@@ -153,8 +155,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
                 OHOS_LOGE("VideoPlayerNapi::Export finish");
             }
             break;
-        case SENSOR_API:
-            {
+        case SENSOR_API: {
                 OHOS_LOGD("NapiManager::GetContext SENSOR_API");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onAccelerometerCallBack", SensorNapi::onAccelerometerCallBack),
@@ -168,8 +169,7 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info)
     return exports;
 }
 
-bool NapiManager::Export(napi_env env, napi_value exports)
-{
+bool NapiManager::Export(napi_env env, napi_value exports) {
     OHOS_LOGD("NapiManager::Export");
     napi_status status;
     napi_value exportInstance = nullptr;
@@ -198,50 +198,42 @@ bool NapiManager::Export(napi_env env, napi_value exports)
     return false;
 }
 
-void NapiManager::SetNativeXComponent(OH_NativeXComponent* nativeXComponent)
-{
+void NapiManager::SetNativeXComponent(OH_NativeXComponent* nativeXComponent) {
     nativeXComponent_ = nativeXComponent;
 }
 
-OH_NativeXComponent* NapiManager::GetNativeXComponent()
-{
+OH_NativeXComponent* NapiManager::GetNativeXComponent() {
     return nativeXComponent_;
 }
 
-void NapiManager::MainOnMessage(const uv_async_t* req)
-{
+void NapiManager::MainOnMessage(const uv_async_t* req) {
     OHOS_LOGD("MainOnMessage Triggered");
 }
 
-napi_value NapiManager::NapiOnCreate(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnCreate(napi_env env, napi_callback_info info) {
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnShow(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnShow(napi_env env, napi_callback_info info) {
     WorkerMessageData data{MessageType::WM_APP_SHOW, nullptr, nullptr};
     PluginRender::GetInstance()->enqueue(data);
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnHide(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnHide(napi_env env, napi_callback_info info) {
     WorkerMessageData data{MessageType::WM_APP_HIDE, nullptr, nullptr};
     PluginRender::GetInstance()->enqueue(data);
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnBackPress(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnBackPress(napi_env env, napi_callback_info info) {
     OHOS_LOGD("NapiManager::NapiOnBackPress");
     cocos2d::EventKeyboard event(cocos2d::EventKeyboard::KeyCode::KEY_BACK, false);
     cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnDestroy(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnDestroy(napi_env env, napi_callback_info info) {
     WorkerMessageData data{MessageType::WM_APP_DESTROY, nullptr, nullptr};
     PluginRender::GetInstance()->enqueue(data);
     return nullptr;
@@ -274,24 +266,20 @@ napi_value NapiManager::napiWritablePathInit(napi_env env, napi_callback_info in
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnPageShow(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnPageShow(napi_env env, napi_callback_info info) {
     OHOS_LOGD("NapiManager::NapiOnPageShow");
     return nullptr;
 }
 
-napi_value NapiManager::NapiOnPageHide(napi_env env, napi_callback_info info)
-{
+napi_value NapiManager::NapiOnPageHide(napi_env env, napi_callback_info info) {
     OHOS_LOGD("NapiManager::NapiOnPageHide");
     return nullptr;
 }
 
-void NapiManager::OnPageShowNative()
-{
+void NapiManager::OnPageShowNative() {
     OHOS_LOGD("NapiManager::OnPageShowNative");
 }
 
-void NapiManager::OnPageHideNative()
-{
+void NapiManager::OnPageHideNative() {
     OHOS_LOGD("NapiManager::OnPageHideNative");
 }

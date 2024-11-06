@@ -23,6 +23,7 @@ export class WebViewInfo {
   public visible: boolean = true
   public opacity: number = 1
   public backgroundColor: number = 0xffffff;
+  public jsInterfaceScheme: string = "";
 
   public controller: web_webview.WebviewController = new web_webview.WebviewController()
 
@@ -45,6 +46,7 @@ function copyWebViewInfo(viewInfo: WebViewInfo) : WebViewInfo {
   newViewInfo.controller = viewInfo.controller;
   newViewInfo.opacity = viewInfo.opacity;
   newViewInfo.backgroundColor = viewInfo.backgroundColor;
+  newViewInfo.jsInterfaceScheme = viewInfo.jsInterfaceScheme;
   newViewInfo.uniqueId = 100000 - viewInfo.uniqueId; // support 50000 webView exist at the same time
   return newViewInfo;
 }
@@ -82,6 +84,12 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         let tempInfoMap: Map<number, number> = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP);
         tempInfoMap.delete(eventData.viewTag);
       }
+      break;
+    }
+    case "setJavascriptInterfaceScheme": {
+      index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      webViewInfo.jsInterfaceScheme = eventData.jsInterfaceScheme;
       break;
     }
     case "loadData": {

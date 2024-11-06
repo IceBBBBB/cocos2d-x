@@ -11,6 +11,9 @@ import { CocosWebView } from '../components/CocosWebview'
 import { CocosVideoPlayer } from '../components/CocosVideoPlayer'
 import { TextInputDialog } from '../components/TextInputDialog'
 import { GlobalContext, GlobalContextConstants } from "@ohos/libSysCapabilities"
+import { MessageEvents } from '@ohos.worker'
+import common from '@ohos.app.ability.common'
+import deviceInfo from '@ohos.deviceInfo';
 const nativePageLifecycle: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.JSPAGE_LIFECYCLE);
 
 @Entry
@@ -42,6 +45,8 @@ struct Index {
     alignment: DialogAlignment.Bottom,
     customStyle: true,
   })
+  // PanGesture
+  private panOption: PanGestureOptions = new PanGestureOptions({ direction: PanDirection.Up | PanDirection.Down });
 
   onPageShow() {
     console.log('[LIFECYCLE-Page] onPageShow');
@@ -68,6 +73,10 @@ struct Index {
     return true;
   }
 
+  onMouseWheel(eventType: string, scrollY: number) {
+    this.cocosWorker.postMessage({ type: "onMouseWheel", eventType: eventType, scrollY: scrollY });
+  }
+
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
       XComponent({
@@ -76,6 +85,22 @@ struct Index {
         libraryname: 'nativerender',
         controller: this.xcomponentController
       })
+        .focusable(true)
+        .focusOnTouch(true)
+        .gesture(
+          PanGesture(this.panOption)
+            .onActionStart(() => {
+              this.onMouseWheel("actionStart", 0);
+            })
+            .onActionUpdate((event: GestureEvent) => {
+              if (deviceInfo.deviceType === '2in1') {
+                this.onMouseWheel("actionUpdate", event.offsetY);
+              }
+            })
+            .onActionEnd(() => {
+              this.onMouseWheel("actionEnd", 0);
+            })
+        )
         .onLoad((context) => {
           console.log('[cocos] XComponent.onLoad Callback');
           this.cocosWorker.postMessage({ type: "abilityContextInit", data: GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_ABILITY_CONTEXT)});

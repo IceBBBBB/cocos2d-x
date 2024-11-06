@@ -10,15 +10,13 @@ NS_CC_BEGIN
 
 #define MAX_LEN         (cocos2d::kMaxLogLen + 1)
 
-void MessageBox(const char * pszMsg, const char * pszTitle)
-{
+void MessageBox(const char * pszMsg, const char * pszTitle) {
     std::string msg(pszMsg);
     std::string title(pszTitle);
     JSFunction::getFunction("DiaLog.showDialog").invoke<void>(msg, title);
 }
 
-void LuaLog(const char * pszFormat)
-{
+void LuaLog(const char * pszFormat) {
     OHOS_LOGI("cocos2d-x debug info %{public}s", pszFormat);
 }
 

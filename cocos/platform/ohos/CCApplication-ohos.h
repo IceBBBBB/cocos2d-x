@@ -9,8 +9,7 @@
 
 NS_CC_BEGIN
 
-class CC_DLL Application : public ApplicationProtocol
-{
+class CC_DLL Application : public ApplicationProtocol {
 public:
     /**
      * @js ctor

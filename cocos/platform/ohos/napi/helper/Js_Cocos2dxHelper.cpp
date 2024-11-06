@@ -5,14 +5,13 @@
 #include "platform/ohos/CCLogOhos.h"
 
 napi_env Js_Cocos2dxHelper::_env = nullptr;
-napi_value Js_Cocos2dxHelper::initJsCocos2dxHelper(napi_env env, napi_callback_info info)
-{
+napi_value Js_Cocos2dxHelper::initJsCocos2dxHelper(napi_env env, napi_callback_info info) {
     _env = env;
     return 0;
 }
 
 /**
- * 如有更多可异步获取的信息，继续加在此处即可
+ * If you have more information that can be obtained asynchronously, add it here.
  */
 napi_value Js_Cocos2dxHelper::initAsyncInfo(napi_env env, napi_callback_info info) {
     JSFunction::getFunction("DeviceUtils.initScreenInfo").invoke<void>();

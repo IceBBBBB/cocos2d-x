@@ -100,6 +100,7 @@ void WebSocketDelayTest::startTestCallback(Ref* sender)
     std::vector<std::string> protocols;
     protocols.push_back("myprotocol_1");
     protocols.push_back("myprotocol_2");
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     if (!_wsiSendText->init(*this, "ws://echo.websocket.events", &protocols, "cacert.pem"))
     {
         CC_SAFE_DELETE(_wsiSendText);
@@ -109,6 +110,17 @@ void WebSocketDelayTest::startTestCallback(Ref* sender)
         retain(); // Retain self to avoid WebSocketDelayTest instance be deleted immediately, it will be released in WebSocketDelayTest::onClose.
 
     }
+#else
+	if (!_wsiSendText->init(*this, "wss://echo.websocket.org", &protocols, "cacert.pem"))
+    {
+        CC_SAFE_DELETE(_wsiSendText);
+    }
+    else
+    {
+        retain(); // Retain self to avoid WebSocketDelayTest instance be deleted immediately, it will be released in WebSocketDelayTest::onClose.
+
+    }
+#endif
 
 }
 

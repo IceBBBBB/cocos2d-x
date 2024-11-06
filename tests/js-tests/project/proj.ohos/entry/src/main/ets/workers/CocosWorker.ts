@@ -37,6 +37,9 @@ workerPort.onmessage = function(e) : void {
         case "abilityContextInit":
             GlobalContext.storeGlobalThis(GlobalContextConstants.COCOS2DX_ABILITY_CONTEXT, data.data);
             break;
+        case "editBoxOnFocus":
+            inputNapi.editBoxOnFocusCB(data.viewTag);
+            break;
         case "editBoxOnChange":
             inputNapi.editBoxOnChangeCB(data.viewTag, data.value);
             break;
@@ -51,6 +54,9 @@ workerPort.onmessage = function(e) : void {
             break;
         case "onPageEnd":
             webViewNapi.finishLoading(data.viewTag, data.url);
+            break;
+        case "onJsCallBack":
+            webViewNapi.jsCallback();
             break;
         case "onErrorReceive":
             webViewNapi.failLoading(data.viewTag, data.url);
