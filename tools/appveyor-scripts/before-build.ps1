@@ -26,16 +26,6 @@ function Generate-Binding-Codes
     Pop-Location
 }
 
-function Update-SubModule
-{
-    Push-Location $env:APPVEYOR_BUILD_FOLDER
-    & $git_retry submodule init
-    & $git_retry submodule update --recursive --depth=1
-    Pop-Location
-}
-
-Update-SubModule
-
 Download-Deps
 
 & python -m pip install retry
