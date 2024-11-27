@@ -177,7 +177,7 @@
 -- @param #string str
 -- @param #string str
 -- @param #int int
--- @return TextField#TextField ret (retunr value: ccui.TextField)
+-- @return TextField#TextField ret (return value: ccui.TextField)
 
 --------------------------------
 -- @function [parent=#TextField] createInstance 

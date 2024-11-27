@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 #include "ccUtils.h"
+#include "CCStdC.h"
 
 namespace cocos2d {
 
@@ -36,5 +37,17 @@ int ccNextPOT(int x)
     x = x | (x >>16);
     return x + 1;
 }
+
+}
+
+namespace utils {
+
+    double gettime()
+    {
+        struct timeval tv;
+        gettimeofday(&tv, nullptr);
+
+        return (double)tv.tv_sec + (double)tv.tv_usec/1000000;
+    }
 
 }

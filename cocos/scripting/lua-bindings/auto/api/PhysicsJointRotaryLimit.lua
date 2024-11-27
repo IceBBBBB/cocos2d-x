@@ -34,6 +34,6 @@
 -- @param #cc.PhysicsBody physicsbody
 -- @param #float float
 -- @param #float float
--- @return PhysicsJointRotaryLimit#PhysicsJointRotaryLimit ret (retunr value: cc.PhysicsJointRotaryLimit)
+-- @return PhysicsJointRotaryLimit#PhysicsJointRotaryLimit ret (return value: cc.PhysicsJointRotaryLimit)
 
 return nil

@@ -153,7 +153,7 @@
 -- @param #size_table size
 -- @param #cc.TextHAlignment texthalignment
 -- @param #cc.TextVAlignment textvalignment
--- @return LabelTTF#LabelTTF ret (retunr value: cc.LabelTTF)
+-- @return LabelTTF#LabelTTF ret (return value: cc.LabelTTF)
 
 --------------------------------
 -- @function [parent=#LabelTTF] createWithFontDefinition 

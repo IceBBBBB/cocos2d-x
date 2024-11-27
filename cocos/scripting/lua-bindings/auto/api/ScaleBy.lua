@@ -16,7 +16,7 @@
 -- @param #float float
 -- @param #float float
 -- @param #float float
--- @return ScaleBy#ScaleBy ret (retunr value: cc.ScaleBy)
+-- @return ScaleBy#ScaleBy ret (return value: cc.ScaleBy)
 
 --------------------------------
 -- @function [parent=#ScaleBy] startWithTarget 

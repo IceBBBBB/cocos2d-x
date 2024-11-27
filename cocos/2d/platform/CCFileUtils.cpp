@@ -680,6 +680,14 @@ std::string FileUtils::getPathForFilename(const std::string& filename, const std
 
 std::string FileUtils::fullPathForFilename(const std::string &filename)
 {
+
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	    if (filename.empty())
+	    {
+	        return "";
+	    }
+    
+    #endif
     if (isAbsolutePath(filename))
     {
         return filename;
@@ -697,26 +705,51 @@ std::string FileUtils::fullPathForFilename(const std::string &filename)
     
 	std::string fullpath;
     
-    for (auto searchIt = _searchPathArray.cbegin(); searchIt != _searchPathArray.cend(); ++searchIt)
-    {
-        for (auto resolutionIt = _searchResolutionsOrderArray.cbegin(); resolutionIt != _searchResolutionsOrderArray.cend(); ++resolutionIt)
-        {
-            fullpath = this->getPathForFilename(newFilename, *resolutionIt, *searchIt);
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	    for (const auto& searchIt : _searchPathArray)
+	    {
+	        for (const auto& resolutionIt : _searchResolutionsOrderArray)
+	        {
+	            fullpath = this->getPathForFilename(newFilename, resolutionIt, searchIt);
             
-            if (fullpath.length() > 0)
-            {
-                // Using the filename passed in as key.
-                _fullPathCache.insert(std::make_pair(filename, fullpath));
-                return fullpath;
-            }
-        }
-    }
+	            if (fullpath.length() > 0)
+	            {
+	                // Using the filename passed in as key.
+	                _fullPathCache.insert(std::make_pair(filename, fullpath));
+	                return fullpath;
+	            }
+            
+	        }
+	    }
     
-    CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
+	    if(isPopupNotify()){
+	        CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
+	    }
 
-    // XXX: Should it return nullptr ? or an empty string ?
-    // The file wasn't found, return the file name passed in.
-    return filename;
+	    // The file wasn't found, return empty string.
+	    return "";
+	#else
+		 for (auto searchIt = _searchPathArray.cbegin(); searchIt != _searchPathArray.cend(); ++searchIt)
+		    {
+		        for (auto resolutionIt = _searchResolutionsOrderArray.cbegin(); resolutionIt != _searchResolutionsOrderArray.cend(); ++resolutionIt)
+		        {
+		            fullpath = this->getPathForFilename(newFilename, *resolutionIt, *searchIt);
+            
+		            if (fullpath.length() > 0)
+		            {
+		                // Using the filename passed in as key.
+		                _fullPathCache.insert(std::make_pair(filename, fullpath));
+		                return fullpath;
+		            }
+		        }
+		    }
+    
+		    CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
+
+		    // XXX: Should it return nullptr ? or an empty string ?
+		    // The file wasn't found, return the file name passed in.
+		    return filename;
+    #endif
 }
 
 std::string FileUtils::fullPathFromRelativeFile(const std::string &filename, const std::string &relativeFile)
@@ -915,6 +948,22 @@ bool FileUtils::isPopupNotify()
 {
     return s_popupNotify;
 }
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+std::string FileUtils::getFileExtension(const std::string& filePath) const
+{
+    std::string fileExtension;
+    size_t pos = filePath.find_last_of('.');
+    if (pos != std::string::npos)
+    {
+        fileExtension = filePath.substr(pos, filePath.length());
+
+        std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
+    }
+
+    return fileExtension;
+}
+#endif
 
 NS_CC_END
 

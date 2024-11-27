@@ -56,6 +56,6 @@
 -- @param #point_table point
 -- @param #float float
 -- @param #float float
--- @return PhysicsJointLimit#PhysicsJointLimit ret (retunr value: cc.PhysicsJointLimit)
+-- @return PhysicsJointLimit#PhysicsJointLimit ret (return value: cc.PhysicsJointLimit)
 
 return nil

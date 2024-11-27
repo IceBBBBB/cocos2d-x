@@ -38,16 +38,48 @@ include_directories(
 )
 
 
-add_library(luabinding STATIC
-  ${LUABINDING_SRC}
-)
+if(OHOS)
+  list(APPEND LUABINDING_SRC 
+	  manual/LuaBasicConversions.h 
+	  manual/Lua_web_socket.cpp
+	  manual/lua_extensions.c
+	  manual/tolua_fix.h
+	  )
+  include_directories(
+    ../../../cocos/2d
+    ../../../cocos/2d/platform/ohos
+    ../../../external/opengles/api 
+    ../../../external/lua
+    ../../../cocos
+    ../../../cocos/2d
+    ../../../cocos/2d/platform
+  )
+  add_definitions(-D_GNU_SOURCE)
+  
+  find_library( # Sets the name of the path variable.
+  EGL-lib
+  # Specifies the name of the NDK library that
+  # you want CMake to locate.
+  EGL )
+
+  find_library( # Sets the name of the path variable.
+  GLES-lib
+  # Specifies the name of the NDK library that
+  # you want CMake to locate.
+  GLESv3 )
+endif()
+
+add_library(luabinding STATIC ${LUABINDING_SRC})
 
 target_link_libraries(luabinding
   tolua
-  lua
+  # lua
+  ext_luajit
   spine
 )
-
+if(OHOS)
+  target_link_libraries(luabinding cocos2d ${GLES-lib} ${EGL-lib} ext_luasocket)
+endif()
 set_target_properties(luabinding
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

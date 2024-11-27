@@ -1252,9 +1252,29 @@ void Node::schedule(SEL_SCHEDULE selector, float interval, unsigned int repeat, 
     _scheduler->schedule(selector, this, interval , repeat, delay, !_running);
 }
 
+void Node::schedule(const std::function<void(float)> &callback, const std::string &key)
+{
+    _scheduler->schedule(callback, this, 0, !_running, key);
+}
+
+void Node::schedule(const std::function<void(float)> &callback, float interval, const std::string &key)
+{
+    _scheduler->schedule(callback, this, interval, !_running, key);
+}
+
+void Node::schedule(const std::function<void(float)>& callback, float interval, unsigned int repeat, float delay, const std::string &key)
+{
+    _scheduler->schedule(callback, this, interval, repeat, delay, !_running, key);
+}
+
 void Node::scheduleOnce(SEL_SCHEDULE selector, float delay)
 {
     this->schedule(selector, 0.0f, 0, delay);
+}
+
+void Node::scheduleOnce(const std::function<void(float)> &callback, float delay, const std::string &key)
+{
+    _scheduler->schedule(callback, this, 0, 0, delay, !_running, key);
 }
 
 void Node::unschedule(SEL_SCHEDULE selector)
@@ -1264,6 +1284,11 @@ void Node::unschedule(SEL_SCHEDULE selector)
         return;
     
     _scheduler->unschedule(selector, this);
+}
+
+void Node::unschedule(const std::string &key)
+{
+    _scheduler->unschedule(key, this);
 }
 
 void Node::unscheduleAllSelectors()

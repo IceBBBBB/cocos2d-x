@@ -29,7 +29,7 @@
 -- @param #float float
 -- @param #size_table size
 -- @param #unsigned int int
--- @return TurnOffTiles#TurnOffTiles ret (retunr value: cc.TurnOffTiles)
+-- @return TurnOffTiles#TurnOffTiles ret (return value: cc.TurnOffTiles)
 
 --------------------------------
 -- @function [parent=#TurnOffTiles] startWithTarget 

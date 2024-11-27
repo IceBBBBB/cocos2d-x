@@ -11,17 +11,22 @@
 #include "CocoStudioArmatureTest/ArmatureScene.h"
 #include "CocoStudioComponentsTest/ComponentsTestScene.h"
 #include "CocoStudioSceneTest/SceneEditorTest.h"
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
 #include "CocoStudioGUITest/CocoStudioGUITest.h"
+#endif
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include "NetworkTest/WebSocketTest.h"
 #include "NetworkTest/SocketIOTest.h"
 #endif
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 #include "EditBoxTest/EditBoxTest.h"
 #endif
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "WebViewTest/WebViewTest.h"
+#include "VideoPlayerTest/VideoPlayerTest.h"
+#endif
 #include "Scale9SpriteTest/Scale9SpriteTest.h"
 
 enum
@@ -68,8 +73,14 @@ static struct {
 	{ "SocketIOTest", [](Ref *sender){ runSocketIOTest();}
 	},
 #endif
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS) ||(CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 	{ "EditBoxTest", [](Ref *sender){ runEditBoxTest();}
+	},
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    { "WebViewTest", [](Ref *sender){ runWebViewTest();}
+	},
+    { "VideoPlayerTest", [](Ref *sender){ runVideoPlayerTest();}
 	},
 #endif
 	{ "TableViewTest", [](Ref *sender){ runTableViewTest();}
@@ -86,6 +97,7 @@ static struct {
 	                                       scene->release();
  }
 	},
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
     { "CocoStudioGUITest", [](Ref *sender)
         {
             CocoStudioGUITestScene* pScene = new CocoStudioGUITestScene();
@@ -93,6 +105,7 @@ static struct {
             pScene->release();
         }
 	},
+#endif
 };
 
 static const int g_maxTests = sizeof(g_extensionsTests) / sizeof(g_extensionsTests[0]);

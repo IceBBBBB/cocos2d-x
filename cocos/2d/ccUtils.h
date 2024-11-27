@@ -48,4 +48,12 @@ int ccNextPOT(int value);
 
 }
 
+namespace utils
+{
+   /** Get current exact time, accurate to nanoseconds.
+     * @return Returns the time in seconds since the Epoch.
+     */
+    double gettime();
+}
+
 #endif // __SUPPORT_CC_UTILS_H__

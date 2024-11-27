@@ -22,7 +22,7 @@
 -- @param #int int
 -- @param #int int
 -- @param #int int
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#LabelAtlas] updateAtlasValues 
@@ -47,7 +47,7 @@
 -- @param #int int
 -- @param #int int
 -- @param #int int
--- @return LabelAtlas#LabelAtlas ret (retunr value: cc.LabelAtlas)
+-- @return LabelAtlas#LabelAtlas ret (return value: cc.LabelAtlas)
 
 --------------------------------
 -- @function [parent=#LabelAtlas] getDescription 

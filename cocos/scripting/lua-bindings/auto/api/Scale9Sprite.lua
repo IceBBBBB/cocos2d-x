@@ -23,7 +23,7 @@
 -- @param self
 -- @param #string str
 -- @param #rect_table rect
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Scale9Sprite] setInsetTop 
@@ -56,7 +56,7 @@
 -- @param #rect_table rect
 -- @param #bool bool
 -- @param #rect_table rect
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Scale9Sprite] getInsetBottom 
@@ -101,7 +101,7 @@
 -- @param #string str
 -- @param #rect_table rect
 -- @param #rect_table rect
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Scale9Sprite] getInsetTop 
@@ -122,7 +122,7 @@
 -- @param self
 -- @param #cc.SpriteFrame spriteframe
 -- @param #rect_table rect
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Scale9Sprite] getPreferredSize 
@@ -160,7 +160,7 @@
 -- @param #string str
 -- @param #rect_table rect
 -- @param #rect_table rect
--- @return Scale9Sprite#Scale9Sprite ret (retunr value: cc.Scale9Sprite)
+-- @return Scale9Sprite#Scale9Sprite ret (return value: cc.Scale9Sprite)
 
 --------------------------------
 -- overload function: createWithSpriteFrameName(string, rect_table)
@@ -171,7 +171,7 @@
 -- @param self
 -- @param #string str
 -- @param #rect_table rect
--- @return Scale9Sprite#Scale9Sprite ret (retunr value: cc.Scale9Sprite)
+-- @return Scale9Sprite#Scale9Sprite ret (return value: cc.Scale9Sprite)
 
 --------------------------------
 -- overload function: createWithSpriteFrame(cc.SpriteFrame, rect_table)
@@ -182,7 +182,7 @@
 -- @param self
 -- @param #cc.SpriteFrame spriteframe
 -- @param #rect_table rect
--- @return Scale9Sprite#Scale9Sprite ret (retunr value: cc.Scale9Sprite)
+-- @return Scale9Sprite#Scale9Sprite ret (return value: cc.Scale9Sprite)
 
 --------------------------------
 -- @function [parent=#Scale9Sprite] isOpacityModifyRGB 

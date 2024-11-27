@@ -75,7 +75,7 @@
 -- @param #color4B_table color4b
 -- @param #color4B_table color4b
 -- @param #point_table point
--- @return LayerGradient#LayerGradient ret (retunr value: cc.LayerGradient)
+-- @return LayerGradient#LayerGradient ret (return value: cc.LayerGradient)
 
 --------------------------------
 -- @function [parent=#LayerGradient] getDescription 

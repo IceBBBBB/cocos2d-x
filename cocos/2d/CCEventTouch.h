@@ -57,6 +57,9 @@ public:
 #endif
     
 private:
+    #if  (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+        friend class GLView;
+    #endif
     EventCode _eventCode;
     std::vector<Touch*> _touches;
 

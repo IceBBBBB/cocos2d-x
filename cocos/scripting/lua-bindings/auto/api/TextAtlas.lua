@@ -38,7 +38,7 @@
 -- @param #int int
 -- @param #int int
 -- @param #string str
--- @return TextAtlas#TextAtlas ret (retunr value: ccui.TextAtlas)
+-- @return TextAtlas#TextAtlas ret (return value: ccui.TextAtlas)
 
 --------------------------------
 -- @function [parent=#TextAtlas] createInstance 

@@ -355,7 +355,7 @@
 -- @param self
 -- @param #float float
 -- @param #float float
--- @return PhysicsBody#PhysicsBody ret (retunr value: cc.PhysicsBody)
+-- @return PhysicsBody#PhysicsBody ret (return value: cc.PhysicsBody)
 
 --------------------------------
 -- @function [parent=#PhysicsBody] createEdgeBox 

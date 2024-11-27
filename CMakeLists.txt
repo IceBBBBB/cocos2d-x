@@ -97,10 +97,14 @@ endif()
 
 
 if(NOT MSVC)# all gcc
-set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DCOCOS2D_DEBUG=1")
-set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-std=c99")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DCOCOS2D_DEBUG=1")
+  set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-std=c99")
+  if(OHOS)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -fsigned-char")
+  else()
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  endif()
 endif()
 
 if(MINGW)
@@ -109,10 +113,12 @@ endif()
 
 
 if(USE_CHIPMUNK)
-  message("Using chipmunk ...")
+  if(OHOS)
+    set(CHIPMUNK_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/chipmunk/include/chipmunk)
+    set(CHIPMUNK_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/external/chipmunk/prebuilt/ohos/libchipmunk.a)
+  endif()
   add_definitions(-DCC_ENABLE_CHIPMUNK_INTEGRATION=1)
 elseif(USE_BOX2D)
-  message("Using box2d ...")
   add_definitions(-DCC_ENABLE_BOX2D_INTEGRATION=1)
 else(USE_CHIPMUNK)
   message(FATAL_ERROR "Must choose a physics library.")
@@ -129,6 +135,8 @@ if(WIN32) # Win32
   set(PLATFORM_FOLDER win32)
 elseif(APPLE)# osx or ios
   set(PLATFORM_FOLDER mac)
+elseif(OHOS)
+  set(PLATFORM_FOLDER ohos)
 else() # Assume Linux
   set(PLATFORM_FOLDER linux)
 endif()
@@ -153,7 +161,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/external/unzip
   ${CMAKE_CURRENT_SOURCE_DIR}/external/edtaa3func
   ${CMAKE_CURRENT_SOURCE_DIR}/external/chipmunk/include/chipmunk
-  ${CMAKE_CURRENT_SOURCE_DIR}/cocos/2d/platform/desktop
   ${CMAKE_CURRENT_SOURCE_DIR}/cocos/2d/platform/${PLATFORM_FOLDER}
   ${CMAKE_CURRENT_SOURCE_DIR}/external/jpeg/include/${PLATFORM_FOLDER}
   ${CMAKE_CURRENT_SOURCE_DIR}/external/png/include/${PLATFORM_FOLDER}
@@ -202,6 +209,8 @@ if(WIN32)
 
 elseif(APPLE)
 
+elseif(OHOS)
+
 else()
 
   link_directories(
@@ -235,6 +244,24 @@ add_subdirectory(external/tinyxml2)
 
 # xxhash library
 add_subdirectory(external/xxhash)
+
+# pvmp3dec  tremolo  library
+if(OHOS)
+  add_subdirectory(external/webp)
+  add_subdirectory(external/freetype2)
+  add_subdirectory(external/png)
+  add_subdirectory(external/jpeg)
+  add_subdirectory(external/tiff)
+  add_subdirectory(external/zlib)
+  add_subdirectory(external/ohos-specific/pvmp3dec)
+  add_subdirectory(external/ohos-specific/tremolo)
+  add_subdirectory(external/websockets)
+  add_subdirectory(external/lua/luajit)
+  
+  add_subdirectory(external/lua/luasocket)
+  add_subdirectory(external/curl)
+  add_subdirectory(external/openssl)
+endif()
 
 # audio
 add_subdirectory(cocos/audio)
@@ -296,13 +323,17 @@ endif(BUILD_LIBS_LUA)
 
 # build tests 
 
+if(!OHOS)
 add_subdirectory(tests/cpp-empty-test)
+endif()
 
 if(BUILD_CppTests)
 add_subdirectory(tests/cpp-tests)
 endif(BUILD_CppTests)
 
+if(!OHOS)
 add_subdirectory(tests/lua-empty-test/project)
+endif()
 
 if(BUILD_LuaTests)
 add_subdirectory(tests/lua-tests/project)

@@ -1,6 +1,8 @@
+--[[
 require "src/CocoStudioTest/CocoStudioGUITest/CocoStudioGUITest"
-require "src/CocoStudioTest/CocoStudioSceneTest/CocoStudioSceneTest"
-require "src/CocoStudioTest/CocoStudioArmatureTest/CocoStudioArmatureTest"
+ ]]
+require "CocoStudioTest/CocoStudioSceneTest/CocoStudioSceneTest"
+require "CocoStudioTest/CocoStudioArmatureTest/CocoStudioArmatureTest"
 
 local LINE_SPACE = 40
 local ITEM_TAG_BASIC = 1000
@@ -14,12 +16,12 @@ local cocoStudioTestItemNames =
         end
     },
 
-    {
+   --[[  {
         itemTitle = "CocoStudioGUITest",
         testScene =  function () 
             runCocosGUITestScene()
         end
-    },
+    }, ]]
 
     {
         itemTitle = "CocoStudioSceneTest",

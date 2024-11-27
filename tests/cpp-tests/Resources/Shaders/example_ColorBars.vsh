@@ -15,4 +15,3 @@ void main()
     gl_Position = (CC_PMatrix * CC_MVMatrix) * a_position;
 	v_texCoord = a_texCoord;
 }
-

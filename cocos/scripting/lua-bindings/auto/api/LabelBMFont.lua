@@ -87,7 +87,7 @@
 -- @param #float float
 -- @param #cc.TextHAlignment texthalignment
 -- @param #point_table point
--- @return LabelBMFont#LabelBMFont ret (retunr value: cc.LabelBMFont)
+-- @return LabelBMFont#LabelBMFont ret (return value: cc.LabelBMFont)
 
 --------------------------------
 -- @function [parent=#LabelBMFont] getBoundingBox 

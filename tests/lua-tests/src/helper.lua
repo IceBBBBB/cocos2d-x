@@ -1,4 +1,4 @@
-require "Cocos2d"
+require "cocos/Cocos2d"
 
 CC_CONTENT_SCALE_FACTOR = function()
     return cc.Director:getInstance():getContentScaleFactor()

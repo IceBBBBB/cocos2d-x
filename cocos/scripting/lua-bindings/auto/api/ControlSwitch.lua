@@ -36,7 +36,7 @@
 -- @param #cc.Sprite sprite
 -- @param #cc.Label label
 -- @param #cc.Label label
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#ControlSwitch] hasMoved 
@@ -62,7 +62,7 @@
 -- @param #cc.Sprite sprite
 -- @param #cc.Label label
 -- @param #cc.Label label
--- @return ControlSwitch#ControlSwitch ret (retunr value: cc.ControlSwitch)
+-- @return ControlSwitch#ControlSwitch ret (return value: cc.ControlSwitch)
 
 --------------------------------
 -- @function [parent=#ControlSwitch] onTouchMoved 

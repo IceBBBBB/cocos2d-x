@@ -334,7 +334,10 @@ int lua_register_cocos2dx_spine_Skeleton(lua_State* tolua_S)
     tolua_beginmodule(tolua_S,"Skeleton");
         tolua_function(tolua_S,"setToSetupPose",lua_cocos2dx_spine_Skeleton_setToSetupPose);
         tolua_function(tolua_S,"setBlendFunc",lua_cocos2dx_spine_Skeleton_setBlendFunc);
+		
+	 #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
         tolua_function(tolua_S,"onDraw",lua_cocos2dx_spine_Skeleton_onDraw);
+	 #endif
         tolua_function(tolua_S,"setSlotsToSetupPose",lua_cocos2dx_spine_Skeleton_setSlotsToSetupPose);
         tolua_function(tolua_S,"getBlendFunc",lua_cocos2dx_spine_Skeleton_getBlendFunc);
         tolua_function(tolua_S,"setSkin",lua_cocos2dx_spine_Skeleton_setSkin);

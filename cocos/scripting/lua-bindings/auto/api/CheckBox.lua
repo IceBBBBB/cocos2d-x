@@ -66,7 +66,7 @@
 -- @param #string str
 -- @param #string str
 -- @param #ccui.TextureResType texturerestype
--- @return CheckBox#CheckBox ret (retunr value: ccui.CheckBox)
+-- @return CheckBox#CheckBox ret (return value: ccui.CheckBox)
 
 --------------------------------
 -- @function [parent=#CheckBox] createInstance 

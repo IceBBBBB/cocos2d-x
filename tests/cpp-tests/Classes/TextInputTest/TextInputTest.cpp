@@ -13,7 +13,7 @@ enum
     kTextInputTestsCount,
 }; 
 
-#define FONT_NAME                       "fonts/Thonburi.ttf"
+#define FONT_NAME                       "fonts/HKYuanMini.ttf"
 #define FONT_SIZE                       36
 
 static int testIdx = -1; 

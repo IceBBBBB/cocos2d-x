@@ -1,4 +1,4 @@
-require "AudioEngine" 
+require "cocos/AudioEngine"
 local EFFECT_FILE = "effect1.wav"
 
 local MUSIC_FILE = nil 

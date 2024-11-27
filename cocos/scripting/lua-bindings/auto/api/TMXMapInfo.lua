@@ -62,7 +62,7 @@
 --          
 -- @function [parent=#TMXMapInfo] getLayers
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- overload function: getTilesets()
@@ -71,7 +71,7 @@
 --          
 -- @function [parent=#TMXMapInfo] getTilesets
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- @function [parent=#TMXMapInfo] getParentGID 
@@ -117,7 +117,7 @@
 --          
 -- @function [parent=#TMXMapInfo] getObjectGroups
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- @function [parent=#TMXMapInfo] getTMXFileName 
@@ -171,7 +171,7 @@
 --          
 -- @function [parent=#TMXMapInfo] getProperties
 -- @param self
--- @return map_table#map_table ret (retunr value: map_table)
+-- @return map_table#map_table ret (return value: map_table)
 
 --------------------------------
 -- @function [parent=#TMXMapInfo] getCurrentString 

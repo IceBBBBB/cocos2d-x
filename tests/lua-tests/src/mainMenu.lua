@@ -1,56 +1,56 @@
-require "Cocos2d"
-require "Cocos2dConstants"
-require "Opengl"
-require "OpenglConstants"
-require "StudioConstants"
-require "GuiConstants"
-require "src/helper"
-require "src/testResource"
-require "src/VisibleRect"
+require "cocos/Cocos2d"
+require "cocos/Cocos2dConstants"
+require "cocos/Opengl"
+require "cocos/OpenglConstants"
+require "cocos/StudioConstants"
+require "cocos/GuiConstants"
+require "helper"
+require "testResource"
+require "VisibleRect"
 
-require "src/AccelerometerTest/AccelerometerTest"
-require "src/ActionManagerTest/ActionManagerTest"
-require "src/ActionsEaseTest/ActionsEaseTest"
-require "src/ActionsProgressTest/ActionsProgressTest"
-require "src/ActionsTest/ActionsTest"
-require "src/AssetsManagerTest/AssetsManagerTest"
-require "src/BugsTest/BugsTest"
-require "src/ClickAndMoveTest/ClickAndMoveTest"
-require "src/CocosDenshionTest/CocosDenshionTest"
-require "src/CocoStudioTest/CocoStudioTest"
-require "src/CurrentLanguageTest/CurrentLanguageTest"
-require "src/DrawPrimitivesTest/DrawPrimitivesTest"
-require "src/EffectsTest/EffectsTest"
-require "src/EffectsAdvancedTest/EffectsAdvancedTest"
-require "src/ExtensionTest/ExtensionTest"
-require "src/FontTest/FontTest"
-require "src/IntervalTest/IntervalTest"
-require "src/KeypadTest/KeypadTest"
-require "src/LabelTest/LabelTest"
-require "src/LabelTestNew/LabelTestNew"
-require "src/LayerTest/LayerTest"
-require "src/MenuTest/MenuTest"
-require "src/MotionStreakTest/MotionStreakTest"
-require "src/NewEventDispatcherTest/NewEventDispatcherTest"
-require "src/NodeTest/NodeTest"
-require "src/OpenGLTest/OpenGLTest"
-require "src/ParallaxTest/ParallaxTest"
-require "src/ParticleTest/ParticleTest"
-require "src/PerformanceTest/PerformanceTest"
-require "src/RenderTextureTest/RenderTextureTest"
-require "src/RotateWorldTest/RotateWorldTest"
-require "src/SpriteTest/SpriteTest"
-require "src/SceneTest/SceneTest"
-require "src/SpineTest/SpineTest"
-require "src/Texture2dTest/Texture2dTest"
-require "src/TileMapTest/TileMapTest"
-require "src/TouchesTest/TouchesTest"
-require "src/TransitionsTest/TransitionsTest"
-require "src/UserDefaultTest/UserDefaultTest"
-require "src/ZwoptexTest/ZwoptexTest"
-require "src/LuaBridgeTest/LuaBridgeTest"
-require "src/XMLHttpRequestTest/XMLHttpRequestTest"
-require "src/PhysicsTest/PhysicsTest"
+require "AccelerometerTest/AccelerometerTest"
+require "ActionManagerTest/ActionManagerTest"
+require "ActionsEaseTest/ActionsEaseTest"
+require "ActionsProgressTest/ActionsProgressTest"
+require "ActionsTest/ActionsTest"
+require "AssetsManagerTest/AssetsManagerTest"
+require "BugsTest/BugsTest"
+require "ClickAndMoveTest/ClickAndMoveTest"
+require "CocosDenshionTest/CocosDenshionTest"
+require "CocoStudioTest/CocoStudioTest"
+require "CurrentLanguageTest/CurrentLanguageTest"
+require "DrawPrimitivesTest/DrawPrimitivesTest"
+require "EffectsTest/EffectsTest"
+require "EffectsAdvancedTest/EffectsAdvancedTest"
+require "ExtensionTest/ExtensionTest"
+require "FontTest/FontTest"
+require "IntervalTest/IntervalTest"
+require "KeypadTest/KeypadTest"
+require "LabelTest/LabelTest"
+require "LabelTestNew/LabelTestNew"
+require "LayerTest/LayerTest"
+require "MenuTest/MenuTest"
+require "MotionStreakTest/MotionStreakTest"
+require "NewEventDispatcherTest/NewEventDispatcherTest"
+require "NodeTest/NodeTest"
+require "OpenGLTest/OpenGLTest"
+require "ParallaxTest/ParallaxTest"
+require "ParticleTest/ParticleTest"
+require "PerformanceTest/PerformanceTest"
+require "RenderTextureTest/RenderTextureTest"
+require "RotateWorldTest/RotateWorldTest"
+require "SpriteTest/SpriteTest"
+require "SceneTest/SceneTest"
+require "SpineTest/SpineTest"
+require "Texture2dTest/Texture2dTest"
+require "TileMapTest/TileMapTest"
+require "TouchesTest/TouchesTest"
+require "TransitionsTest/TransitionsTest"
+require "UserDefaultTest/UserDefaultTest"
+require "ZwoptexTest/ZwoptexTest"
+require "LuaBridgeTest/LuaBridgeTest"
+require "XMLHttpRequestTest/XMLHttpRequestTest"
+require "PhysicsTest/PhysicsTest"
 
 
 local LINE_SPACE = 40
@@ -66,14 +66,14 @@ local _allTests = {
     { isSupported = true,  name = "ActionsProgressTest"    , create_func   =       ProgressActionsTest      },
     { isSupported = true,  name = "ActionsTest"            , create_func   =               ActionsTest      },
     { isSupported = true,  name = "AssetsManagerTest"      , create_func   =         AssetsManagerTestMain      },
-    { isSupported = false,  name = "Box2dTest"              , create_func=                 Box2dTestMain  },
-    { isSupported = false,  name = "Box2dTestBed"           , create_func=              Box2dTestBedMain  },
+    { isSupported = false, name = "Box2dTest"              , create_func=                 Box2dTestMain  },
+    { isSupported = false, name = "Box2dTestBed"           , create_func=              Box2dTestBedMain  },
     { isSupported = true,  name = "BugsTest"               , create_func=              BugsTestMain      },
-    { isSupported = false,  name = "ChipmunkAccelTouchTest" , create_func=    ChipmunkAccelTouchTestMain  },
+    { isSupported = false, name = "ChipmunkAccelTouchTest" , create_func=    ChipmunkAccelTouchTestMain  },
     { isSupported = true,  name = "ClickAndMoveTest"       , create_func   =          ClickAndMoveTest      },
     { isSupported = true,  name = "CocosDenshionTest"      , create_func   =         CocosDenshionTestMain  },
-    { isSupported = true,  name = "CocoStudioTest"         , create_func   =         CocoStudioTestMain  },  
-    { isSupported = false,  name = "CurlTest"               , create_func=                  CurlTestMain  },
+    { isSupported = true,  name = "CocoStudioTest"         , create_func   =         CocoStudioTestMain  },
+    { isSupported = false, name = "CurlTest"               , create_func=                  CurlTestMain  },
     { isSupported = true,  name = "CurrentLanguageTest"    , create_func=   CurrentLanguageTestMain      },
     { isSupported = true,  name = "DrawPrimitivesTest"     , create_func=        DrawPrimitivesTest      },
     { isSupported = true,  name = "EffectsTest"            , create_func   =               EffectsTest      },
@@ -81,34 +81,34 @@ local _allTests = {
     { isSupported = true,  name = "ExtensionsTest"         , create_func=        ExtensionsTestMain      },
     { isSupported = true,  name = "FontTest"               , create_func   =              FontTestMain      },
     { isSupported = true,  name = "IntervalTest"           , create_func   =              IntervalTestMain  },
-    { isSupported = true,  name = "KeypadTest"             , create_func=                KeypadTestMain  }, 
+    { isSupported = true,  name = "KeypadTest"             , create_func=                KeypadTestMain  },
     { isSupported = true,  name = "LabelTest"              , create_func   =                 LabelTest      },
     { isSupported = true,  name = "LabelTestNew"           , create_func   =                 LabelTestNew      },
     { isSupported = true,  name = "LayerTest"              , create_func   =                 LayerTestMain  },
     { isSupported = true,  name = "LuaBridgeTest"          , create_func   =        LuaBridgeMainTest },
-    { isSupported = true,  name = "MenuTest"               , create_func   =                  MenuTestMain  }, 
+    { isSupported = true,  name = "MenuTest"               , create_func   =                  MenuTestMain  },
     { isSupported = true,  name = "MotionStreakTest"       , create_func   =          MotionStreakTest      },
-    { isSupported = false,  name = "MutiTouchTest"          , create_func=          MutiTouchTestMain     },
+    { isSupported = false, name = "MutiTouchTest"          , create_func=          MutiTouchTestMain     },
     { isSupported = true,  name = "NewEventDispatcherTest"  , create_func   =       NewEventDispatcherTest },
     { isSupported = true,  name = "NodeTest"               , create_func   =                  CocosNodeTest },
-    { isSupported = true,   name = "OpenGLTest"             , create_func=          OpenGLTestMain     },
+    { isSupported = true,  name = "OpenGLTest"             , create_func=          OpenGLTestMain     },
     { isSupported = true,  name = "ParallaxTest"           , create_func   =              ParallaxTestMain  },
-    { isSupported = true,  name = "ParticleTest"           , create_func   =              ParticleTest      }, 
+    { isSupported = true,  name = "ParticleTest"           , create_func   =              ParticleTest      },
     { isSupported = true,  name = "PerformanceTest"        , create_func=           PerformanceTestMain  },
-	{ isSupported = true,  name = "PhysicsTest"            , create_func =          PhysicsTest  },
+    { isSupported = true,  name = "PhysicsTest"            , create_func =          PhysicsTest  },
     { isSupported = true,  name = "RenderTextureTest"      , create_func   =         RenderTextureTestMain  },
     { isSupported = true,  name = "RotateWorldTest"        , create_func   =           RotateWorldTest      },
     { isSupported = true,  name = "SceneTest"              , create_func   =                 SceneTestMain  },
     { isSupported = true,  name = "SpineTest"              , create_func   =                 SpineTestMain  },
-    { isSupported = false,  name = "SchdulerTest"           , create_func=              SchdulerTestMain  },
-    { isSupported = false,  name = "ShaderTest"             , create_func=            ShaderTestMain      },
+    { isSupported = false, name = "SchdulerTest"           , create_func=              SchdulerTestMain  },
+    { isSupported = false, name = "ShaderTest"             , create_func=            ShaderTestMain      },
     { isSupported = true,  name = "SpriteTest"             , create_func   =                SpriteTest      },
-    { isSupported = false,  name = "TextInputTest"          , create_func=             TextInputTestMain  },
+    { isSupported = false, name = "TextInputTest"          , create_func=             TextInputTestMain  },
     { isSupported = true,  name = "Texture2DTest"          , create_func   =             Texture2dTestMain  },
-    { isSupported = false,  name = "TextureCacheTest"       , create_func=      TextureCacheTestMain      },
-    { isSupported = true,  name = "TileMapTest"            , create_func   =               TileMapTestMain  }, 
+    { isSupported = false, name = "TextureCacheTest"       , create_func=      TextureCacheTestMain      },
+    { isSupported = true,  name = "TileMapTest"            , create_func   =               TileMapTestMain  },
     { isSupported = true,  name = "TouchesTest"            , create_func   =               TouchesTest      },
-    { isSupported = true,  name = "TransitionsTest"        , create_func   =           TransitionsTest      },   
+    { isSupported = true,  name = "TransitionsTest"        , create_func   =           TransitionsTest      },
     { isSupported = true,  name = "UserDefaultTest"        , create_func=           UserDefaultTestMain  },
     { isSupported = true,  name = "XMLHttpRequestTest"     , create_func   =        XMLHttpRequestTestMain  },
     { isSupported = true,  name = "ZwoptexTest"            , create_func   =               ZwoptexTestMain  }

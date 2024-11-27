@@ -47,7 +47,7 @@
 -- @function [parent=#Skin] create
 -- @param self
 -- @param #string str
--- @return Skin#Skin ret (retunr value: ccs.Skin)
+-- @return Skin#Skin ret (return value: ccs.Skin)
 
 --------------------------------
 -- @function [parent=#Skin] createWithSpriteFrameName 

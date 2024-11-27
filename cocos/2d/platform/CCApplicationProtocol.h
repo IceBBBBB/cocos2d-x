@@ -27,7 +27,9 @@ THE SOFTWARE.
 #define __CC_APPLICATION_PROTOCOL_H__
 
 #include "CCPlatformMacros.h"
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "CCCommon.h"
+#endif()
 NS_CC_BEGIN
 
 /**
@@ -54,7 +56,8 @@ public:
         OS_EMSCRIPTEN,
         OS_TIZEN,
         OS_WINRT,
-        OS_WP8
+        OS_WP8,
+        OS_OPENHARMONY  
     };
 
     /**

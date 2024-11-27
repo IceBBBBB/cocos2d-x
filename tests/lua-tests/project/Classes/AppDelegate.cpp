@@ -34,13 +34,13 @@ bool AppDelegate::applicationDidFinishLaunching()
     
     auto screenSize = glview->getFrameSize();
     
-    auto designSize = Size(480, 320);
+    auto designSize = Size(960, 960);
     
     auto pFileUtils = FileUtils::getInstance();
     
     if (screenSize.height > 320)
     {
-        auto resourceSize = Size(960, 640);
+        auto resourceSize = Size(960, 960);
         std::vector<std::string> searchPaths;
         searchPaths.push_back("hd");
         pFileUtils->setSearchPaths(searchPaths);
@@ -53,7 +53,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     LuaEngine* pEngine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(pEngine);
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID ||CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID ||CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     LuaStack* stack = pEngine->getLuaStack();
     register_assetsmanager_test_sample(stack->getLuaState());
 #endif
@@ -63,11 +63,10 @@ bool AppDelegate::applicationDidFinishLaunching()
 #else
     std::string resPrefix("res/");
 #endif
-    
+   
     std::vector<std::string> searchPaths = pFileUtils->getSearchPaths();
     searchPaths.insert(searchPaths.begin(), resPrefix);
-
-    searchPaths.insert(searchPaths.begin(), resPrefix + "cocosbuilderRes");
+ searchPaths.insert(searchPaths.begin(), resPrefix + "cocosbuilderRes");
     if (screenSize.height > 320)
     {
         searchPaths.insert(searchPaths.begin(), resPrefix + "hd");
@@ -97,12 +96,9 @@ bool AppDelegate::applicationDidFinishLaunching()
         searchPaths.insert(searchPaths.begin(), resPrefix + "scenetest/UIComponentTest");
         searchPaths.insert(searchPaths.begin(), resPrefix + "scenetest/TriggerTest");
     }
-
-
     FileUtils::getInstance()->setSearchPaths(searchPaths);
-
-    pEngine->executeScriptFile("src/controller.lua");
-    
+    FileUtils::getInstance()->addSearchPath("src/");
+    pEngine->executeScriptFile("controller.lua");
     return true;
 }
 
@@ -120,4 +116,18 @@ void AppDelegate::applicationWillEnterForeground()
     Director::getInstance()->startAnimation();
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+    auto director = cocos2d::Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set ResolutionPolicy to a proper value. here use the original value when the game is started.
+        ResolutionPolicy resolutionPolicy = glview->getResolutionPolicy();
+        Size designSize = glview->getDesignResolutionSize();
+         glview->setFrameSize(newWidth, newHeight);
+         // Set the design resolution to a proper value. here use the original value when the game is started. 
+         glview->setDesignResolutionSize(designSize.width, designSize.height, resolutionPolicy);
+    }
 }

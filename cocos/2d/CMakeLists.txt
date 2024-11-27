@@ -1,5 +1,4 @@
 if(WIN32)
-
 ADD_DEFINITIONS(-DUNICODE -D_UNICODE)
 
 set(PLATFORM_SRC
@@ -13,8 +12,46 @@ set(PLATFORM_SRC
 
 elseif(APPLE)
 
+elseif(OHOS)
+    include_directories(
+          ../../cocos/2d
+          ../../cocos/base
+          platform/ohos
+          platform/ohos/napi
+          platform/ohos/napi/modules
+          platform/ohos/napi/common
+          platform/ohos/napi/render
+          platform/ohos/napi/plugin_manager.h
+          platform/ohos/napi/helper/NapiValueConverter.h
+          platform/ohos/napi/helper/Js_Cocos2dxHelper.h
+          platform/ohos/napi/helper/NapiHelper.h
+          ../../external/freetype2/include/ohos/
+          ../../external/freetype2/include/ohos/freetype
+          ../../external/opengles/api
+    )
+    set(PLATFORM_SRC
+          platform/ohos/CCApplication.cpp
+          platform/ohos/CCCommon.cpp
+          platform/ohos/CCDevice.cpp
+          platform/ohos/CCGLView.cpp
+          platform/ohos/CCFileUtils-ohos.cpp
+          platform/ohos/CCTextBitmap.cpp
+          platform/ohos/napi/modules/MouseNapi.cpp
+          platform/ohos/napi/modules/RawFileUtils.cpp
+          platform/ohos/napi/modules/TouchesNapi.cpp
+          platform/ohos/napi/modules/InputNapi.cpp
+          platform/ohos/napi/modules/WebViewNapi.cpp
+          platform/ohos/napi/modules/SensorNapi.cpp
+          platform/ohos/napi/modules/VideoPlayerNapi.cpp
+          platform/ohos/napi/helper/NapiValueConverter.cpp
+          platform/ohos/napi/helper/Js_Cocos2dxHelper.cpp
+          platform/ohos/napi/helper/NapiHelper.cpp
+          platform/ohos/napi/render/egl_core.cpp
+          platform/ohos/napi/render/plugin_render.cpp
+          platform/ohos/napi/plugin_manager.cpp
+          platform/ohos/napi/WorkerMessageQueue.cpp
+    )
 else()
-
 set(PLATFORM_SRC
   platform/linux/CCStdC.cpp
   platform/linux/CCFileUtilsLinux.cpp
@@ -26,8 +63,14 @@ set(PLATFORM_SRC
 
 endif()
 
+if(OHOS)
+    set(COCOS2D_SRC CCUserDefault-ohos.cpp)
+else()
+    set(COCOS2D_SRC CCUserDefault.cpp)
+endif()
 
 set(COCOS2D_SRC
+  ${COCOS2D_SRC}
   CCAction.cpp
   CCActionCamera.cpp
   CCTweenFunction.cpp
@@ -98,7 +141,6 @@ set(COCOS2D_SRC
   CCSpriteFrameCache.cpp
   ccUTF8.cpp
   CCProfiling.cpp
-  CCUserDefault.cpp
   TransformUtils.cpp
   base64.cpp
   ccUtils.cpp
@@ -194,6 +236,23 @@ endif()
 
 elseif(APPLE)
 
+elseif(OHOS)
+  find_library( # Sets the name of the path variable.
+                rawfile-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                rawfile.z )
+  find_library( # Sets the name of the path variable.
+                libnapi-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                ace_napi.z )
+  find_library( # Sets the name of the path variable.
+                Drawing-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                native_drawing )
+  set(COCOS_LINK ext_freetype ext_png ext_jpeg ext_tiff ext_webp ext_zlib ${rawfile-lib} ${libnapi-lib} ${Drawing-lib} OpenSLES libnative_window.so libnative_buffer.so)
 else()
 set(COCOS_LINK
   jpeg

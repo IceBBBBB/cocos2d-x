@@ -30,7 +30,7 @@ extern "C" {
 #include "tolua++.h"
 #include "lualib.h"
 #include "lauxlib.h"
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 #include "lua_extensions.h"
 #endif
 }
@@ -45,7 +45,7 @@ extern "C" {
 #include "platform/android/CCLuaJavaBridge.h"
 #endif
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include "Lua_web_socket.h"
 #endif
 #include "LuaOpengl.h"
@@ -105,6 +105,9 @@ int lua_print(lua_State * luastate)
             t += "\t";
     }
     CCLOG("[LUA-print] %s", t.c_str());
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	OHOS_LOGD("[LUA-print] %s", t.c_str());
+#endif
 
     return 0;
 }
@@ -148,7 +151,7 @@ bool LuaStack::init(void)
         {NULL, NULL}
     };
     luaL_register(_state, "_G", global_functions);
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     luaopen_lua_extensions(_state);
 #endif
     g_luaType.clear();
@@ -179,7 +182,7 @@ bool LuaStack::init(void)
     LuaJavaBridge::luaopen_luaj(_state);
 #endif
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     tolua_web_socket_open(_state);
     register_web_socket_manual(_state);
 #endif
@@ -259,6 +262,21 @@ int LuaStack::executeScriptFile(const char* filename)
     code.append(filename);
     code.append("\"");
     return executeString(code.c_str());
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    //fullPath其实不是全路径获取是rawfile下面的路径，调整为通过内容执行，通过文件因为底层不一致导致执行不通过
+       std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filename);
+        Data data = FileUtils::getInstance()->getDataFromFile(fullPath);
+    CCLOG("[LUA ERROR] full path %s",fullPath.c_str());
+    // lua_gc(_state, LUA_GCCOLLECT, 0);
+     int rn = 0;
+        if (!data.isNull())
+        {
+            if (luaL_dostring(_state, (const char*)data.getBytes()) == 0)
+            {
+                rn = executeFunction(0);
+            }
+        }
+        return rn;
 #else
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filename);
     ++_callFromLua;

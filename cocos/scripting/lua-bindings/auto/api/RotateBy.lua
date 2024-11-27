@@ -15,7 +15,7 @@
 -- @param #float float
 -- @param #float float
 -- @param #float float
--- @return RotateBy#RotateBy ret (retunr value: cc.RotateBy)
+-- @return RotateBy#RotateBy ret (return value: cc.RotateBy)
 
 --------------------------------
 -- @function [parent=#RotateBy] startWithTarget 

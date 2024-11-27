@@ -88,7 +88,7 @@
 -- @param #string str
 -- @param #string str
 -- @param #int int
--- @return Text#Text ret (retunr value: ccui.Text)
+-- @return Text#Text ret (return value: ccui.Text)
 
 --------------------------------
 -- @function [parent=#Text] createInstance 

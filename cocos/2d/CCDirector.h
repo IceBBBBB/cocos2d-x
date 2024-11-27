@@ -384,6 +384,9 @@ public:
     float getFrameRate() const { return _frameRate; }
 
 protected:
+    #if  (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+        friend class GLView;
+    #endif
     void purgeDirector();
     bool _purgeDirectorInNextLoop; // this flag will be set to true in end()
     

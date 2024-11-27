@@ -1,7 +1,7 @@
 
-require "extern"
-require "src/VisibleRect"
-require "src/TouchesTest/Paddle"
+require "cocos/extern"
+require "VisibleRect"
+require "TouchesTest/Paddle"
 
 Ball = class("Ball", function(texture)
     return cc.Sprite:createWithTexture(texture)

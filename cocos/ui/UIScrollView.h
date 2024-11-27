@@ -28,6 +28,10 @@ THE SOFTWARE.
 #include "ui/UILayout.h"
 #include "ui/UIScrollInterface.h"
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "ui/GUIExport.h"
+#endif
+
 NS_CC_BEGIN
 
 namespace ui {

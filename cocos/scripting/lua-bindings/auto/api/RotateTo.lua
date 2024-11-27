@@ -13,7 +13,7 @@
 -- @param #float float
 -- @param #float float
 -- @param #float float
--- @return RotateTo#RotateTo ret (retunr value: cc.RotateTo)
+-- @return RotateTo#RotateTo ret (return value: cc.RotateTo)
 
 --------------------------------
 -- @function [parent=#RotateTo] startWithTarget 

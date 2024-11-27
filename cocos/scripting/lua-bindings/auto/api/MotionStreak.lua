@@ -54,7 +54,7 @@
 -- @param #float float
 -- @param #color3B_table color3b
 -- @param #string str
--- @return MotionStreak#MotionStreak ret (retunr value: cc.MotionStreak)
+-- @return MotionStreak#MotionStreak ret (return value: cc.MotionStreak)
 
 --------------------------------
 -- @function [parent=#MotionStreak] isOpacityModifyRGB 

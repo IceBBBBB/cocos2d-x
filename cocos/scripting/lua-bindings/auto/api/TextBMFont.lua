@@ -27,7 +27,7 @@
 -- @param self
 -- @param #string str
 -- @param #string str
--- @return TextBMFont#TextBMFont ret (retunr value: ccui.TextBMFont)
+-- @return TextBMFont#TextBMFont ret (return value: ccui.TextBMFont)
 
 --------------------------------
 -- @function [parent=#TextBMFont] createInstance 

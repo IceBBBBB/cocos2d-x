@@ -108,6 +108,28 @@ Widget* Helper::seekActionWidgetByActionTag(Widget* root, int tag)
 	return nullptr;
 }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+Rect Helper::convertBoundingBoxToScreen(Node* node)
+{
+    auto director = Director::getInstance();
+    auto glView = director->getOpenGLView();
+    auto frameSize = glView->getFrameSize();
+
+    auto winSize = director->getWinSize();
+    auto leftBottom = node->convertToWorldSpace(Point::ZERO);
+
+    auto contentSize = node->getContentSize();
+    auto rightTop = node->convertToWorldSpace(Point(contentSize.width, contentSize.height));
+
+    auto uiLeft = frameSize.width / 2 + (leftBottom.x - winSize.width / 2 ) * glView->getScaleX();
+    auto uiTop = frameSize.height /2 - (rightTop.y - winSize.height / 2) * glView->getScaleY();
+    auto uiWidth = (rightTop.x - leftBottom.x) * glView->getScaleX();
+    auto uiHeight = (rightTop.y - leftBottom.y) * glView->getScaleY();
+    
+    return Rect(uiLeft, uiTop, uiWidth, uiHeight);
+}
+#endif
+
 }
 
 NS_CC_END

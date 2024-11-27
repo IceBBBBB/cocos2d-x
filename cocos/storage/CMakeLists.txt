@@ -11,6 +11,10 @@ target_link_libraries(storage
     sqlite3
 )
 
+if(OHOS)
+  include_directories(${COCOS2DX_ROOT_PATH}/external/sqlit3/include)
+endif()
+
 set_target_properties(storage
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

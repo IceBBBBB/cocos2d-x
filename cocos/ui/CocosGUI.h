@@ -45,6 +45,10 @@ THE SOFTWARE.
 #include "ui/UIHBox.h"
 #include "ui/UIVBox.h"
 #include "ui/UIRelativeBox.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "ui/UIVideoPlayer.h"
+#include "ui/UIWebView.h"
+#endif
 
 NS_CC_BEGIN
 namespace ui {

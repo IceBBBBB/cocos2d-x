@@ -1,4 +1,4 @@
-require "src/PerformanceTest/PerformanceSpriteTest"
+require "PerformanceTest/PerformanceSpriteTest"
 
 local MAX_COUNT     = 6
 local LINE_SPACE    = 40
@@ -1926,7 +1926,8 @@ local function PerformanceMainLayer()
             local targetPlatform = cc.Application:getInstance():getTargetPlatform()
             if (cc.PLATFORM_OS_IPHONE ~= targetPlatform) and (cc.PLATFORM_OS_IPAD ~= targetPlatform) and 
                (cc.PLATFORM_OS_ANDROID ~= targetPlatform) and (cc.PLATFORM_OS_WINDOWS ~= targetPlatform) and
-               (cc.PLATFORM_OS_MAC ~= targetPlatform) then
+               (cc.PLATFORM_OS_MAC ~= targetPlatform) 
+               and (cc.PLATFORM_OS_OHOS  ~= targetPlatform) then
                item:setEnabled(false)
             end
         end

@@ -27,6 +27,9 @@ THE SOFTWARE.
 #define __UILISTVIEW_H__
 
 #include "ui/UIScrollView.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "ui/GUIExport.h"
+#endif
 
 NS_CC_BEGIN
 

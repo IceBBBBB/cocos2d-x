@@ -17,7 +17,7 @@
 -- @param self
 -- @param #char char
 -- @param #float float
--- @return float#float ret (retunr value: float)
+-- @return float#float ret (return value: float)
 
 --------------------------------
 -- overload function: getBoolForKey(char, bool)
@@ -28,7 +28,7 @@
 -- @param self
 -- @param #char char
 -- @param #bool bool
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#UserDefault] setDoubleForKey 
@@ -51,7 +51,7 @@
 -- @param self
 -- @param #char char
 -- @param #string str
--- @return string#string ret (retunr value: string)
+-- @return string#string ret (return value: string)
 
 --------------------------------
 -- @function [parent=#UserDefault] setStringForKey 
@@ -72,7 +72,7 @@
 -- @param self
 -- @param #char char
 -- @param #int int
--- @return int#int ret (retunr value: int)
+-- @return int#int ret (return value: int)
 
 --------------------------------
 -- overload function: getDoubleForKey(char, double)
@@ -83,7 +83,7 @@
 -- @param self
 -- @param #char char
 -- @param #double double
--- @return double#double ret (retunr value: double)
+-- @return double#double ret (return value: double)
 
 --------------------------------
 -- @function [parent=#UserDefault] setBoolForKey 

@@ -150,6 +150,12 @@ public:
      * @js NA
      */
     void    flush();
+  /**
+    * delete any value by key,
+    * @param key The key to delete value.
+    * @js NA
+    */
+   void deleteValueForKey(const char* key);
 
     /** returns the singleton 
      * @js NA
