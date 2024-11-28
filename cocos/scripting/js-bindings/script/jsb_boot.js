@@ -1134,6 +1134,13 @@ var _initSys = function () {
      * @type {string}
      */
     sys.OS_WINRT = "WINRT";
+	/**
+     * @memberof cc.sys
+     * @name OS_OH
+     * @constant
+     * @type {string}
+     */
+    sys.OS_OHOS = "OHOS";
     /**
      * @memberof cc.sys
      * @name OS_UNKNOWN
@@ -1246,6 +1253,14 @@ var _initSys = function () {
      * @type {Number}
      */
     sys.WP8 = 11;
+	  /**
+     * @memberof cc.sys
+     * @name OH
+     * @constant
+     * @default
+     * @type {Number}
+     */
+    sys.OHOS = 12;
     /**
      * @memberof cc.sys
      * @name MOBILE_BROWSER
@@ -1301,12 +1316,21 @@ var _initSys = function () {
     var platform = sys.platform = __getPlatform();
 
     /**
+     * Indicate the running os name
+     * @memberof cc.sys
+     * @name os
+     * @type {String}
+     */
+    sys.os = __getOS();
+
+    /**
      * Indicate whether system is mobile system
      * @memberof cc.sys
      * @name isMobile
      * @type {Boolean}
      */
-    sys.isMobile = (platform === sys.ANDROID || 
+    sys.isMobile = (cc.sys.os == sys.OS_OHOS ||
+                    platform === sys.ANDROID || 
                     platform === sys.IPAD || 
                     platform === sys.IPHONE || 
                     platform === sys.WP8 || 
@@ -1341,13 +1365,6 @@ var _initSys = function () {
         }
     })();
 
-    /**
-     * Indicate the running os name
-     * @memberof cc.sys
-     * @name os
-     * @type {String}
-     */
-    sys.os = __getOS();
 
     /**
      * Indicate the running browser type

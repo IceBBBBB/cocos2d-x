@@ -29,6 +29,8 @@ if(WIN32) # Win32
   set(PLATFORM_FOLDER win32)
 elseif(APPLE)# osx or ios
   set(PLATFORM_FOLDER mac)
+elseif(OHOS)
+  set(PLATFORM_FOLDER ohos)
 else() # Assume Linux
   set(PLATFORM_FOLDER linux)
 endif()
@@ -77,6 +79,19 @@ set(JSBINDING_SRC
   ${cocos_root}/cocos/storage/local-storage/LocalStorage.cpp
 )
 
+if(OHOS)
+  list(APPEND JSBINDING_SRC
+        auto/jsb_cocos2dx_experimental_webView_auto.hpp
+        manual/experimental/jsb_cocos2dx_experimental_webView_manual.h
+        auto/jsb_cocos2dx_experimental_video_auto.hpp
+        manual/experimental/jsb_cocos2dx_experimental_video_manual.h
+        auto/jsb_cocos2dx_experimental_webView_auto.cpp
+        manual/experimental/jsb_cocos2dx_experimental_webView_manual.cpp
+        auto/jsb_cocos2dx_experimental_video_auto.cpp
+        manual/experimental/jsb_cocos2dx_experimental_video_manual.cpp
+        )
+endif()
+
 include_directories(
   auto
   manual
@@ -108,12 +123,18 @@ add_library(jscocos2d STATIC
   ${JSBINDING_SRC}
 )
 
-target_link_libraries(jscocos2d
-  sqlite3
-  js_static
-  xxhash
-)
-
+if(OHOS)
+    include_directories(${cocos_root}/external/sqlite3/include)
+    add_subdirectory(${cocos_root}/external/sqlite3 ext_sqlite3)
+    add_subdirectory(${cocos_root}/external/spidermonkey ext_spidermonkey)
+    target_link_libraries(jscocos2d ext_spidermonkey ext_sqlite3)
+else()
+    target_link_libraries(jscocos2d
+      sqlite3
+      js_static
+      xxhash
+    )
+endif()
 set_target_properties(jscocos2d
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

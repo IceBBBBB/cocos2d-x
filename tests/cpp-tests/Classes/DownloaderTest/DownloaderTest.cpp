@@ -31,14 +31,23 @@
 #include "network/CCDownloader.h"
 
 USING_NS_CC;
-
-static const char* sURLList[] =
-{
-    "http://www.cocos2d-x.org/attachments/802/cocos2dx_landscape.png",
-    "http://www.cocos2d-x.org/docs/manual/framework/native/wiki/logo-resources-of-cocos2d-x/res/2dx_icon_512_rounded.png",
-    "http://www.cocos2d-x.org/attachments/1503/inexist.png",
-    "http://download.sdkbox.com/installer/v1/sdkbox-iap_v1.2.3.3.tar.gz",
-};
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	static const char* sURLList[] =
+		{
+    		"https://www.cocos2d-x.org/attachments/802/cocos2dx_landscape.png",
+    		"https://cocos2d-x.org/images/logo.png",
+    		"https://www.cocos2d-x.org/attachments/1503/no_exist.txt",  // try to download no exist file
+    		"https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.zip",
+		};
+#else
+	static const char* sURLList[] =
+		{
+    		"http://www.cocos2d-x.org/attachments/802/cocos2dx_landscape.png",
+    		"http://www.cocos2d-x.org/docs/manual/framework/native/wiki/logo-resources-of-cocos2d-x/res/2dx_icon_512_rounded.png",
+    		"http://www.cocos2d-x.org/attachments/1503/inexist.png",
+    		"http://download.sdkbox.com/installer/v1/sdkbox-iap_v1.2.3.3.tar.gz",
+		};
+#endif
 const static int sListSize = (sizeof(sURLList)/sizeof(sURLList[0]));
 static const char* sNameList[sListSize] =
 {
@@ -316,6 +325,50 @@ struct DownloaderTest : public TestCase
             btn->setEnabled(true);
             btn->setVisible(true);
         };
+    }
+};
+
+struct DownloaderMultiTask : public TestCase
+{
+    CREATE_FUNC(DownloaderMultiTask);
+
+    virtual std::string title() const override { return "Downloader Multi Task"; }
+    virtual std::string subtitle() const override { return "see the console output"; }
+
+    std::unique_ptr<network::Downloader> downloader;
+
+    DownloaderMultiTask()
+    {
+        // countOfMaxProcessingTasks 32
+        network::DownloaderHints hints = {32, 60, ".going"};
+        downloader.reset(new network::Downloader(hints));
+    }
+
+    virtual void onEnter() override
+    {
+        TestCase::onEnter();
+        char path[256];
+        char name[64];
+        // add 64 download task at same time.
+        for(int i=0; i< 64;i++){
+            sprintf(name, "%d_%s", i, sNameList[0]);
+            sprintf(path, "%sCppTests/DownloaderTest/%s", FileUtils::getInstance()->getWritablePath().c_str(), name);
+            log("downloader task create: %s", name);
+            this->downloader->createDownloadFileTask(sURLList[0], path, name);
+        }
+
+        downloader->onFileTaskSuccess = ([] (const network::DownloadTask& task) {
+            log("downloader task success: %s", task.identifier.c_str());
+        });
+
+        downloader->onTaskError = ([] (const network::DownloadTask& task, int errorCode, int errorCodeInternal, const std::string& errorStr) {
+            log("downloader task failed : %s, identifier(%s) error code(%d), internal error code(%d) desc(%s)"
+                , task.requestURL.c_str()
+                , task.identifier.c_str()
+                , errorCode
+                , errorCodeInternal
+                , errorStr.c_str());
+        });
     }
 };
 

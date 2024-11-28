@@ -100,21 +100,40 @@ cc.game.onStart = function(){
         var searchPaths = jsb.fileUtils.getSearchPaths();
         searchPaths.push('script');
         searchPaths.push('src');
-        var paths = [
-            'res/resjs',
-            'res',
-            'res/scenetest',
-            'res/scenetest/ArmatureComponentTest',
-            'res/scenetest/AttributeComponentTest',
-            'res/scenetest/BackgroundComponentTest',
-            'res/scenetest/EffectComponentTest',
-            'res/scenetest/LoadSceneEdtiorFileTest',
-            'res/scenetest/ParticleComponentTest',
-            'res/scenetest/SpriteComponentTest',
-            'res/scenetest/TmxMapComponentTest',
-            'res/scenetest/UIComponentTest',
-            'res/scenetest/TriggerTest'
-        ];
+        var paths = [];
+        if(cc.sys.os == cc.sys.OHOS ){
+          paths = [
+          'res',
+          'ccs-res',
+          'ccs-res/scenetest',
+          'ccs-res/scenetest/ArmatureComponentTest',
+          'ccs-res/scenetest/AttributeComponentTest',
+          'ccs-res/scenetest/BackgroundComponentTest',
+          'ccs-res/scenetest/EffectComponentTest',
+          'ccs-res/scenetest/LoadSceneEdtiorFileTest',
+          'ccs-res/scenetest/ParticleComponentTest',
+          'ccs-res/scenetest/SpriteComponentTest',
+          'ccs-res/scenetest/TmxMapComponentTest',
+          'ccs-res/scenetest/UIComponentTest',
+          'ccs-res/scenetest/TriggerTest'
+          ];
+        }else{
+          paths = [
+          'res/resjs',
+          'res',
+          'res/scenetest',
+          'res/scenetest/ArmatureComponentTest',
+          'res/scenetest/AttributeComponentTest',
+          'res/scenetest/BackgroundComponentTest',
+          'res/scenetest/EffectComponentTest',
+          'res/scenetest/LoadSceneEdtiorFileTest',
+          'res/scenetest/ParticleComponentTest',
+          'res/scenetest/SpriteComponentTest',
+          'res/scenetest/TmxMapComponentTest',
+          'res/scenetest/UIComponentTest',
+          'res/scenetest/TriggerTest'
+          ];
+        }
         for (var i = 0; i < paths.length; i++) {
             searchPaths.push(paths[i]);
         }

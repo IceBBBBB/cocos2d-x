@@ -35,11 +35,11 @@
 
 #include "platform/CCPlatformMacros.h"
 #include "platform/CCStdC.h"
-
+#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
 struct libwebsocket;
 struct libwebsocket_context;
 struct libwebsocket_protocols;
-
+#endif
 /**
  * @addtogroup network
  * @{

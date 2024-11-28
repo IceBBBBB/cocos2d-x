@@ -355,6 +355,8 @@ bool JSBCore_os(JSContext *cx, uint32_t argc, jsval *vp)
     os = JS_InternString(cx, "OS X");
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
     os = JS_InternString(cx, "WINRT");
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    os = JS_InternString(cx, "OHOS");
 #else
     os = JS_InternString(cx, "Unknown");
 #endif
@@ -703,7 +705,7 @@ void ScriptingCore::compileScript(const char *path, JS::HandleObject global, JSC
         op.setFileAndLine(fullPath.c_str(), 1);
 
         bool ok = false;
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID )|| (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
         std::string jsFileContent = futil->getStringFromFile(fullPath);
         if (!jsFileContent.empty())
         {
