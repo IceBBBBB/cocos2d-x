@@ -68,7 +68,7 @@ void EGLCore::GLContextInit(void* window, int w, int h) {
     }
 
     // 2. Create EGL Surface from Native Window
-    EGLint winAttribs[] = {EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_SRGB_KHR, EGL_NONE};
+    EGLint winAttribs[] = {EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_LINEAR_KHR, EGL_NONE};
     if (mEglWindow) {
         mEGLSurface = eglCreateWindowSurface(mEGLDisplay, mEGLConfig, mEglWindow, winAttribs);
         if (mEGLSurface == nullptr) {
