@@ -8,6 +8,7 @@
 #include "CCPlatformMacros.h"
 #include "ccTypes.h"
 #include <string>
+#include <vector>
 #include "napi/modules/RawFileUtils.h"
 
 NS_CC_BEGIN
@@ -41,12 +42,12 @@ public:
         _buffer->resize((size + sizeof(CharT) - 1) / sizeof(CharT));
     }
     virtual void* buffer() const override {
-    // can not invoke string::front() if it is empty
+        // can not invoke string::front() if it is empty
 
-    if (_buffer->empty())
-        return nullptr;
-    else
-        return &_buffer->front();
+        if (_buffer->empty())
+            return nullptr;
+        else
+            return &_buffer->front();
     }
 };
 
@@ -91,7 +92,8 @@ public:
 
 
 //! @brief  Helper class to handle file operations
-class CC_DLL FileUtilsOhos : public FileUtils {
+class CC_DLL FileUtilsOhos : public FileUtils
+{
     friend class FileUtils;
 public:
     virtual ~FileUtilsOhos();
@@ -100,9 +102,9 @@ public:
 
     static void setassetmanager(NativeResourceManager* a);
 	static NativeResourceManager* getAssetManager() { return nativeResourceManager_; }
-    bool getRawFileDescriptor(const std::string &filename, RawFileDescriptor64 *descriptor);
+    bool getRawFileDescriptor(const std::string &filename, RawFileDescriptor &descriptor);
     /* override funtions */
-    bool init() override;
+    bool init();
 
     /** @deprecated Please use FileUtils::getDataFromFile or FileUtils::getStringFromFile instead. */
     CC_DEPRECATED_ATTRIBUTE virtual unsigned char* getFileData(const std::string& filename, const char* mode, ssize_t * size) override;
@@ -118,16 +120,17 @@ public:
      */
     virtual Data getDataFromFile(const std::string& filename) override;
 
-    virtual std::string getWritablePath() const override;
-    virtual bool isAbsolutePath(const std::string& dirPath) const override;
+    virtual std::string getWritablePath() const;
+    virtual bool isAbsolutePath(const std::string& dirPath) const;
 	
-	virtual bool isFileExist(const std::string& filename) const override;
+	virtual bool isFileExist(const std::string& filename) const;
 
     virtual std::vector<std::string> listFiles(const std::string& dirPath);
+
 private:
     FileUtilsOhos();
-    virtual bool isFileExistInternal(const std::string& strFilePath) const override;
-    Data getData(const std::string& filename, bool forString);
+    virtual bool isFileExistInternal(const std::string& strFilePath) const;
+    Data getData(const std::string& filename);
 
     template <
             typename T,

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+
 #include <thread>
 #include <mutex>
 #include <ace/xcomponent/native_interface_xcomponent.h>

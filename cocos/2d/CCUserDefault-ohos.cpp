@@ -29,7 +29,6 @@ THE SOFTWARE.
 #include "ccUtils.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-#include "platform/ohos/napi/helper/NapiHelper.h"
 
 // root name of xml
 #define USERDEFAULT_ROOT_NAME    "userDefaultRoot"
@@ -57,31 +56,27 @@ string UserDefault::_filePath = string("");
 bool UserDefault::_isFilePathInitialized = false;
 
 #ifdef KEEP_COMPATABILITY
-static tinyxml2::XMLElement* getXMLNodeForKey(const char* pKey, tinyxml2::XMLDocument **doc)
-{
+static tinyxml2::XMLElement* getXMLNodeForKey(const char* pKey, tinyxml2::XMLDocument **doc) {
     tinyxml2::XMLElement* curNode = nullptr;
     tinyxml2::XMLElement* rootNode = nullptr;
 
-    if (! UserDefault::isXMLFileExist())
-    {
+    if (! UserDefault::isXMLFileExist()) {
         return nullptr;
     }
 
     // check the key value
-    if (! pKey)
-    {
+    if (! pKey) {
         return nullptr;
     }
 
-    do
-    {
+    do {
         tinyxml2::XMLDocument* xmlDoc = new (std::nothrow) tinyxml2::XMLDocument();
         *doc = xmlDoc;
+        ssize_t size;
 
         std::string xmlBuffer = FileUtils::getInstance()->getStringFromFile(UserDefault::getInstance()->getXMLFilePath());
 
-        if (xmlBuffer.empty())
-        {
+        if (xmlBuffer.empty()) {
             CCLOG("can not read xml file");
             break;
         }
@@ -89,26 +84,22 @@ static tinyxml2::XMLElement* getXMLNodeForKey(const char* pKey, tinyxml2::XMLDoc
 
         // get root node
         rootNode = xmlDoc->RootElement();
-        if (nullptr == rootNode)
-        {
+        if (nullptr == rootNode) {
             CCLOG("read root node error");
             break;
         }
         // find the node
         curNode = rootNode->FirstChildElement();
-        if (!curNode)
-        {
+        if (!curNode) {
             // There is not xml node, delete xml file.
             remove(UserDefault::getInstance()->getXMLFilePath().c_str());
 
             return nullptr;
         }
 
-        while (nullptr != curNode)
-        {
+        while (nullptr != curNode) {
             const char* nodeName = curNode->Value();
-            if (!strcmp(nodeName, pKey))
-            {
+            if (!strcmp(nodeName, pKey)) {
                 // delete the node
                 break;
             }
@@ -120,57 +111,46 @@ static tinyxml2::XMLElement* getXMLNodeForKey(const char* pKey, tinyxml2::XMLDoc
     return curNode;
 }
 
-static void deleteNode(tinyxml2::XMLDocument* doc, tinyxml2::XMLElement* node)
-{
-    if (node)
-    {
+static void deleteNode(tinyxml2::XMLDocument* doc, tinyxml2::XMLElement* node) {
+    if (node) {
         doc->DeleteNode(node);
         doc->SaveFile(UserDefault::getInstance()->getXMLFilePath().c_str());
         delete doc;
     }
 }
 
-static void deleteNodeByKey(const char *pKey)
-{
+static void deleteNodeByKey(const char *pKey) {
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
     deleteNode(doc, node);
 }
 #endif
 
-UserDefault::~UserDefault()
-{
+UserDefault::~UserDefault() {
 }
 
-UserDefault::UserDefault()
-{
+UserDefault::UserDefault() {
 }
 
 // FIXME:: deprecated
-void UserDefault::purgeSharedUserDefault()
-{
+void UserDefault::purgeSharedUserDefault() {
     UserDefault::destroyInstance();
 }
 
-void UserDefault::destroyInstance()
-{
+void UserDefault::destroyInstance() {
    CC_SAFE_DELETE(_userDefault);
 }
 
-bool UserDefault::getBoolForKey(const char* pKey)
-{
+bool UserDefault::getBoolForKey(const char* pKey) {
     return getBoolForKey(pKey, false);
 }
 
-bool UserDefault::getBoolForKey(const char* pKey, bool defaultValue)
-{
+bool UserDefault::getBoolForKey(const char* pKey, bool defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             const char* value = (const char*)node->FirstChild()->Value();
             bool ret = (! strcmp(value, "true"));
 
@@ -183,31 +163,26 @@ bool UserDefault::getBoolForKey(const char* pKey, bool defaultValue)
 
             return ret;
         }
-        else
-        {
+        else {
             // delete xmle node
             deleteNode(doc, node);
         }
     }
 #endif
-    
-    return JSFunction::getFunction("Preferences.get").invoke<bool>(pKey, defaultValue);
+
+    return false;//TBD need fixed JniHelper::callStaticBooleanMethod(helperClassName, "getBoolForKey", pKey, defaultValue);
 }
 
-int UserDefault::getIntegerForKey(const char* pKey)
-{
+int UserDefault::getIntegerForKey(const char* pKey) {
     return getIntegerForKey(pKey, 0);
 }
 
-int UserDefault::getIntegerForKey(const char* pKey, int defaultValue)
-{
+int UserDefault::getIntegerForKey(const char* pKey, int defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             int ret = atoi((const char*)node->FirstChild()->Value());
 
             // set value in NSUserDefaults
@@ -219,31 +194,26 @@ int UserDefault::getIntegerForKey(const char* pKey, int defaultValue)
 
             return ret;
         }
-        else
-        {
+        else {
             // delete xmle node
             deleteNode(doc, node);
         }
     }
 #endif
-    
-    return JSFunction::getFunction("Preferences.get").invoke<int>(pKey, defaultValue);
+
+	return 0;// TBD need fixed JniHelper::callStaticIntMethod(helperClassName, "getIntegerForKey", pKey, defaultValue);
 }
 
-float UserDefault::getFloatForKey(const char* pKey)
-{
+float UserDefault::getFloatForKey(const char* pKey) {
     return getFloatForKey(pKey, 0.0f);
 }
 
-float UserDefault::getFloatForKey(const char* pKey, float defaultValue)
-{
+float UserDefault::getFloatForKey(const char* pKey, float defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             float ret = atof((const char*)node->FirstChild()->Value());
 
             // set value in NSUserDefaults
@@ -255,31 +225,26 @@ float UserDefault::getFloatForKey(const char* pKey, float defaultValue)
 
             return ret;
         }
-        else
-        {
+        else {
             // delete xmle node
             deleteNode(doc, node);
         }
     }
 #endif
-    
-    return JSFunction::getFunction("Preferences.get").invoke<double>(pKey, defaultValue);
+
+    return 0.0; // TBD need fixed JniHelper::callStaticFloatMethod(helperClassName, "getFloatForKey", pKey, defaultValue);
 }
 
-double  UserDefault::getDoubleForKey(const char* pKey)
-{
+double  UserDefault::getDoubleForKey(const char* pKey){
     return getDoubleForKey(pKey, 0.0);
 }
 
-double UserDefault::getDoubleForKey(const char* pKey, double defaultValue)
-{
+double UserDefault::getDoubleForKey(const char* pKey, double defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             double ret = atof((const char*)node->FirstChild()->Value());
 
             // set value in NSUserDefaults
@@ -291,31 +256,26 @@ double UserDefault::getDoubleForKey(const char* pKey, double defaultValue)
 
             return ret;
         }
-        else
-        {
+        else {
             // delete xmle node
             deleteNode(doc, node);
         }
     }
 #endif
-    
-    return JSFunction::getFunction("Preferences.get").invoke<double>(pKey, defaultValue);
+
+	return 0.0;// TBD need fixed JniHelper::callStaticDoubleMethod(helperClassName, "getDoubleForKey", pKey, defaultValue);
 }
 
-std::string UserDefault::getStringForKey(const char* pKey)
-{
+std::string UserDefault::getStringForKey(const char* pKey) {
     return getStringForKey(pKey, "");
 }
 
-string UserDefault::getStringForKey(const char* pKey, const std::string & defaultValue)
-{
+string UserDefault::getStringForKey(const char* pKey, const std::string & defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             string ret = (const char*)node->FirstChild()->Value();
 
             // set value in NSUserDefaults
@@ -334,24 +294,20 @@ string UserDefault::getStringForKey(const char* pKey, const std::string & defaul
         }
     }
 #endif
-    
-    return JSFunction::getFunction("Preferences.get").invoke<std::string>(pKey, defaultValue);
+
+    return "";// TBD need fixed JniHelper::callStaticStringMethod(helperClassName, "getStringForKey", pKey, defaultValue);
 }
 
-Data UserDefault::getDataForKey(const char* pKey)
-{
+Data UserDefault::getDataForKey(const char* pKey) {
     return getDataForKey(pKey, Data::Null);
 }
 
-Data UserDefault::getDataForKey(const char* pKey, const Data& defaultValue)
-{
+Data UserDefault::getDataForKey(const char* pKey, const Data& defaultValue) {
 #ifdef KEEP_COMPATABILITY
     tinyxml2::XMLDocument* doc = nullptr;
     tinyxml2::XMLElement* node = getXMLNodeForKey(pKey, &doc);
-    if (node)
-    {
-        if (node->FirstChild())
-        {
+    if (node) {
+        if (node->FirstChild()) {
             const char * encodedData = node->FirstChild()->Value();
 
             unsigned char * decodedData;
@@ -372,8 +328,7 @@ Data UserDefault::getDataForKey(const char* pKey, const Data& defaultValue)
                 return ret;
             }
         }
-        else
-        {
+        else {
             // delete xmle node
             deleteNode(doc, node);
         }
@@ -381,14 +336,9 @@ Data UserDefault::getDataForKey(const char* pKey, const Data& defaultValue)
 #endif
 
     char * encodedDefaultData = NULL;
-    unsigned int encodedDefaultDataLen = defaultValue.isNull() ? 0 : base64Encode(defaultValue.getBytes(), defaultValue.getSize(), &encodedDefaultData);
-    
-    std::string encodedStr;
-    if (encodedDefaultData) {
-        encodedStr = JSFunction::getFunction("Preferences.get").invoke<std::string>(pKey, (const char*)encodedDefaultData);
-    } else {
-        encodedStr = JSFunction::getFunction("Preferences.get").invoke<std::string>(pKey, "");
-    }
+    unsigned int encodedDefaultDataLen = !defaultValue.isNull() ? base64Encode(defaultValue.getBytes(), defaultValue.getSize(), &encodedDefaultData) : 0;
+
+    string encodedStr = "";// TBD need fixed JniHelper::callStaticStringMethod(helperClassName, "getStringForKey", pKey, (const char*)encodedDefaultData);
 
     if (encodedDefaultData)
         free(encodedDefaultData);
@@ -410,53 +360,47 @@ Data UserDefault::getDataForKey(const char* pKey, const Data& defaultValue)
 }
 
 
-void UserDefault::setBoolForKey(const char* pKey, bool value)
-{
+void UserDefault::setBoolForKey(const char* pKey, bool value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, value);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setBoolForKey", pKey, value);
 }
 
-void UserDefault::setIntegerForKey(const char* pKey, int value)
-{
+void UserDefault::setIntegerForKey(const char* pKey, int value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, value);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setIntegerForKey", pKey, value);
 }
 
-void UserDefault::setFloatForKey(const char* pKey, float value)
-{
+void UserDefault::setFloatForKey(const char* pKey, float value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, value);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setFloatForKey", pKey, value);
 }
 
-void UserDefault::setDoubleForKey(const char* pKey, double value)
-{
+void UserDefault::setDoubleForKey(const char* pKey, double value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, value);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setDoubleForKey", pKey, value);
 }
 
-void UserDefault::setStringForKey(const char* pKey, const std::string& value)
-{
+void UserDefault::setStringForKey(const char* pKey, const std::string& value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, value);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setStringForKey", pKey, value);
 }
 
-void UserDefault::setDataForKey(const char* pKey, const Data& value)
-{
+void UserDefault::setDataForKey(const char* pKey, const Data& value) {
 #ifdef KEEP_COMPATABILITY
     deleteNodeByKey(pKey);
 #endif
@@ -466,23 +410,20 @@ void UserDefault::setDataForKey(const char* pKey, const Data& value)
     unsigned int encodedDataLen = base64Encode(value.getBytes(), value.getSize(), &encodedData);
 
     CCLOG("SET DATA ENCODED: --%s", encodedData);
-    
-    JSFunction::getFunction("Preferences.put").invoke<void>(pKey, (const char*)encodedData);
+
+    // TBD need fixed JniHelper::callStaticVoidMethod(helperClassName, "setStringForKey", pKey, (const char*)encodedData);
 
     if (encodedData)
         free(encodedData);
 }
 
 // FIXME:: deprecated
-UserDefault* UserDefault::sharedUserDefault()
-{
+UserDefault* UserDefault::sharedUserDefault() {
     return UserDefault::getInstance();
 }
 
-UserDefault* UserDefault::getInstance()
-{
-    if (! _userDefault)
-    {
+UserDefault* UserDefault::getInstance() {
+    if (! _userDefault) {
 #ifdef KEEP_COMPATABILITY
         initXMLFilePath();
 #endif
@@ -492,46 +433,33 @@ UserDefault* UserDefault::getInstance()
     return _userDefault;
 }
 
-bool UserDefault::isXMLFileExist()
-{
+bool UserDefault::isXMLFileExist() {
     return FileUtils::getInstance()->isFileExist(_filePath);
 }
 
-void UserDefault::initXMLFilePath()
-{
-    if (! _isFilePathInitialized)
-    {
-        _filePath += FileUtils::getInstance()->getWritablePath() + XML_FILE_NAME;
+void UserDefault::initXMLFilePath() {
+#ifdef KEEP_COMPATABILITY
+    if (! _isFilePathInitialized) {
+        // UserDefault.xml is stored in /data/data/<package-path>/ before v2.1.2
+        std::string packageName = "";// TBD need fixed JniHelper::callStaticStringMethod(helperClassName, "getCocos2dxPackageName");
+        _filePath += "/data/data/" + packageName + "/" + XML_FILE_NAME;
         _isFilePathInitialized = true;
-    }    
+    }
+#endif
 }
 
 // create new xml file
-bool UserDefault::createXMLFile()
-{
+bool UserDefault::createXMLFile() {
     return false;
 }
 
-const string& UserDefault::getXMLFilePath()
-{
+const string& UserDefault::getXMLFilePath() {
     return _filePath;
 }
 
-void UserDefault::flush()
-{
+void UserDefault::flush() {
 }
 
-void UserDefault::deleteValueForKey(const char* key)
-{
-    // check the params
-    if (!key)
-    {
-        CCLOG("the key is invalid");
-    }
-    
-    JSFunction::getFunction("Preferences.delete").invoke<void>(key);
-
-    flush();
-}
 NS_CC_END
-#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+
+#endif // (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)

@@ -23,7 +23,6 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "CCPlatformConfig.h"
-#include <cstdlib>
 #if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
 
 #include "CCFileUtils-ohos.h"
@@ -31,12 +30,13 @@ THE SOFTWARE.
 #include "CCLogOhos.h"
 #include <stdlib.h>
 
+
 using namespace std;
 
 NS_CC_BEGIN
 
 NativeResourceManager* FileUtilsOhos::nativeResourceManager_ = nullptr;
-string FileUtilsOhos::ohWritablePath = "";
+string FileUtilsOhos::ohWritablePath;
 
 void FileUtilsOhos::setassetmanager(NativeResourceManager* a) {
     if (nullptr == a) {
@@ -46,8 +46,7 @@ void FileUtilsOhos::setassetmanager(NativeResourceManager* a) {
     cocos2d::FileUtilsOhos::nativeResourceManager_ = a;
 }
 
-FileUtils* FileUtils::getInstance()
-{
+FileUtils* FileUtils::getInstance() {
     if (s_sharedFileUtils == nullptr)
     {
         s_sharedFileUtils = new FileUtilsOhos();
@@ -60,16 +59,13 @@ FileUtils* FileUtils::getInstance()
     return s_sharedFileUtils;
 }
 
-FileUtilsOhos::FileUtilsOhos()
-{
+FileUtilsOhos::FileUtilsOhos() {
 }
 
-FileUtilsOhos::~FileUtilsOhos()
-{
+FileUtilsOhos::~FileUtilsOhos() {
 }
 
-bool FileUtilsOhos::init()
-{
+bool FileUtilsOhos::init() {
     _defaultResRootPath = "";
     return FileUtils::init();
 }
@@ -86,21 +82,20 @@ bool FileUtilsOhos::isFileExist(const std::string& filename) const
 
 
 
-bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const
-{
+bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const {
     if (strFilePath.empty()) {
         return false;
     }
 
     bool bFound = false;
     if (strFilePath[0] != '/') {
-        RawFile64 *fp = RawFileUtils::GetInstance().Open(strFilePath.c_str());
+        RawFile *fp = RawFileUtils::GetInstance().Open(strFilePath.c_str());
         if(fp) {
             OHOS_LOGI("FileUtilsOhos::isFileExistInternal() - open %{public}s success", strFilePath.c_str());
             bFound = true;
             RawFileUtils::GetInstance().Close(fp);
         }
-    } else {
+    } else  {
         FILE *fp = fopen(strFilePath.c_str(), "r");
         if (fp) {
             bFound = true;
@@ -110,9 +105,7 @@ bool FileUtilsOhos::isFileExistInternal(const std::string& strFilePath) const
     return bFound;
 }
 
-// bool CCFileUtilsOhos::isAbsolutePath(const std::string& strPath)
-bool FileUtilsOhos::isAbsolutePath(const std::string& dirPath) const
-{
+bool FileUtilsOhos::isAbsolutePath(const std::string& dirPath) const {
     if (dirPath.empty()) return false;
     std::string dirPathMf = dirPath[dirPath.length() - 1] == '/' ? dirPath.substr(0, dirPath.length() - 1) : dirPath;
 
@@ -140,7 +133,8 @@ std::vector<std::string> FileUtilsOhos::listFiles(const std::string& dirPath)
 {
     return RawFileUtils::GetInstance().searchFiles(dirPath.c_str(), false);
 }
-Data FileUtilsOhos::getData(const std::string& filename, bool forString)
+
+Data FileUtilsOhos::getData(const std::string& filename)
 {
     if (filename.empty())
     {
@@ -174,7 +168,7 @@ Data FileUtilsOhos::getData(const std::string& filename, bool forString)
             fclose(fp);
         }
         else {
-            RawFile64 *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
+            RawFile *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
             CC_BREAK_IF(!fp);
             ssize_t fileSize = RawFileUtils::GetInstance().GetSize(fp);
             data = new unsigned char[fileSize];
@@ -237,7 +231,7 @@ bool FileUtilsOhos::getContents(const std::string& filename, ResizableBuffer* bu
     }
 
     else {
-        RawFile64 *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
+        RawFile *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
         if (!fp) {
             OHOS_LOGI("FileUtilsOhos::fp is nullptr");
             return false;
@@ -294,7 +288,7 @@ unsigned char* FileUtilsOhos::getFileData(const std::string& filename, const cha
 
     do
     {
-        RawFile64 *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
+        RawFile *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());
         //CCLOG("[Nnnnut] FileUtilsOhos::getFileData filename: %s", fullpath.c_str());
         CC_BREAK_IF(!fp);
         ssize_t fileSize = RawFileUtils::GetInstance().GetSize(fp);
@@ -319,13 +313,13 @@ unsigned char* FileUtilsOhos::getFileData(const std::string& filename, const cha
     return data;
 }
 
-bool FileUtilsOhos::getRawFileDescriptor(const std::string &filename, RawFileDescriptor64 *descriptor) {
+bool FileUtilsOhos::getRawFileDescriptor(const std::string &filename, RawFileDescriptor &descriptor) {
     if (filename.empty()) {
         return false;
     }
     std::string fullpath = isAbsolutePath(filename)? filename:fullPathForFilename(filename);
 
-    RawFile64 *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());//fopen(strFilePath.c_str(), "r");
+    RawFile *fp = RawFileUtils::GetInstance().Open(fullpath.c_str());//fopen(strFilePath.c_str(), "r");
     if (!fp) {
         OHOS_LOGE("FileUtilsOhos::fp is nullptr");
         return false;
@@ -336,8 +330,7 @@ bool FileUtilsOhos::getRawFileDescriptor(const std::string &filename, RawFileDes
     return result;
 }
 
-string FileUtilsOhos::getWritablePath() const
-{
+string FileUtilsOhos::getWritablePath() const {
     return ohWritablePath;
 }
 

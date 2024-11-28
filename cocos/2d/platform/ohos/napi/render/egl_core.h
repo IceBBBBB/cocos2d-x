@@ -29,7 +29,6 @@ public:
     void Update();
     void destroySurface();
     void createSurface(void* window);
-
 public:
     int width_;
     int height_;

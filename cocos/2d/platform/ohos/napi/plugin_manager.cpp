@@ -63,9 +63,11 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
     NAPI_CALL(env, napi_create_object(env, &exports));
 
     switch (value) {
-        case APP_LIFECYCLE: {
-                /****  application life cycle: onCreate, onShow, onHide, onDestroy ******/
+        case APP_LIFECYCLE:
+            {
+                /**** AppInit corresponds to the application life cycle in app.ets. onCreate, onShow, onHide, onDestroy ******/
                 OHOS_LOGD("GetContext APP_LIFECYCLE");
+                /**** Register App Lifecycle  ******/
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onCreate", NapiManager::NapiOnCreate),
                     DECLARE_NAPI_FUNCTION("onShow", NapiManager::NapiOnShow),
@@ -75,8 +77,9 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case JS_PAGE_LIFECYCLE: {
-                /****************  JS Page Lifecycle ****************************/
+        case JS_PAGE_LIFECYCLE:
+            {
+                /****************  Declarative Development Paradigm JS Page Lifecycle Registration ****************************/
                 OHOS_LOGD("GetContext JS_PAGE_LIFECYCLE");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onPageShow", NapiManager::NapiOnPageShow),
@@ -85,8 +88,9 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case RAW_FILE_UTILS: {
-                /****************  Rawfile ****************************/
+        case RAW_FILE_UTILS:
+            {
+                /****************  Declarative Development Paradigm JS Page Lifecycle Registration ****************************/
                 OHOS_LOGD("GetContext RAW_FILE_UTILS");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("nativeResourceManagerInit", RawFileUtils::nativeResourceManagerInit),
@@ -96,7 +100,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
 
             }
             break;
-        case WORKER_INIT: {
+        case WORKER_INIT:
+            {
                 OHOS_LOGD("NapiManager::GetContext WORKER_INIT");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("workerInit", NapiManager::napiWorkerInit),
@@ -104,7 +109,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case NATIVE_API: {
+        case NATIVE_API:
+            {
                 OHOS_LOGD("NapiManager::GetContext NATIVE_RENDER_API");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("nativeEngineStart", NapiManager::napiNativeEngineStart),
@@ -114,7 +120,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case INPUT_NAPI: {
+        case INPUT_NAPI:
+            {
                 OHOS_LOGD("NapiManager::GetContext INPUT_NAPI");
                 napi_property_descriptor desc[] = {
 				    DECLARE_NAPI_FUNCTION("editBoxOnFocusCB", InputNapi::editBoxOnFocusCB),
@@ -125,7 +132,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case MOUSE_NAPI: {
+        case MOUSE_NAPI:
+            {
                 OHOS_LOGD("NapiManager::GetContext INPUT_NAPI");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("mouseWheelCB", MouseNapi::mouseWheelCB),
@@ -133,7 +141,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-        case WEBVIEW_NAPI: {
+        case WEBVIEW_NAPI:
+            {
                 OHOS_LOGD("NapiManager::GetContext WEBVIEW_NAPI");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("shouldStartLoading", WebViewNapi::shouldStartLoading),
@@ -144,7 +153,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
             }
             break;
-		case VIDEOPLAYER_NAPI: {
+		case VIDEOPLAYER_NAPI:
+            {
                 OHOS_LOGE("VideoPlayerNapi::Export");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onVideoCallBack", VideoPlayerNapi::onVideoCallBack),
@@ -153,7 +163,8 @@ napi_value NapiManager::GetContext(napi_env env, napi_callback_info info) {
                 OHOS_LOGE("VideoPlayerNapi::Export finish");
             }
             break;
-        case SENSOR_API: {
+        case SENSOR_API:
+            {
                 OHOS_LOGD("NapiManager::GetContext SENSOR_API");
                 napi_property_descriptor desc[] = {
                     DECLARE_NAPI_FUNCTION("onAccelerometerCallBack", SensorNapi::onAccelerometerCallBack),
@@ -223,7 +234,6 @@ napi_value NapiManager::NapiOnHide(napi_env env, napi_callback_info info) {
     PluginRender::GetInstance()->enqueue(data);
     return nullptr;
 }
-
 
 napi_value NapiManager::NapiOnDestroy(napi_env env, napi_callback_info info) {
     WorkerMessageData data{MessageType::WM_APP_DESTROY, nullptr, nullptr};

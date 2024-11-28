@@ -1,17 +1,13 @@
 #include <native_drawing/drawing_font_collection.h>
-#include <native_drawing/drawing_register_font.h>
 #include "CCTextBitmap.h"
 #include "CCPlatformMacros.h"
 #include "platform/CCCommon.h"
+#include <native_drawing/drawing_font_collection.h>
+
 
 NS_CC_BEGIN
 
-std::unordered_set<std::string> CCTextBitmap::_setFontCollection;
-OH_Drawing_FontCollection * CCTextBitmap::_fontCollection = OH_Drawing_CreateSharedFontCollection();
-CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text, const char *pFontName, const Device::TextAlign eAlignMask, int width_, int height_, double fontSize)
-{
-    
-
+CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text, const char *pFontName, const Device::TextAlign eAlignMask, int width_, int height_, double fontSize) {
     return createCCTextBitmap(text, pFontName, 
         fontSize, 255, 0, 0, 0, eAlignMask,
         width_, height_, 
@@ -20,68 +16,62 @@ CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text, const char *pFo
 }
 
 CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text, const char *pFontName, const float a, const float r, const float g, const float b, 
-            const Device::TextAlign eAlignMask, int width_, int height_, double fontSize)
-{
+            const Device::TextAlign eAlignMask, int width_, int height_, double fontSize) {
     return createCCTextBitmap(text, pFontName, 
         fontSize, a, r, g, b, eAlignMask,
         width_, height_, 
         false, 1, 1, 1, 
         false, 1, 1, 1, 1);
 }
-
-int CCTextBitmap::calxStartPosition(int pAlignment, int layoutWidth, int realWidth, int textWidth)
-{
-    if (pAlignment == TEXT_ALIGN_LEFT)
-    {
+int CCTextBitmap::calxStartPosition(int pAlignment, int layoutWidth, int realWidth, int textWidth) {
+    if (pAlignment == TEXT_ALIGN_LEFT) {
         return 0;
     }
-    if (pAlignment == TEXT_ALIGN_CENTER)
-    {
-        // Move to the leftmost part of the text, and then add the margin between the text and the actual rendering position. Note that the content drawn from the drawing moves to the left using the - position and to the right using the + position.
+    if (pAlignment == TEXT_ALIGN_CENTER) {
+        // Move to the leftmost part of the text, and then add the margin between the text and the actual rendering
+        // position. Note that the content drawn from the drawing moves to the left using the - position and to the
+        // right using the + position.
         return (-(layoutWidth - realWidth) / 2) + ((textWidth - realWidth) / 2);
-    }    
-    
-    if (pAlignment == TEXT_ALIGN_RIGHT)
-    {
+    }
+
+    if (pAlignment == TEXT_ALIGN_RIGHT) {
         return -(layoutWidth - textWidth);
     }
     return 0;
 }
-int CCTextBitmap::calyStartPosition(int pAlignment, int realHeight, int textHeight)
-{
+int CCTextBitmap::calyStartPosition(int pAlignment, int realHeight, int textHeight) {
     const int pVerticalAlignment = (pAlignment >> 4) & 0x0F;
     int y = 0;
-        switch (pVerticalAlignment) {
-			case VERTICALALIGN_TOP:
-				y = 0;
-				break;
-			case VERTICALALIGN_CENTER:
-				y = (textHeight - realHeight) / 2;
-				break;
-			case VERTICALALIGN_BOTTOM:
-				y = textHeight - realHeight;
-				break;
-			default:
-				break;
-			}
-    
+    switch (pVerticalAlignment) {
+    case VERTICALALIGN_TOP:
+        y = 0;
+        break;
+    case VERTICALALIGN_CENTER:
+        y = (textHeight - realHeight) / 2;
+        break;
+    case VERTICALALIGN_BOTTOM:
+        y = textHeight - realHeight;
+        break;
+    default:
+        break;
+    }
+
     return y;
 }
-int CCTextBitmap::processTextAlign(int pAlignment)
-{
+int CCTextBitmap::processTextAlign(int pAlignment) {
     const int horizontalAlignment = pAlignment & 0x0F;
     int align = TEXT_ALIGN_LEFT;
     switch (horizontalAlignment) {
-        case HORIZONTALALIGN_CENTER:
-            align = TEXT_ALIGN_CENTER;
-            break;
-		case HORIZONTALALIGN_RIGHT:
-            align = TEXT_ALIGN_RIGHT;
-			break;
-		case HORIZONTALALIGN_LEFT:
-		default:
-			align = TEXT_ALIGN_LEFT;
-			break;
+    case HORIZONTALALIGN_CENTER:
+        align = TEXT_ALIGN_CENTER;
+        break;
+    case HORIZONTALALIGN_RIGHT:
+        align = TEXT_ALIGN_RIGHT;
+        break;
+    case HORIZONTALALIGN_LEFT:
+    default:
+        align = TEXT_ALIGN_LEFT;
+        break;
     }
     return align;
 }
@@ -90,49 +80,42 @@ CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text,  const char *pF
             const float fontTintA, const float fontTintR, const float fontTintG, const float fontTintB,
             const Device::TextAlign eAlignMask, const int pWidth, const int pHeight, const bool shadow,
             const float shadowDX, const float shadowDY, const float shadowBlur, const bool stroke,
-            const float strokeR, const float strokeG, const float strokeB, const float strokeSize)
-{
+            const float strokeR, const float strokeG, const float strokeB, const float strokeSize) {
     CCTextBitmap *cCTextBitmap = new CCTextBitmap();
     
-    // Manages typographical styles, such as text orientation.
     cCTextBitmap->_typographyStyle = OH_Drawing_CreateTypographyStyle();
     // Set the text to be displayed from left to right.
     OH_Drawing_SetTypographyTextDirection(cCTextBitmap->_typographyStyle, TEXT_DIRECTION_LTR);
     int align = processTextAlign((int)eAlignMask);
     // Set text alignment
     OH_Drawing_SetTypographyTextAlign(cCTextBitmap->_typographyStyle, align);
-    // Used to manage font colors, decorations, etc.
+    // Used to load fonts
+    cCTextBitmap->_fontCollection = OH_Drawing_CreateFontCollection();
+    cCTextBitmap->_typographyCreate = OH_Drawing_CreateTypographyHandler(cCTextBitmap->_typographyStyle,
+		cCTextBitmap->_fontCollection);
+    
     cCTextBitmap->_textStyle = OH_Drawing_CreateTextStyle();
+
     // Set Text Color
-    OH_Drawing_SetTextStyleColor(cCTextBitmap->_textStyle, OH_Drawing_ColorSetArgb(fontTintA, fontTintR, fontTintG, fontTintB)); 
+    OH_Drawing_SetTextStyleColor(cCTextBitmap->_textStyle, OH_Drawing_ColorSetArgb(fontTintA, fontTintR, fontTintG, fontTintB));
+
     // Set text size
-    OH_Drawing_SetTextStyleFontSize(cCTextBitmap->_textStyle, fontSize == 0 ? DEFAULT_FONTSIZE : fontSize) ;
+    OH_Drawing_SetTextStyleFontSize(cCTextBitmap->_textStyle, fontSize == 0 ? DEFAULT_FONTSIZE : fontSize);
     // Set word weight
     OH_Drawing_SetTextStyleFontWeight(cCTextBitmap->_textStyle, FONT_WEIGHT_400);
-    // Set the font baseline position. TEXT_BASELINE_ALPHABotic is used to display phonetic characters and the baseline position is lower in the middle. TEXT_BASELINE_IDEOGRAPHIC for ideographic text with baseline at bottom
+    // Set the font baseline position. TEXT_BASELINE_ALPHABotic is used to display phonetic characters and the baseline
+    // position is lower in the middle. TEXT_BASELINE_IDEOGRAPHIC for ideographic text with baseline at bottom
     OH_Drawing_SetTextStyleBaseLine(cCTextBitmap->_textStyle, TEXT_BASELINE_ALPHABETIC);
     // Set font height
     OH_Drawing_SetTextStyleFontHeight(cCTextBitmap->_textStyle, 1);
-    // 注册自定义字体
-    const char* fontFamily = pFontName;
-    char* Path  = new char[1000];
-    std::strcpy(Path, "/system/fonts/");
-    // 设置自定义字体所在的沙箱路径
-    const char* fontPath = strcat(Path,fontFamily);
-    auto iter = cCTextBitmap->_setFontCollection.find(fontPath);
-    if (iter == cCTextBitmap->_setFontCollection.end())
-    {
-        OH_Drawing_RegisterFont(cCTextBitmap->_fontCollection, pFontName, fontPath);
-        cCTextBitmap->_setFontCollection.insert(fontPath);
-    }
     const char *fontFamilies[] = {pFontName};
     // Set the font type
     OH_Drawing_SetTextStyleFontFamilies(cCTextBitmap->_textStyle, 1, fontFamilies);
-    // Creates a pointer to the OH_Drawing_TypographyCreate object
-    cCTextBitmap->_typographyCreate = OH_Drawing_CreateTypographyHandler(cCTextBitmap->_typographyStyle, cCTextBitmap->_fontCollection);
+    // Set the font style. The font style is not italicized. FONT_EVEN_ITALIC Italic
+    OH_Drawing_SetTextStyleFontStyle(cCTextBitmap->_textStyle, FONT_STYLE_NORMAL);
     // Setting the Language Area
     OH_Drawing_SetTextStyleLocale(cCTextBitmap->_textStyle, "en");
-    
+
     // Set the typesetting style
     OH_Drawing_TypographyHandlerPushTextStyle(cCTextBitmap->_typographyCreate, cCTextBitmap->_textStyle);
     // Set text content
@@ -142,18 +125,18 @@ CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text,  const char *pF
 
     // Used to create OH_Drawing_Typography, which is used to manage the layout and display of typesetting.
     cCTextBitmap->_typography = OH_Drawing_CreateTypography(cCTextBitmap->_typographyCreate);
- 
-    // The input width of the outer layer is preferentially used. If the input width is not used, the calculated width is used.
+
+    // The input width of the outer layer is preferentially used.
     int layoutWidth = pWidth;
-    if(pWidth == 0) {
-        // In NAPI mode, call the ArkTS function to calculate the text width. Here, 400 is the word weight, which 
-        // corresponds to the value of OH_Drawing_SetTextStyleFontWeight.
+    if (pWidth == 0) {
+        // If there is no width set, assume a maximum width and calculate the actual width as the layout width
         OH_Drawing_TypographyLayout(cCTextBitmap->_typography, 100000);
         layoutWidth = OH_Drawing_TypographyGetMaxIntrinsicWidth(cCTextBitmap->_typography) + 1;
     }
+
     // typographic layout, setting maximum text width
     OH_Drawing_TypographyLayout(cCTextBitmap->_typography, layoutWidth);
-    
+
     // Obtains the maximum inherent width.
     int realWidth = OH_Drawing_TypographyGetMaxIntrinsicWidth(cCTextBitmap->_typography);
     // Obtaining the height
@@ -163,59 +146,55 @@ CCTextBitmap* CCTextBitmap::createCCTextBitmap(const char *text,  const char *pF
 
     // Format used to describe the bit pixel, including color type and transparency type.
     cCTextBitmap->_bitmap = OH_Drawing_BitmapCreate();
-    // COLOR_FORMAT_RGBA_8888：Each pixel is represented by a 32-bit quantity. 8 bits indicate transparency, 8 bits indicate red, 8 bits indicate green, and 8 bits indicate blue.
-    // ALPHA_FORMAT_OPAQUE：Bitmap has no transparency
+    // COLOR_FORMAT_RGBA_8888：Each pixel is represented by a 32-bit quantity. 8 bits indicate transparency, 8 bits
+    // indicate red, 8 bits indicate green, and 8 bits indicate blue. ALPHA_FORMAT_OPAQUE：Bitmap has no transparency
     OH_Drawing_BitmapFormat cFormat = {COLOR_FORMAT_RGBA_8888, ALPHA_FORMAT_OPAQUE};
-    
+
     // Initializes the width and height of the bitmap object, and sets the pixel format for the bitmap.
-    OH_Drawing_BitmapBuild(cCTextBitmap->_bitmap, textWidth, textHeight , &cFormat);
-    
+    OH_Drawing_BitmapBuild(cCTextBitmap->_bitmap, textWidth, textHeight, &cFormat);
+
     // Create a canvas object
     cCTextBitmap->_canvas = OH_Drawing_CanvasCreate();
     // Bind a bitmap object to the canvas so that the content drawn on the canvas is output to the bitmap (i.e., CPU rendering).
     OH_Drawing_CanvasBind(cCTextBitmap->_canvas, cCTextBitmap->_bitmap);
-        
+
     int xStart = calxStartPosition(align, layoutWidth, realWidth, textWidth);
     int yStart = calyStartPosition((int)eAlignMask, realHeight, textHeight);
-    double position[2] = {(double)xStart, (double)yStart};
-    // Uses the specified color to clear the canvas. OH_Drawing_ColorSetArgb: Converts four variables (respectively describing transparency, red, green, and blue) to a 32-bit (ARGB) variable that describes colors.
-    OH_Drawing_CanvasClear(cCTextBitmap->_canvas, OH_Drawing_ColorSetArgb(0x00, 0xFF, 0x00, 0x00));
-    // Display Text
+    double xStartD=  static_cast<double>(xStart);
+    double yStartD=  static_cast<double>(yStart);
+    double position[2] = {xStartD, yStartD};
+    OH_Drawing_CanvasClear(cCTextBitmap->_canvas, OH_Drawing_ColorSetArgb(0x00, 0xFF, 0x00, 0x00));            
     OH_Drawing_TypographyPaint(cCTextBitmap->_typography, cCTextBitmap->_canvas, position[0], position[1]);
     
     constexpr uint32_t stride = 4;
     int32_t addrSize = pWidth * pHeight * stride;
-    // Obtains the pixel address of a specified bitmap. The pixel data of the bitmap can be obtained based on the pixel address.
     cCTextBitmap->pixelAddr = OH_Drawing_BitmapGetPixels(cCTextBitmap->_bitmap);
     cCTextBitmap->width = textWidth;
     cCTextBitmap->height = textHeight;
     return cCTextBitmap;
 }
 
-void* CCTextBitmap::getPixelAddr()
-{
+void *CCTextBitmap::getPixelAddr() {
     return pixelAddr;
 }
 
 CCTextBitmap::~CCTextBitmap() {
- OH_Drawing_CanvasDestroy(_canvas);
+    OH_Drawing_CanvasDestroy(_canvas);
     _canvas = nullptr;
     OH_Drawing_BitmapDestroy(_bitmap);
     _bitmap = nullptr;
- 
     OH_Drawing_DestroyTypography(_typography);
     _typography = nullptr;
     OH_Drawing_DestroyTextStyle(_textStyle);
     _textStyle = nullptr;
     OH_Drawing_DestroyTypographyHandler(_typographyCreate);
     _typographyCreate = nullptr;
+    OH_Drawing_DestroyFontCollection(_fontCollection);
+    _fontCollection = nullptr;
     OH_Drawing_DestroyTypographyStyle(_typographyStyle);
     _typographyStyle = nullptr;
- 
+
     pixelAddr = nullptr;
-
 }
-
-
 
 NS_CC_END

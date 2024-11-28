@@ -305,9 +305,9 @@ AudioPlayerProvider::AudioFileInfo AudioPlayerProvider::getFileInfo(const std::s
     int assetFd = -1;
 
     if(audioFilePath[0]!='/'){
-        RawFileDescriptor64  descriptor;
+        RawFileDescriptor descriptor;
         FileUtilsOhos *utils = dynamic_cast<FileUtilsOhos *>(FileUtils::getInstance());
-        bool result = utils->getRawFileDescriptor(audioFilePath , &descriptor);
+        bool result = utils->getRawFileDescriptor(audioFilePath , descriptor);
         if(result != 1|| descriptor.fd <= 0){
             ALOGE("Failed to open file descriptor for '%s'", audioFilePath.c_str());
             return info;

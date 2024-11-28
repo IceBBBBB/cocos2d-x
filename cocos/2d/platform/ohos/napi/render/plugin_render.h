@@ -40,6 +40,7 @@ public:
     void workerInit(napi_env env, uv_loop_t* loop);
 
     void sendMsgToWorker(const MessageType& type, OH_NativeXComponent* component, void* window); 
+    void sendMsgToWorker(const MessageType& type, OH_NativeXComponent* component, void* window, OH_NativeXComponent_TouchEvent* touchEvent);
     void enqueue(const WorkerMessageData& data);
     bool dequeue(WorkerMessageData* data);
     void triggerMessageSignal();
@@ -63,16 +64,17 @@ public:
     void OnSurfaceChanged(OH_NativeXComponent* component, void* window);
 
     void OnSurfaceDestroyed(OH_NativeXComponent* component, void* window);
-	
+
     void onSurfaceHide();
     
     void onSurfaceShow(void* window);
-    
+
     void DispatchKeyEvent(OH_NativeXComponent* component, void* window);
 
     void DispatchMouseEvent(OH_NativeXComponent* component, void* window);
 
-    void DispatchTouchEvent(OH_NativeXComponent* component, void* window);
+    void DispatchTouchEvent(OH_NativeXComponent* component, void* window, OH_NativeXComponent_TouchEvent* touchEvent);
+
     void DispatchMouseWheelEvent();
 
     void OnCreateNative(napi_env env, uv_loop_t* loop);
@@ -88,13 +90,10 @@ public:
     };
     static PluginRender* instance_;
     static OH_NativeXComponent_Callback callback_;
-
     static OH_NativeXComponent_MouseEvent_Callback mouseCallback_;
     static std::queue<OH_NativeXComponent_KeyEvent*> keyEventQueue_;
     static std::queue<OH_NativeXComponent_MouseEvent> mouseEventQueue_;
     static std::queue<EventMouseWheelData> mouseWheelEventQueue_;
-	
-    static std::queue<OH_NativeXComponent_TouchEvent*> touchEventQueue_;
 
     OH_NativeXComponent* component_{nullptr};
     uv_timer_t timerHandle_;

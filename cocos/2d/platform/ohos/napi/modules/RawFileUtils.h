@@ -32,42 +32,46 @@ public:
         return instance;
     }
 
-    RawFile64 *Open(const char *fileName) {
-        return OH_ResourceManager_OpenRawFile64(nativeResourceManager_, fileName);
+    RawFile *Open(const char *fileName) {
+        return OH_ResourceManager_OpenRawFile(nativeResourceManager_, fileName);
     }
 
     RawDir *OpenDir(const char *dirName) {
         return OH_ResourceManager_OpenRawDir(nativeResourceManager_, dirName);
     }
 
-    void Close(RawFile64 *file) {
-        return OH_ResourceManager_CloseRawFile64(file);
+    void Close(RawFile *file) {
+        return OH_ResourceManager_CloseRawFile(file);
     }
     
     void CloseDir(RawDir *rawDir) {
         return OH_ResourceManager_CloseRawDir(rawDir);
     }
 
-    int Seek(const RawFile64 *file, long offset, int whence) {
-        return OH_ResourceManager_SeekRawFile64(file, offset, whence);
+    int Seek(const RawFile *file, long offset, int whence) {
+        return OH_ResourceManager_SeekRawFile(file, offset, whence);
     }
 
-    long GetSize(RawFile64* file) {
-        return OH_ResourceManager_GetRawFileSize64(file);
+    long GetSize(RawFile* file) {
+        return OH_ResourceManager_GetRawFileSize(file);
     }
 
-    long Read(RawFile64 *file, void* buf, size_t length) {
-        return OH_ResourceManager_ReadRawFile64(file, buf, length);
+    long Read(RawFile *file, void* buf, size_t length) {
+        return OH_ResourceManager_ReadRawFile(file, buf, length);
     }
 
     int GetDirSize(RawDir* rawDir) {
         return OH_ResourceManager_GetRawFileCount(rawDir);
     }
 
-    bool GetRawFileDescriptor(RawFile64 *file, RawFileDescriptor64 *descriptor) {
-        return OH_ResourceManager_GetRawFileDescriptor64(file, descriptor);
+    bool GetRawFileDescriptor(RawFile *file, RawFileDescriptor &descriptor) {
+        return OH_ResourceManager_GetRawFileDescriptor(file, descriptor);
     }
 
+    bool ReleaseRawFileDescriptor(RawFileDescriptor &descriptor) {
+       return OH_ResourceManager_ReleaseRawFileDescriptor(descriptor);
+    }
+    
     std::vector<std::string> searchFiles(const char *folder, bool recursive = false);
 
     static NativeResourceManager* GetRM() { return nativeResourceManager_;}

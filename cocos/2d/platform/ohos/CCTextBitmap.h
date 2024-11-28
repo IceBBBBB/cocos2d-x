@@ -9,21 +9,19 @@
 #include <native_drawing/drawing_canvas.h>
 #include <native_drawing/drawing_text_typography.h>
 #include <native_drawing/drawing_font_collection.h>
-#include <unordered_set>
 
 #define DEFAULT_FONTSIZE 20
 
 NS_CC_BEGIN
-    class CCTextBitmap
-    {
+class CCTextBitmap {
     public:
         static const int HORIZONTALALIGN_LEFT = 1;
         static const int HORIZONTALALIGN_RIGHT = 2;
         static const int HORIZONTALALIGN_CENTER = 3;
-
-        static const int VERTICALALIGN_TOP = 1;
-        static const int VERTICALALIGN_BOTTOM = 2;
-        static const int VERTICALALIGN_CENTER = 3;
+    
+    	static const int VERTICALALIGN_TOP = 1;
+    	static const int VERTICALALIGN_BOTTOM = 2;
+    	static const int VERTICALALIGN_CENTER = 3;
         static CCTextBitmap* createCCTextBitmap(const char *text, const char *pFontName, const Device::TextAlign eAlignMask, int width_, int height_, double fontSize);
         static CCTextBitmap* createCCTextBitmap(const char *text, const char *pFontName, const float a, const float r, const float g, const float b, 
             const Device::TextAlign eAlignMask, int width_, int height_, double fontSize);
@@ -67,11 +65,9 @@ NS_CC_BEGIN
         OH_Drawing_Canvas* _canvas{nullptr};
         OH_Drawing_TypographyStyle* _typographyStyle{nullptr};
         OH_Drawing_TypographyCreate* _typographyCreate{nullptr};
+        OH_Drawing_FontCollection* _fontCollection{nullptr};
         OH_Drawing_TextStyle* _textStyle{nullptr};
         OH_Drawing_Typography *_typography{nullptr};
-        static std::unordered_set<std::string> _setFontCollection;
-        static OH_Drawing_FontCollection *_fontCollection;
-
-    };
+};
 NS_CC_END
 #endif 

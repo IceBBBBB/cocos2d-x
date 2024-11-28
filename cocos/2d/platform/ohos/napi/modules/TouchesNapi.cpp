@@ -2,30 +2,31 @@
 #include "CCDirector.h"
 #include "CCTouch.h"
 #include "platform/ohos/CCGLView.h"
+
 #include "platform/ohos/CCLogOhos.h"
+#include <cstddef>
 
 using namespace cocos2d;
 
 extern "C" {
-    void Cocos2dxRenderer_nativeTouchesBegin(intptr_t id, float x, float y) {
-        cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesBegin(1, &id, &x, &y);
+    void Cocos2dxRenderer_nativeTouchesBegin(int num, intptr_t ids[] , float xs[], float ys[]) {
+        cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesBegin(num, ids, xs, ys);
     }
 
     void Cocos2dxRenderer_nativeTouchesEnd(intptr_t id, float x, float y) {
         cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesEnd(1, &id, &x, &y);
     }
 
-    void Cocos2dxRenderer_nativeTouchesMove(intptr_t id, float x, float y) {
-       cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesMove(1, &id, &x, &y);
+    void Cocos2dxRenderer_nativeTouchesMove(int num, intptr_t ids[] , float xs[], float ys[]) {
+       cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesMove(num, ids, xs, ys);
     }
 
-    void Cocos2dxRenderer_nativeTouchesCancel(intptr_t id, float x, float y) {
-       cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesCancel(1, &id, &x, &y);
+    void Cocos2dxRenderer_nativeTouchesCancel(int num, intptr_t ids[] , float xs[], float ys[]) {
+       cocos2d::Director::sharedDirector()->getOpenGLView()->handleTouchesCancel(num, ids, xs, ys);
     }
 
     #define KEYCODE_BACK 0x04
     #define KEYCODE_MENU 0x52
-
     bool Cocos2dxRenderer_nativeKeyDown(int keyCode) {
        Director* pDirector = Director::sharedDirector();
        switch (keyCode) {

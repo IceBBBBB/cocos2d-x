@@ -107,7 +107,6 @@ Widget* Helper::seekActionWidgetByActionTag(Widget* root, int tag)
 	}
 	return nullptr;
 }
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
 Rect Helper::convertBoundingBoxToScreen(Node* node)
 {
@@ -129,7 +128,6 @@ Rect Helper::convertBoundingBoxToScreen(Node* node)
     return Rect(uiLeft, uiTop, uiWidth, uiHeight);
 }
 #endif
-
 }
 
 NS_CC_END

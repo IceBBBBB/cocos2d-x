@@ -9,6 +9,7 @@
 #include "cocos2d.h"
 #include "native_window/external_window.h"
 #include "native_buffer/native_buffer.h"
+
 using namespace cocos2d;
 
 #ifdef __cplusplus
@@ -20,7 +21,6 @@ OH_NativeXComponent_Callback PluginRender::callback_;
 OH_NativeXComponent_MouseEvent_Callback PluginRender::mouseCallback_;
 std::queue<OH_NativeXComponent_KeyEvent*> PluginRender::keyEventQueue_;
 std::queue<OH_NativeXComponent_MouseEvent> PluginRender::mouseEventQueue_;
-std::queue<OH_NativeXComponent_TouchEvent*> PluginRender::touchEventQueue_;
 std::queue<PluginRender::EventMouseWheelData> PluginRender::mouseWheelEventQueue_;
 uint64_t PluginRender::animationInterval_ = 16;
 uint64_t PluginRender::lastTime = 0;
@@ -84,7 +84,9 @@ cocos2d::EventKeyboard::KeyCode ohKeyCodeToCocosKeyCode(OH_NativeXComponent_KeyC
     }
     return cocos2d::EventKeyboard::KeyCode(ohKeyCode);
 }
-void OnSurfaceCreatedCB(OH_NativeXComponent* component, void* window) {
+
+void OnSurfaceCreatedCB(OH_NativeXComponent* component, void* window)
+{
     OHOS_LOGD("OnSurfaceCreatedCB");
     PluginRender::GetInstance()->sendMsgToWorker(MessageType::WM_XCOMPONENT_SURFACE_CREATED, component, window);
 }
@@ -104,7 +106,7 @@ void onSurfaceHideCB(OH_NativeXComponent* component, void* window) {
     }
     PluginRender::GetInstance()->sendMsgToWorker(MessageType::WM_XCOMPONENT_SURFACE_HIDE, component, window);
 }
- 
+
 void onSurfaceShowCB(OH_NativeXComponent* component, void* window) {
     int32_t ret;
     char idStr[OH_XCOMPONENT_ID_LEN_MAX + 1] = {};
@@ -150,7 +152,6 @@ void DispatchHoverEventCB(OH_NativeXComponent* component, bool isHover)
 }
 
 void DispatchTouchEventCB(OH_NativeXComponent* component, void* window) {
-    OHOS_LOGD("DispatchTouchEventCB");
     OH_NativeXComponent_TouchEvent* touchEvent = new(std::nothrow) OH_NativeXComponent_TouchEvent();
     if (!touchEvent) {
         OHOS_LOGE("DispatchTouchEventCB::touchEvent alloc failed");
@@ -158,8 +159,7 @@ void DispatchTouchEventCB(OH_NativeXComponent* component, void* window) {
     }
     int32_t ret = OH_NativeXComponent_GetTouchEvent(component, window, touchEvent);
     if (ret == OH_NATIVEXCOMPONENT_RESULT_SUCCESS) {
-        PluginRender::touchEventQueue_.push(touchEvent);
-        PluginRender::GetInstance()->sendMsgToWorker(MessageType::WM_XCOMPONENT_TOUCH_EVENT, component, window);
+        PluginRender::GetInstance()->sendMsgToWorker(MessageType::WM_XCOMPONENT_TOUCH_EVENT, component, window, touchEvent);
     } else {
         delete touchEvent;
     }
@@ -210,7 +210,7 @@ void PluginRender::onMessageCallback(const uv_async_t* /* req */) {
             } else if (msgData.type == MessageType::WM_XCOMPONENT_MOUSE_WHEEL_EVENT) {
                 render->DispatchMouseWheelEvent();
             } else if (msgData.type == MessageType::WM_XCOMPONENT_TOUCH_EVENT) {
-                render->DispatchTouchEvent(nativexcomponet, msgData.window);
+                render->DispatchTouchEvent(nativexcomponet, msgData.window, msgData.touchEvent);
             } else if (msgData.type == MessageType::WM_XCOMPONENT_SURFACE_CHANGED) {
                 render->OnSurfaceChanged(nativexcomponet, msgData.window);
             } else if (msgData.type == MessageType::WM_XCOMPONENT_SURFACE_SHOW) {
@@ -249,11 +249,12 @@ static uint64_t getCurrentMillSecond() {
 void PluginRender::timerCb(uv_timer_t* handle) {
     // OHOS_LOGD("PluginRender::timerCb, animationInterval_ is %{public}lu", animationInterval_);
     if (PluginRender::GetInstance()->eglCore_ != nullptr) {
-        cocos2d::Director::getInstance()->mainLoop();
+        cocos2d::CCDirector::sharedDirector()->mainLoop();
         PluginRender::GetInstance()->eglCore_->Update();
     }
     uint64_t curTime = getCurrentMillSecond();
-    if (curTime - lastTime < animationInterval_) {
+    if (curTime - lastTime < animationInterval_)
+    {
         usleep((animationInterval_ - curTime + lastTime) * 1000);
     }
     lastTime = getCurrentMillSecond();
@@ -360,6 +361,11 @@ void PluginRender::sendMsgToWorker(const MessageType& type, OH_NativeXComponent*
     enqueue(data);
 }
 
+void PluginRender::sendMsgToWorker(const MessageType& type, OH_NativeXComponent* component, void* window, OH_NativeXComponent_TouchEvent* touchEvent) {
+    WorkerMessageData data{type, static_cast<void*>(component), window, touchEvent};
+    enqueue(data);
+}
+
 void PluginRender::enqueue(const WorkerMessageData& msg) {
     messageQueue_.enqueue(msg);
     triggerMessageSignal();
@@ -381,9 +387,6 @@ void PluginRender::run() {
     if (workerLoop_) {
         uv_timer_init(workerLoop_, &timerHandle_);
         timerInited_ = true;
-    // 1s = 1000ms = 60fps;
-    // 1000ms / 60fps = 16 ms/fps
-        uv_timer_start(&timerHandle_, &PluginRender::timerCb, 16, true);
     }
 }
 
@@ -407,22 +410,21 @@ void PluginRender::OnSurfaceCreated(OH_NativeXComponent* component, void* window
 }
 
 void PluginRender::OnSurfaceChanged(OH_NativeXComponent* component, void* window) {
+    OHOS_LOGD("PluginRender::OnSurfaceChanged");
     int32_t ret = OH_NativeXComponent_GetXComponentSize(component, window, &width_, &height_);
     if (ret == OH_NATIVEXCOMPONENT_RESULT_SUCCESS) {
         OHOS_LOGD("PluginRender::OnSurfaceChanged, width is %lu, height is %lu", width_, height_);
         cocos2d::Application::getInstance()->applicationScreenSizeChanged(width_, height_);
     }
-    OHOS_LOGE("PluginRender::OnSurfaceChanged GetXComponentSize failed");
 }
 
 void PluginRender::onSurfaceHide() {
     eglCore_->destroySurface();
 }
- 
+
 void PluginRender::onSurfaceShow(void* window) {
     eglCore_->createSurface(window);
 }
-
 void PluginRender::OnSurfaceDestroyed(OH_NativeXComponent* component, void* window) {
 }
 
@@ -440,44 +442,43 @@ void PluginRender::DispatchMouseWheelEvent()
     }
 }
 
-void PluginRender::DispatchTouchEvent(OH_NativeXComponent* component, void* window) {
-    OH_NativeXComponent_TouchEvent* touchEvent;
-    while(!touchEventQueue_.empty()) {
-        touchEvent = touchEventQueue_.front();
-        touchEventQueue_.pop();
-
-        OHOS_LOGD("Touch Info : x = %{public}f, y = %{public}f screenx = %{public}f, screeny = %{public}f", touchEvent->x, touchEvent->y, touchEvent->screenX, touchEvent->screenY);
-        for (int i = 0; i < touchEvent->numPoints; i++) {
-            OHOS_LOGD("Touch Info : dots[%{public}d] id %{public}d x = %{public}f, y = %{public}f", i, touchEvent->touchPoints[i].id, touchEvent->touchPoints[i].x, touchEvent->touchPoints[i].y);
-            OHOS_LOGD("Touch Info : screenx = %{public}f, screeny = %{public}f", touchEvent->touchPoints[i].screenX, touchEvent->touchPoints[i].screenY);
-            OHOS_LOGD("vtimeStamp = %{public}llu, isPressed = %{public}d", touchEvent->touchPoints[i].timeStamp, touchEvent->touchPoints[i].isPressed);
-            switch (touchEvent->touchPoints[i].type) {
-                case OH_NATIVEXCOMPONENT_DOWN:
-                    Cocos2dxRenderer_nativeTouchesBegin(touchEvent->touchPoints[i].id, touchEvent->touchPoints[i].x, touchEvent->touchPoints[i].y);
-                    OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_DOWN");
-                    break;
-                case OH_NATIVEXCOMPONENT_UP:
-                    Cocos2dxRenderer_nativeTouchesEnd(touchEvent->touchPoints[i].id, touchEvent->touchPoints[i].x, touchEvent->touchPoints[i].y);
-                    OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_UP");
-                    break;
-                case OH_NATIVEXCOMPONENT_MOVE:
-                    Cocos2dxRenderer_nativeTouchesMove(touchEvent->touchPoints[i].id, touchEvent->touchPoints[i].x, touchEvent->touchPoints[i].y);
-                    OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_MOVE");
-                    break;
-                case OH_NATIVEXCOMPONENT_CANCEL:
-                    Cocos2dxRenderer_nativeTouchesCancel(touchEvent->touchPoints[i].id, touchEvent->touchPoints[i].x, touchEvent->touchPoints[i].y);
-                    OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_CANCEL");
-                    break;
-                case OH_NATIVEXCOMPONENT_UNKNOWN:
-                    OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_UNKNOWN");
-                    break;
-                default:
-                    OHOS_LOGD("Touch Info : default");
-                    break;
-            }
-        }
-        delete touchEvent;
+void PluginRender::DispatchTouchEvent(OH_NativeXComponent* component, void* window, OH_NativeXComponent_TouchEvent* touchEvent)
+{
+    intptr_t ids[touchEvent->numPoints];
+    float xs[touchEvent->numPoints];
+    float ys[touchEvent->numPoints];
+    for (int i = 0; i < touchEvent->numPoints; i++) {
+        ids[i] = touchEvent->touchPoints[i].id;
+        xs[i] = touchEvent->touchPoints[i].x;
+        ys[i] = touchEvent->touchPoints[i].y;
+        OHOS_LOGD("Touch Info : x = %{public}f, y = %{public}f", xs[i], ys[i]);
     }
+    switch (touchEvent -> type) {
+        case OH_NATIVEXCOMPONENT_DOWN:
+            JSFunction::getFunction("CocosEditBox.hideAllEditBox").invoke<void>(); // hide all editbox
+            Cocos2dxRenderer_nativeTouchesBegin(touchEvent->numPoints, ids, xs, ys);
+            OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_DOWN");
+            break;
+        case OH_NATIVEXCOMPONENT_UP:
+            Cocos2dxRenderer_nativeTouchesEnd(touchEvent->id, touchEvent->x, touchEvent->y);
+            OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_UP");
+            break;
+        case OH_NATIVEXCOMPONENT_MOVE:
+            Cocos2dxRenderer_nativeTouchesMove(touchEvent->numPoints, ids, xs, ys);
+            OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_MOVE");
+            break;
+        case OH_NATIVEXCOMPONENT_CANCEL:
+            Cocos2dxRenderer_nativeTouchesCancel(touchEvent->numPoints, ids, xs, ys);
+            OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_CANCEL");
+            break;
+        case OH_NATIVEXCOMPONENT_UNKNOWN:
+            OHOS_LOGD("Touch Info : OH_NATIVEXCOMPONENT_UNKNOWN");
+            break;
+        default:
+            OHOS_LOGD("Touch Info : default");
+            break;
+    }
+    delete touchEvent;
 }
 
 void PluginRender::MouseWheelCB(std::string eventType, double scrollY)
@@ -550,7 +551,7 @@ napi_value PluginRender::NapiChangeShape(napi_env env, napi_callback_info info) 
     OHOS_LOGD("PluginRender::NapiChangeShape");
     PluginRender* instance = PluginRender::GetInstance();
     if (instance) {
-        cocos2d::Director::getInstance()->mainLoop();
+        CCDirector::sharedDirector()->mainLoop();
         instance->eglCore_->Update();
     }
     return nullptr;

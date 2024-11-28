@@ -26,9 +26,6 @@
 #define __LAYOUTPARMETER_H__
 
 #include "ui/UILayoutDefine.h"
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-#include "ui/GUIExport.h"
-#endif
 
 NS_CC_BEGIN
 

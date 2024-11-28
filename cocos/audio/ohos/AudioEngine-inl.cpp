@@ -96,9 +96,9 @@ static CallerThreadUtils gCallerThreadUtils;
 static int fdGetter(const std::string &url, off_t *start, off_t *length) {
     int fd = -1;
 
-    RawFileDescriptor64  descriptor;
+    RawFileDescriptor descriptor;
     FileUtilsOhos *utils = dynamic_cast<FileUtilsOhos*>(FileUtils::getInstance());
-    utils->getRawFileDescriptor(url, &descriptor);
+    utils->getRawFileDescriptor(url, descriptor);
     fd = descriptor.fd;
 
     if (fd <= 0) {

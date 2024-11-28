@@ -118,6 +118,7 @@ struct Index {
         controller: this.xcomponentController
       })
         .focusable(true)
+        .focusOnTouch(true)
         .gesture(
           PanGesture(this.panOption)
             .onActionStart(() => {

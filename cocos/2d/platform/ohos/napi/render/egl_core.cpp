@@ -111,7 +111,7 @@ void EGLCore::destroySurface() {
     eglDestroySurface(mEGLDisplay, mEGLSurface);
     mEGLSurface = nullptr;
 }
- 
+
 void EGLCore::createSurface(void* window) {
     mEglWindow = (EGLNativeWindowType)(window);
     if(mEglWindow) {

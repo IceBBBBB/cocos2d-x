@@ -63,14 +63,8 @@ set(PLATFORM_SRC
 
 endif()
 
-if(OHOS)
-    set(COCOS2D_SRC CCUserDefault-ohos.cpp)
-else()
-    set(COCOS2D_SRC CCUserDefault.cpp)
-endif()
 
 set(COCOS2D_SRC
-  ${COCOS2D_SRC}
   CCAction.cpp
   CCActionCamera.cpp
   CCTweenFunction.cpp
@@ -141,6 +135,7 @@ set(COCOS2D_SRC
   CCSpriteFrameCache.cpp
   ccUTF8.cpp
   CCProfiling.cpp
+  CCUserDefault.cpp
   TransformUtils.cpp
   base64.cpp
   ccUtils.cpp

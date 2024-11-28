@@ -26,9 +26,6 @@ THE SOFTWARE.
 #define __UILAYOUTDEFINE_H__
 
 #include "cocos2d.h"
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-#include "ui/GUIExport.h"
-#endif
 
 NS_CC_BEGIN
 

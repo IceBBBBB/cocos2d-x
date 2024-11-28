@@ -26,7 +26,6 @@ public:
     static napi_value NapiOnCreate(napi_env env, napi_callback_info info);
     static napi_value NapiOnShow(napi_env env, napi_callback_info info);
     static napi_value NapiOnHide(napi_env env, napi_callback_info info);
-    static napi_value NapiOnBackPress(napi_env env, napi_callback_info info);
     static napi_value NapiOnDestroy(napi_env env, napi_callback_info info);
     /*********************************************************************/
 

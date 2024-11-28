@@ -10,16 +10,12 @@
 #include <js_native_api_types.h>
 #include "RawFileUtils.h"
 
-#include "CCFileUtils-ohos.h"
 
 NativeResourceManager* RawFileUtils::nativeResourceManager_ = nullptr;
-
-static char emptyPath[2] = "";
 
 bool RawFileUtils::InitResourceManager(napi_env env, napi_value param) {
     nativeResourceManager_ = OH_ResourceManager_InitNativeResourceManager(env, param);
     OHOS_LOGD("cocos qgh  initResourceManager %{public}p", nativeResourceManager_);
-    cocos2d::FileUtilsOhos::setassetmanager(nativeResourceManager_);
     return true;
 }
 
@@ -27,7 +23,7 @@ std::vector<std::string> RawFileUtils::searchFiles(const char *folder, bool recu
     std::vector<std::string> results;
     char *realFolder = const_cast<char*> (folder);
     if (strcmp(folder, "/") == 0) {
-        realFolder = emptyPath;
+        realFolder = "";
     }
     auto dir = OH_ResourceManager_OpenRawDir(nativeResourceManager_, realFolder);
     if (dir) {

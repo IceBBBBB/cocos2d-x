@@ -3,7 +3,6 @@
 #include "InputNapi.h"
 #include "platform/ohos/napi/plugin_manager.h"
 #include "../../CCLogOhos.h"
-//#include "ui/UIEditBox/UIEditBoxImpl-ohos.h"
 #include "2d/CCIMEDispatcher.h"
 #include "GUI/CCEditBox/CCEditBoxImplOhos.h"
 #include "GUI/CCEditBox/CCEditBoxImpl-common.h"
@@ -71,9 +70,8 @@ napi_value InputNapi::editBoxOnChangeCB(napi_env env, napi_callback_info info) {
     size_t pInt;
     char text[256];
     NAPI_CALL(env, napi_get_value_string_utf8(env, args[1], text, 256, &pInt));
-cocos2d::extension::EditBoxImplOhos::onChangeCallBack(index, text);
 
-//    cocos2d::ui::EditBoxImplOhos::onChangeCallBack(index, text);
+    cocos2d::extension::EditBoxImplOhos::onChangeCallBack(index, text);
     
     return nullptr;
 }
@@ -113,8 +111,8 @@ napi_value InputNapi::editBoxOnEnterCB(napi_env env, napi_callback_info info) {
     size_t pInt;
     char text[256];
     NAPI_CALL(env, napi_get_value_string_utf8(env, args[1], text, 256, &pInt));
-   cocos2d::extension::EditBoxImplOhos::onEnterCallBack(index, text);
-//    cocos2d::ui::EditBoxImplOhos::onEnterCallBack(index, text);
+
+    cocos2d::extension::EditBoxImplOhos::onEnterCallBack(index, text);
     return nullptr;
 }
 
@@ -139,24 +137,24 @@ napi_value InputNapi::textFieldTTFOnChangeCB(napi_env env, napi_callback_info in
         return nullptr;
     }
 
-   auto dispatcher = cocos2d::IMEDispatcher::sharedDispatcher();
+    auto dispatcher = cocos2d::IMEDispatcher::sharedDispatcher();
     const std::string& oldContent = dispatcher->getContentText();
     
     size_t textLen;
     char text[2560] = {0};
     NAPI_CALL(env, napi_get_value_string_utf8(env, args[0], text, 2560, &textLen));
- 
+
     // 优化: 使用string_view避免不必要的字符串拷贝
     std::string_view oldView(oldContent);
     std::string_view newView(text, textLen);
- 
+
     // 找到第一个不同的字符位置
     size_t commonPrefixLen = 0;
     const size_t minLen = std::min(oldView.length(), newView.length());
     while (commonPrefixLen < minLen && oldView[commonPrefixLen] == newView[commonPrefixLen]) {
         commonPrefixLen++;
     }
- 
+
     // 删除差异后的旧内容字符
     const size_t charsToDelete = oldView.length() - commonPrefixLen;
     const size_t deleteOperations = [&](){
@@ -178,13 +176,12 @@ napi_value InputNapi::textFieldTTFOnChangeCB(napi_env env, napi_callback_info in
     for (size_t i = 0; i < deleteOperations; i++) {
         dispatcher->dispatchDeleteBackward();
     }
- 
+
     // 插入差异后的新字符
     const size_t insertLen = newView.length() - commonPrefixLen;
     if (insertLen > 0) {
         const char* newText = text + commonPrefixLen;
         dispatcher->dispatchInsertText(newText, insertLen);
     }
-
     return nullptr;
 }

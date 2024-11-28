@@ -29,12 +29,10 @@
 //#include "platform/CCPlatformConfig.h"
 
 #include "ui/UIWebViewImpl-ohos.h"
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) && !defined(CC_PLATFORM_OS_TVOS)
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS) && !defined(CC_PLATFORM_OS_TVOS)
 #include "ui/UIWidget.h"
-#include "ui/GUIExport.h"
 #include "base/CCData.h"
-
+#define CC_GUI_DLL
 /**
  * @addtogroup ui
  * @{

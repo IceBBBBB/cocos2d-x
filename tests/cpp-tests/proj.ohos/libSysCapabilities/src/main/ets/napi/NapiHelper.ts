@@ -1,4 +1,5 @@
 import { Dialog } from '../components/dialog/DialogWorker'
+import StringUtils from '../utils/StringUtils'
 import { JumpManager } from '../system/appJump/JumpManager'
 import { DeviceUtils } from '../system/device/DeviceUtils'
 import { ApplicationManager } from '../system/application/ApplicationManager'
@@ -24,6 +25,7 @@ export class NapiHelper {
         registerFunc('DiaLog.showDialog', Dialog.showDialog);
         registerFunc('DiaLog.showTextInputDialog', Dialog.showTextInputDialog);
         registerFunc('DiaLog.hideTextInputDialog', Dialog.hideTextInputDialog);
+        registerFunc('StringUtils.getWidth', StringUtils.getWidth);
         registerFunc('ApplicationManager.exit', ApplicationManager.exit);
         registerFunc('ApplicationManager.getVersionName', ApplicationManager.getVersionName);
         registerFunc('JumpManager.openUrl', JumpManager.openUrl);
