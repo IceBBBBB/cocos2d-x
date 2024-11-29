@@ -72,7 +72,7 @@ struct Index {
   }
 
   onBackPress() {
-    console.log("[LIFECYCLE-Page] tuanjie onBackPress");
+    console.log('[LIFECYCLE-Page] onBackPress');
     try {
       promptAction.showDialog({
         title: "提示",
