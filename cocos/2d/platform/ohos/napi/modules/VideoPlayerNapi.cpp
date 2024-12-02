@@ -1,7 +1,7 @@
 #include "VideoPlayerNapi.h"
 #include "platform/ohos/napi/plugin_manager.h"
 #include "../../CCLogOhos.h"
-//#include "ui/UIVideoPlayer-ohos.h"
+#include "ui/UIVideoPlayer-ohos.h"
 #include <js_native_api.h>
 #include <js_native_api_types.h>
 
@@ -40,6 +40,6 @@ napi_value VideoPlayerNapi::onVideoCallBack(napi_env env, napi_callback_info inf
     int32_t event;
     NAPI_CALL(env, napi_get_value_int32(env, args[1], &event));
 
-//    executeVideoCallback(viewTag, event);
+    executeVideoCallback(viewTag, event);
     return nullptr;
 }
