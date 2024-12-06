@@ -34,9 +34,11 @@
 #include "lua_cocos2dx_ui_manual.hpp"
 
 #if _MSC_VER > 1800
-#pragma comment(lib,"lua51-2015.lib")
+    #pragma comment(lib,"lua51-2015.lib")
 #else
-#pragma comment(lib,"lua51.lib")
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+    #pragma comment(lib,"lua51.lib")
+#endif
 #endif
 
 NS_CC_BEGIN
