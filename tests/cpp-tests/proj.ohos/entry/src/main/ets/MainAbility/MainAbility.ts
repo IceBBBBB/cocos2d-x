@@ -32,7 +32,8 @@ export default class MainAbility extends UIAbility {
             rawFileUtils.nativeResourceManagerInit(this.context.resourceManager);
             rawFileUtils.writablePathInit(this.context.filesDir);
         });
-    windowStage.getMainWindow().then((windowIns: window.Window) => {
+
+        windowStage.getMainWindow().then((windowIns: window.Window) => {
             // Set whether to display the status bar and navigation bar. If they are not displayed, [] is displayed.
             let systemBarPromise = windowIns.setWindowSystemBarEnable([]);
             // Whether the window layout is displayed in full screen mode
@@ -45,7 +46,8 @@ export default class MainAbility extends UIAbility {
                 console.error('Failed to set the window, cause ' + JSON.stringify(err));
             });
         })
-    windowStage.on("windowStageEvent", (data) => {
+
+        windowStage.on("windowStageEvent", (data) => {
             let stageEventType: window.WindowStageEventType = data;
             switch (stageEventType) {
                 case window.WindowStageEventType.RESUMED:

@@ -125,7 +125,10 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       break;
     case "reload": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.refresh();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.refresh();
+      })
       break;
     }
     case "canGoBack":
@@ -144,12 +147,18 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       break;
     case "goBack": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.backward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.backward();
+      })
       break;
     }
     case "goForward": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.forward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.forward();
+      })
       break;
     }
     case "setWebViewRect": {

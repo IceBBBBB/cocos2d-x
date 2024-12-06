@@ -14,7 +14,10 @@ import { GlobalContext,GlobalContextConstants} from "@ohos/libSysCapabilities"
 import { MessageEvents } from '@ohos.worker'
 import common from '@ohos.app.ability.common'
 import deviceInfo from '@ohos.deviceInfo';
-const nativePageLifecycle:nativeRender.CPPFunctions  = nativeRender.getContext(ContextType.JSPAGE_LIFECYCLE);
+import promptAction from '@ohos.promptAction';
+import process from '@ohos.process';
+
+const nativePageLifecycle: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.JSPAGE_LIFECYCLE);
 
 let cocosWorker = WorkerManager.getInstance().getWorker();
 
@@ -22,6 +25,10 @@ let cocosWorker = WorkerManager.getInstance().getWorker();
 @Component
 struct Index {
   xcomponentController: XComponentController = new XComponentController();
+
+  processMgr = new process.ProcessManager();
+
+
   // EditBox
   @State editBoxArray: TextInputInfo[] = [];
   private editBoxIndexMap: Map<number, TextInputInfo> = new Map;
@@ -65,7 +72,36 @@ struct Index {
 
   onBackPress() {
     console.log('[LIFECYCLE-Page] onBackPress');
-    cocosWorker.postMessage({ type: "exit" });
+    try {
+      promptAction.showDialog({
+        title: "提示",
+        message: "确认退出游戏吗",
+        buttons: [
+          {
+            text: '取消',
+            // 颜色可自定义
+            color: '#000000'
+          },
+          {
+            text: '确认',
+            // 颜色可自定义
+            color: '#000000'
+          }
+        ],
+      }).then(data => {
+        console.info('showDialog success, click button: ' + data.index);
+        if(data.index == 0) {
+          console.info('showDialog click button cancel');
+          return;
+        } else {
+          console.info('showDialog click button ok');
+          this.processMgr.exit(0);
+        }
+      })
+    } catch (error) {
+      console.error(`showDialog args error code is ${error.code}, message is ${error.message}`);
+    };
+    // If disable system exit needed, remove comment "return true"
     return true;
   }
 
@@ -74,7 +110,7 @@ struct Index {
   }
 
   build() {
-    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
+    Stack() {
       XComponent({
         id: 'xcomponentId',
         type: 'surface',

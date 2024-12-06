@@ -7,11 +7,13 @@ import { Dialog } from "@ohos/libSysCapabilities"
 import { WebView } from "@ohos/libSysCapabilities"
 import { JumpManager } from "@ohos/libSysCapabilities"
 import { NapiHelper } from "@ohos/libSysCapabilities"
+import { ApplicationManager } from "@ohos/libSysCapabilities"
 import { GlobalContext,GlobalContextConstants} from "@ohos/libSysCapabilities"
 
 const appLifecycle: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.APP_LIFECYCLE);
 const workerContext: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.WORKER_INIT);
 const inputNapi: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.INPUT_NAPI);
+const mouseNapi: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.MOUSE_NAPI);
 const webViewNapi: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.WEBVIEW_NAPI);
 const videoPlayNapi: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.VIDEOPLAYER_NAPI);
 const napiContext: nativeRender.CPPFunctions = nativeRender.getContext(ContextType.NATIVE_API);
@@ -32,6 +34,7 @@ workerPort.onmessage = function(e) : void {
             JumpManager.init(workerPort);
             WebView.init(workerPort);
             VideoPlayer.init(workerPort);
+            ApplicationManager.init(workerPort);
             napiContext.initAsyncInfo();
             break;
         case "abilityContextInit":
@@ -48,6 +51,9 @@ workerPort.onmessage = function(e) : void {
             break;
         case "textFieldTTFOnChange":
             inputNapi.textFieldTTFOnChangeCB(data.data);
+            break;
+        case "onMouseWheel":
+            mouseNapi.mouseWheelCB(data.eventType, data.scrollY);
             break;
         case "onPageBegin":
             webViewNapi.shouldStartLoading(data.viewTag, data.url);
@@ -71,5 +77,3 @@ workerPort.onmessage = function(e) : void {
             console.error("cocos worker: message type unknown")
     }
 }
-
-

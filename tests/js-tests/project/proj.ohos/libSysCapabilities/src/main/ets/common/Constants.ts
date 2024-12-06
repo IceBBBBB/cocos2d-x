@@ -5,6 +5,7 @@ export enum ContextType {
     WORKER_INIT,
     NATIVE_API,
     INPUT_NAPI,
+    MOUSE_NAPI,
     WEBVIEW_NAPI,
     VIDEOPLAYER_NAPI,
     SENSOR_API
