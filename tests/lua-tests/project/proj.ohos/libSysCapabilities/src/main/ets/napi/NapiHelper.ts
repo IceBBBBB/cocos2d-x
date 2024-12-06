@@ -1,11 +1,13 @@
 import { Dialog } from '../components/dialog/DialogWorker'
+import StringUtils from '../utils/StringUtils'
 import { JumpManager } from '../system/appJump/JumpManager'
 import { DeviceUtils } from '../system/device/DeviceUtils'
-import ApplicationManager from '../system/application/ApplicationManager'
+import { ApplicationManager } from '../system/application/ApplicationManager'
 import { CocosEditBox } from '../components/editbox/CocosEditBox'
 import { WebView } from '../components/webview/WebView'
 import { VideoPlayer } from '../components/videoplayer/VideoPlayer'
 import Accelerometer from '../system/sensor/AccelerometerUtils'
+import Preferences from '../preferences/Preferences'
 
 export class NapiHelper {
 
@@ -16,12 +18,14 @@ export class NapiHelper {
         NapiHelper.registerWebView(registerFunc);
         NapiHelper.registerVideoPlay(registerFunc);
         NapiHelper.registerSensor(registerFunc);
+        NapiHelper.registerPreferences(registerFunc);
     }
 
     private static registerOthers(registerFunc : Function) {
         registerFunc('DiaLog.showDialog', Dialog.showDialog);
         registerFunc('DiaLog.showTextInputDialog', Dialog.showTextInputDialog);
         registerFunc('DiaLog.hideTextInputDialog', Dialog.hideTextInputDialog);
+        registerFunc('StringUtils.getWidth', StringUtils.getWidth);
         registerFunc('ApplicationManager.exit', ApplicationManager.exit);
         registerFunc('ApplicationManager.getVersionName', ApplicationManager.getVersionName);
         registerFunc('JumpManager.openUrl', JumpManager.openUrl);
@@ -101,4 +105,15 @@ export class NapiHelper {
         registerFunc('Accelerometer.enable', Accelerometer.enable);
         registerFunc('Accelerometer.disable', Accelerometer.disable);
     }
+
+    private static registerPreferences(registerFunc : Function) {
+        registerFunc('Preferences.get', Preferences.get);
+        registerFunc('Preferences.getAll', Preferences.getAll);
+        registerFunc('Preferences.put', Preferences.put);
+        registerFunc('Preferences.has', Preferences.has);
+        registerFunc('Preferences.delete', Preferences.delete);
+        registerFunc('Preferences.flush', Preferences.flush);
+        registerFunc('Preferences.clear', Preferences.clear);
+    }
+
 }

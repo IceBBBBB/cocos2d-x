@@ -74,14 +74,14 @@ bool AppDelegate::applicationDidFinishLaunching()
     director->setAnimationInterval(1.0f / 60);
 
     auto screenSize = glview->getFrameSize();
-    auto designSize = Size(960, 960);
+    auto designSize = Size(1024/2, 2112/2);
 
     auto fileUtils = FileUtils::getInstance();
     std::vector<std::string> searchPaths;
     
     if (screenSize.height > 320)
     {
-        auto resourceSize = Size(960, 960);
+        auto resourceSize = Size(1024, 2112);
         searchPaths.push_back("hd");
         searchPaths.push_back("ccs-res/hd");
         searchPaths.push_back("ccs-res");

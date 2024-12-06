@@ -1,3 +1,5 @@
+import deviceInfo from '@ohos.deviceInfo';
+
 import nativeRender from 'libnativerender.so'
 import { ContextType } from '@ohos/libSysCapabilities'
 import { TextInputInfo } from '@ohos/libSysCapabilities/src/main/ets/components/editbox/EditBoxMsg'
@@ -11,6 +13,8 @@ import { CocosWebView } from '../components/CocosWebview'
 import { CocosVideoPlayer } from '../components/CocosVideoPlayer'
 import { TextInputDialog } from '../components/TextInputDialog'
 import { GlobalContext,GlobalContextConstants} from "@ohos/libSysCapabilities"
+import promptAction from '@ohos.promptAction';
+import process from '@ohos.process';
 const nativePageLifecycle:nativeRender.CPPFunctions  = nativeRender.getContext(ContextType.JSPAGE_LIFECYCLE);
 
 @Entry
@@ -19,6 +23,9 @@ struct Index {
 
   cocosWorker = WorkerManager.getInstance().getWorker();
   xcomponentController: XComponentController = new XComponentController();
+
+  processMgr = new process.ProcessManager();
+
 
   // EditBox
   @State editBoxArray: TextInputInfo[] = [];
@@ -42,6 +49,8 @@ struct Index {
     alignment: DialogAlignment.Bottom,
     customStyle: true,
   })
+  // PanGesture
+  private panOption: PanGestureOptions = new PanGestureOptions({ direction: PanDirection.Up | PanDirection.Down });
 
   onPageShow() {
     console.log('[LIFECYCLE-Page] onPageShow');
@@ -64,12 +73,45 @@ struct Index {
 
   onBackPress() {
     console.log('[LIFECYCLE-Page] onBackPress');
-    this.cocosWorker.postMessage({ type: "exit" });
+    try {
+      promptAction.showDialog({
+        title: "提示",
+        message: "确认退出游戏吗",
+        buttons: [
+          {
+            text: '取消',
+            // 颜色可自定义
+            color: '#000000'
+          },
+          {
+            text: '确认',
+            // 颜色可自定义
+            color: '#000000'
+          }
+        ],
+      }).then(data => {
+        console.info('showDialog success, click button: ' + data.index);
+        if(data.index == 0) {
+          console.info('showDialog click button cancel');
+          return;
+        } else {
+          console.info('showDialog click button ok');
+          this.processMgr.exit(0);
+        }
+      })
+    } catch (error) {
+      console.error(`showDialog args error code is ${error.code}, message is ${error.message}`);
+    };
+    // If disable system exit needed, remove comment "return true"
     return true;
   }
 
+  onMouseWheel(eventType: string, scrollY: number) {
+    this.cocosWorker.postMessage({ type: "onMouseWheel", eventType: eventType, scrollY: scrollY });
+  }
+
   build() {
-    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
+    Stack() {
       XComponent({
         id: 'xcomponentId',
         type: 'surface',
@@ -78,6 +120,20 @@ struct Index {
       })
         .focusable(true)
         .focusOnTouch(true)
+        .gesture(
+          PanGesture(this.panOption)
+            .onActionStart(() => {
+              this.onMouseWheel("actionStart", 0);
+            })
+            .onActionUpdate((event: GestureEvent) => {
+              if (deviceInfo.deviceType === '2in1') {
+                this.onMouseWheel("actionUpdate", event.offsetY);
+              }
+            })
+            .onActionEnd(() => {
+              this.onMouseWheel("actionEnd", 0);
+            })
+        )
         .onLoad((context) => {
           console.log('[cocos] XComponent.onLoad Callback');
           this.cocosWorker.postMessage({ type: "abilityContextInit", data: GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_ABILITY_CONTEXT)});

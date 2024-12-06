@@ -47,7 +47,7 @@ export default class MainAbility extends UIAbility {
             });
         })
 
-    windowStage.on("windowStageEvent", (data) => {
+        windowStage.on("windowStageEvent", (data) => {
             let stageEventType: window.WindowStageEventType = data;
             switch (stageEventType) {
                 case window.WindowStageEventType.RESUMED:

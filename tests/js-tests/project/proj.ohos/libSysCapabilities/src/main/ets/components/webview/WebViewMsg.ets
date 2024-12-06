@@ -24,7 +24,6 @@ export class WebViewInfo {
   public opacity: number = 1
   public backgroundColor: number = 0xffffff;
   public jsInterfaceScheme: string = "";
-
   public controller: web_webview.WebviewController = new web_webview.WebviewController()
 
   constructor(x: number, y: number, w: number, h: number, viewTag: number) {
@@ -124,10 +123,14 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.stop();
       break;
-    case "reload":
+    case "reload": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.refresh();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.refresh();
+      })
       break;
+    }
     case "canGoBack":
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       let result: number = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index]
@@ -142,14 +145,22 @@ export function handleWebViewMsg(eventData: WebViewMsgEntity) {
         .accessForward();
     // todo The value needs to be sent back to the worker thread.
       break;
-    case "goBack":
+    case "goBack": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.backward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.backward();
+      })
       break;
-    case "goForward":
+    }
+    case "goForward": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
-      GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index].controller.forward();
+      let webViewInfo: WebViewInfo = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];
+      waitUtilControllerAttached().then(() => {
+        webViewInfo.controller.forward();
+      })
       break;
+    }
     case "setWebViewRect": {
       index = GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_INDEX_MAP).get(eventData.viewTag);
       let tmpWebInfo :WebViewInfo= GlobalContext.loadGlobalThis(GlobalContextConstants.COCOS2DX_WEB_VIEW_ARRAY)[index];

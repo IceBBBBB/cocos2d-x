@@ -16,6 +16,7 @@ export struct TextInputDialog {
           .layoutWeight(1)
           .defaultFocus(true)
           .caretColor(Color.Transparent)
+          .defaultFocus(true)
           .onChange((value) => {
             this.cocosWorker.postMessage({type: "textFieldTTFOnChange", data: value})
           })

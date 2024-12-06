@@ -34,6 +34,10 @@
         ],
         //将窗口模式设置为只支持全屏
         "supportWindowMode": ["fullscreen"],
+        "maxWindowWidth": 1080,
+        "minWindowWidth": 1080,
+        "maxWindowHeight": 720,
+        "minWindowHeight": 720
       }
     ],
     "requestPermissions": [

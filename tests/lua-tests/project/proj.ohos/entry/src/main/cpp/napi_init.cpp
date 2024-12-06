@@ -4,8 +4,7 @@
 /*
  * function for module exports
  */
-static napi_value Init(napi_env env, napi_value exports)
-{
+static napi_value Init(napi_env env, napi_value exports) {
     napi_property_descriptor desc[] ={
         DECLARE_NAPI_FUNCTION("getContext", NapiManager::GetContext),
     };
@@ -33,7 +32,6 @@ static napi_module nativerenderModule = {
 /*
  * Module register function
  */
-extern "C" __attribute__((constructor)) void RegisterModule(void)
-{
+extern "C" __attribute__((constructor)) void RegisterModule(void) {
     napi_module_register(&nativerenderModule);
 }
