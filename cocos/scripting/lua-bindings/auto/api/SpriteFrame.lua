@@ -30,7 +30,7 @@
 -- @param #bool bool
 -- @param #cc.Vec2 vec2
 -- @param #size_table size
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#SpriteFrame] setRectInPixels 
@@ -99,7 +99,7 @@
 -- @param #bool bool
 -- @param #cc.Vec2 vec2
 -- @param #size_table size
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#SpriteFrame] setRect 
@@ -128,7 +128,7 @@
 -- @param #bool bool
 -- @param #cc.Vec2 vec2
 -- @param #size_table size
--- @return SpriteFrame#SpriteFrame ret (retunr value: cc.SpriteFrame)
+-- @return SpriteFrame#SpriteFrame ret (return value: cc.SpriteFrame)
 
 --------------------------------
 -- overload function: createWithTexture(cc.Texture2D, rect_table, bool, cc.Vec2, size_table)
@@ -142,6 +142,6 @@
 -- @param #bool bool
 -- @param #cc.Vec2 vec2
 -- @param #size_table size
--- @return SpriteFrame#SpriteFrame ret (retunr value: cc.SpriteFrame)
+-- @return SpriteFrame#SpriteFrame ret (return value: cc.SpriteFrame)
 
 return nil

@@ -1,5 +1,10 @@
 set(APP_NAME cpp-tests)
 
+if(OHOS)
+  project(${APP_NAME})
+  set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+endif()
+
 if(WIN32)
   set(PLATFORM_SRC
     Classes/ExtensionsTest/EditBoxTest/EditBoxTest.cpp
@@ -7,6 +12,10 @@ if(WIN32)
     Classes/ExtensionsTest/NetworkTest/SocketIOTest.cpp
     proj.win32/main.cpp
   )
+elseif(OHOS)
+  set(PLATFORM_SRC proj.ohos/entry/src/main/cpp/main.cpp
+  Classes/ExtensionsTest/EditBoxTest/EditBoxTest.cpp
+    Classes/UITest/CocoStudioGUITest/UIVideoPlayerTest/UIVideoPlayerTest.cpp)
 else()
   set(PLATFORM_SRC
     proj.linux/main.cpp
@@ -192,11 +201,80 @@ include_directories(
 )
 
 # add the executable
+
+if(OHOS)
+    add_definitions("-DOpenHarmony")
+
+    include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        Classes
+        Classes/ExtensionsTest
+        ${COCOS2DX_ROOT_PATH}
+        ${COCOS2DX_ROOT_PATH}/external
+        ${COCOS2DX_ROOT_PATH}/external/chipmunk
+        ${COCOS2DX_ROOT_PATH}/external/chipmunk/include/chipmunk
+        ${COCOS2DX_ROOT_PATH}/external/lib
+        ${COCOS2DX_ROOT_PATH}/external/Box2D
+        ${COCOS2DX_ROOT_PATH}/external/tiff
+        ${COCOS2DX_ROOT_PATH}/external/tiff/include/ohos
+        ${COCOS2DX_ROOT_PATH}/external/curl/include/ohos
+        ${COCOS2DX_ROOT_PATH}/cocos
+        ${COCOS2DX_ROOT_PATH}/cocos/2d
+        ${COCOS2DX_ROOT_PATH}/cocos/editor-support
+        ${COCOS2DX_ROOT_PATH}/extensions
+    )
+
+    add_library(${PROJECT_NAME} SHARED ${SAMPLE_SRC})
+
+    find_library( # Sets the name of the path variable.
+            EGL-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            EGL )
+
+    find_library( # Sets the name of the path variable.
+            GLES-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            GLESv3 )
+
+    find_library( # Sets the name of the path variable.
+            hilog-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            hilog_ndk.z )
+
+    find_library( # Sets the name of the path variable.
+            libace-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            ace_ndk.z )
+
+    find_library( # Sets the name of the path variable.
+            libnapi-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            ace_napi.z )
+
+    find_library( # Sets the name of the path variable.
+            libuv-lib
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            uv )
+
+    target_link_libraries(${APP_NAME} PUBLIC ${EGL-lib} ${GLES-lib} ${hilog-lib}
+            ${libace-lib} ${libnapi-lib} ${libuv-lib})
+
+    # add_subdirectory(${COCOS2DX_ROOT_PATH} Cocos2dx)
+    # target_link_libraries(${PROJECT_NAME} PUBLIC libace_napi.z.so extensions)
+    # add_subdirectory(${COCOS2DX_ROOT_PATH}/extensions)
+else()
 add_executable(${APP_NAME}
   ${SAMPLE_SRC}
 )
+endif()
 
-target_link_libraries(${APP_NAME}
+target_link_libraries(${APP_NAME} PRIVATE
   spine
   cocostudio
   cocosbuilder

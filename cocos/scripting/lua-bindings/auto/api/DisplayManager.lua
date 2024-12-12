@@ -63,7 +63,7 @@
 -- @param self
 -- @param #float float
 -- @param #float float
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#DisplayManager] changeDisplayWithIndex 

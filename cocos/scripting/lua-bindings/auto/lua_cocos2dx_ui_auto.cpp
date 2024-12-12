@@ -2,8 +2,7 @@
 #include "CocosGUI.h"
 #include "tolua_fix.h"
 #include "LuaBasicConversions.h"
-
-
+#include <assert.h>
 
 int lua_cocos2dx_ui_LayoutParameter_clone(lua_State* tolua_S)
 {

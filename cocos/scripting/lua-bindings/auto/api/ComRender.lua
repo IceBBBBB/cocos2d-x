@@ -22,7 +22,7 @@
 -- @param self
 -- @param #cc.Node node
 -- @param #char char
--- @return ComRender#ComRender ret (retunr value: ccs.ComRender)
+-- @return ComRender#ComRender ret (return value: ccs.ComRender)
 
 --------------------------------
 -- @function [parent=#ComRender] createInstance 

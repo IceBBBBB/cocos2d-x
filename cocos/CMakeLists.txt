@@ -72,6 +72,23 @@ endif()
 
 elseif(APPLE)
 
+elseif(OHOS)
+    find_library( # Sets the name of the path variable.
+                  rawfile-lib
+                  # Specifies the name of the NDK library that
+                  # you want CMake to locate.
+                  rawfile.z )
+    find_library( # Sets the name of the path variable.
+                  libnapi-lib
+                  # Specifies the name of the NDK library that
+                  # you want CMake to locate.
+                  ace_napi.z )
+    find_library( # Sets the name of the path variable.
+                  Drawing-lib
+                  # Specifies the name of the NDK library that
+                  # you want CMake to locate.
+                  native_drawing )
+    set(COCOS_LINK ext_freetype ext_png ext_jpeg ext_tiff ext_webp ext_zlib ext_pvmp3dec ext_tremolo ${rawfile-lib} ${libnapi-lib} ${Drawing-lib} OpenSLES)
 else()
 set(COCOS_LINK
   jpeg
@@ -90,15 +107,25 @@ set(COCOS_LINK
 )
 endif()
 
-target_link_libraries(cocos2d
-  chipmunk_static
-  tinyxml2
-  unzip
-  xxhash
-  ${COCOS_STORAGE_LINK}
+if(OHOS)
+target_link_libraries(cocos2d ${Drawing-lib} ${libace-lib} ${GLES-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib} ${EGL-lib} ${hilog-lib} libohaudio.so libavplayer.so libnative_window.so libnative_buffer.so)
+endif()
+
+set(COMMON_LINK chipmunk_static tinyxml2 unzip xxhash)
+if(OHOS) 
+  target_link_libraries(cocos2d
+  ${COMMON_LINK}
   ${COCOS_NETWORK_LINK}
   ${COCOS_LINK}
-)
+  )
+else()
+  target_link_libraries(cocos2d
+    ${COMMON_LINK}
+    ${COCOS_STORAGE_LINK}
+    ${COCOS_NETWORK_LINK}
+    ${COCOS_LINK}
+  )
+endif()
 
 set_target_properties(cocos2d
     PROPERTIES

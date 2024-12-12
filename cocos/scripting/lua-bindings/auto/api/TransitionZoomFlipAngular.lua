@@ -13,6 +13,6 @@
 -- @param #float float
 -- @param #cc.Scene scene
 -- @param #cc.TransitionScene::Orientation orientation
--- @return TransitionZoomFlipAngular#TransitionZoomFlipAngular ret (retunr value: cc.TransitionZoomFlipAngular)
+-- @return TransitionZoomFlipAngular#TransitionZoomFlipAngular ret (return value: cc.TransitionZoomFlipAngular)
 
 return nil

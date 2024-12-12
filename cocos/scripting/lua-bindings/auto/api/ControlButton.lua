@@ -110,7 +110,7 @@
 --          
 -- @function [parent=#ControlButton] getCurrentTitle
 -- @param self
--- @return string#string ret (retunr value: string)
+-- @return string#string ret (return value: string)
 
 --------------------------------
 -- @function [parent=#ControlButton] getScaleRatio 
@@ -231,7 +231,7 @@
 -- @param #string str
 -- @param #string str
 -- @param #float float
--- @return ControlButton#ControlButton ret (retunr value: cc.ControlButton)
+-- @return ControlButton#ControlButton ret (return value: cc.ControlButton)
 
 --------------------------------
 -- @function [parent=#ControlButton] onTouchMoved 

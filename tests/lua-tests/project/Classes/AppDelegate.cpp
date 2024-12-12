@@ -34,11 +34,11 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     auto screenSize = glview->getFrameSize();
 
-    auto designSize = Size(480, 320);
+    auto designSize = Size(1024/2, 2112/2);
 
     if (screenSize.height > 320)
     {
-        auto resourceSize = Size(960, 640);
+        auto resourceSize = Size(1024, 2112);
         director->setContentScaleFactor(resourceSize.height/designSize.height);
     }
 
@@ -47,13 +47,14 @@ bool AppDelegate::applicationDidFinishLaunching()
     // register lua engine
     LuaEngine* pEngine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(pEngine);
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID ||CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID ||CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     LuaStack* stack = pEngine->getLuaStack();
     register_assetsmanager_test_sample(stack->getLuaState());
 #endif
 
-    pEngine->executeScriptFile("src/controller.lua");
+    FileUtils::getInstance()->addSearchPath("");
+    pEngine->executeScriptFile("controller.lua");
 
     return true;
 }
@@ -72,4 +73,18 @@ void AppDelegate::applicationWillEnterForeground()
     Director::getInstance()->startAnimation();
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+    auto director = cocos2d::Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set ResolutionPolicy to a proper value. here use the original value when the game is started.
+        ResolutionPolicy resolutionPolicy = glview->getResolutionPolicy();
+        Size designSize = glview->getDesignResolutionSize();
+         glview->setFrameSize(newWidth, newHeight);
+         // Set the design resolution to a proper value. here use the original value when the game is started. 
+         glview->setDesignResolutionSize(designSize.width, designSize.height, resolutionPolicy);
+    }
 }

@@ -95,7 +95,7 @@
 -- @param self
 -- @param #char char
 -- @param #bool bool
--- @return unsigned int#unsigned int ret (retunr value: unsigned int)
+-- @return unsigned int#unsigned int ret (return value: unsigned int)
 
 --------------------------------
 -- @function [parent=#ComAudio] preloadEffect 

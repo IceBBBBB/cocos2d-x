@@ -89,7 +89,7 @@
 -- @param #cc.Sprite sprite
 -- @param #cc.Sprite sprite
 -- @param #cc.Sprite sprite
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#ControlSlider] getMaximumValue 
@@ -142,7 +142,7 @@
 -- @param #cc.Sprite sprite
 -- @param #cc.Sprite sprite
 -- @param #cc.Sprite sprite
--- @return ControlSlider#ControlSlider ret (retunr value: cc.ControlSlider)
+-- @return ControlSlider#ControlSlider ret (return value: cc.ControlSlider)
 
 --------------------------------
 -- @function [parent=#ControlSlider] ControlSlider 

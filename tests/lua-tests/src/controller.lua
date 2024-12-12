@@ -3,7 +3,7 @@
 collectgarbage("setpause", 100) 
 collectgarbage("setstepmul", 5000)
 	
-require "src/mainMenu"
+require "mainMenu"
 ----------------
 
 
@@ -62,6 +62,7 @@ else
 end
 
 fileUtils:setSearchPaths(searchPaths)
+fileUtils:setSearchPaths("")
 
 local scene = cc.Scene:create()
 scene:addChild(CreateTestMenu())

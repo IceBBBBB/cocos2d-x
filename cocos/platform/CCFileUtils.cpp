@@ -721,11 +721,20 @@ std::string FileUtils::fullPathForFilename(const std::string &filename)
         }
     }
     
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	if(isPopupNotify()){
+        CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
+    }
+
+    // The file wasn't found, return empty string.
+    return "";
+#else
     CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
 
     // XXX: Should it return nullptr ? or an empty string ?
     // The file wasn't found, return the file name passed in.
     return filename;
+#endif
 }
 
 std::string FileUtils::fullPathFromRelativeFile(const std::string &filename, const std::string &relativeFile)

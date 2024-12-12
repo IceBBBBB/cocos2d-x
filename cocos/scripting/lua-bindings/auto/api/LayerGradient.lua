@@ -75,7 +75,7 @@
 -- @param #color4b_table color4b
 -- @param #color4b_table color4b
 -- @param #cc.Vec2 vec2
--- @return LayerGradient#LayerGradient ret (retunr value: cc.LayerGradient)
+-- @return LayerGradient#LayerGradient ret (return value: cc.LayerGradient)
 
 --------------------------------
 -- @function [parent=#LayerGradient] getDescription 

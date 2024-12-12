@@ -130,7 +130,7 @@
 -- @param #string str
 -- @param #string str
 -- @param #ccui.Widget::TextureResType texturerestype
--- @return Button#Button ret (retunr value: ccui.Button)
+-- @return Button#Button ret (return value: ccui.Button)
 
 --------------------------------
 -- @function [parent=#Button] createInstance 

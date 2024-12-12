@@ -13,7 +13,7 @@
 -- @param #size_table size
 -- @param #cc.Texture2D texture2d
 -- @param #bool bool
--- @return Grid3D#Grid3D ret (retunr value: cc.Grid3D)
+-- @return Grid3D#Grid3D ret (return value: cc.Grid3D)
 
 --------------------------------
 -- @function [parent=#Grid3D] calculateVertexPoints 

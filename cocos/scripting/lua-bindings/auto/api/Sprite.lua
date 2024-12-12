@@ -154,7 +154,7 @@
 -- @param self
 -- @param #string str
 -- @param #rect_table rect
--- @return Sprite#Sprite ret (retunr value: cc.Sprite)
+-- @return Sprite#Sprite ret (return value: cc.Sprite)
 
 --------------------------------
 -- overload function: createWithTexture(cc.Texture2D, rect_table, bool)
@@ -166,7 +166,7 @@
 -- @param #cc.Texture2D texture2d
 -- @param #rect_table rect
 -- @param #bool bool
--- @return Sprite#Sprite ret (retunr value: cc.Sprite)
+-- @return Sprite#Sprite ret (return value: cc.Sprite)
 
 --------------------------------
 -- @function [parent=#Sprite] createWithSpriteFrameName 

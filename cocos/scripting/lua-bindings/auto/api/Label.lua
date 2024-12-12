@@ -133,7 +133,7 @@
 -- @param #int int
 -- @param #int int
 -- @param #int int
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Label] getDimensions 
@@ -249,7 +249,7 @@
 -- @param #int int
 -- @param #int int
 -- @param #int int
--- @return Label#Label ret (retunr value: cc.Label)
+-- @return Label#Label ret (return value: cc.Label)
 
 --------------------------------
 -- @function [parent=#Label] createWithSystemFont 

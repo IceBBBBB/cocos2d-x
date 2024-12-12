@@ -4,6 +4,7 @@
 #include "CCProtectedNode.h"
 #include "tolua_fix.h"
 #include "LuaBasicConversions.h"
+#include <assert.h>
 
 
 

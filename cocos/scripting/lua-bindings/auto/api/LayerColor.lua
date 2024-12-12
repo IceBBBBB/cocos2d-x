@@ -31,7 +31,7 @@
 -- @param #color4b_table color4b
 -- @param #float float
 -- @param #float float
--- @return LayerColor#LayerColor ret (retunr value: cc.LayerColor)
+-- @return LayerColor#LayerColor ret (return value: cc.LayerColor)
 
 --------------------------------
 -- @function [parent=#LayerColor] draw 

@@ -1,5 +1,5 @@
-require "AudioEngine" 
-local EFFECT_FILE = "effect1.wav"
+require "cocos/AudioEngine"
+local EFFECT_FILE = "effect2.ogg"
 
 local MUSIC_FILE = nil 
 local targetPlatform = cc.Application:getInstance():getTargetPlatform()

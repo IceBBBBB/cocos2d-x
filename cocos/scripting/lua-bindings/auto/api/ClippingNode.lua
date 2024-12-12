@@ -41,7 +41,7 @@
 -- @function [parent=#ClippingNode] create
 -- @param self
 -- @param #cc.Node node
--- @return ClippingNode#ClippingNode ret (retunr value: cc.ClippingNode)
+-- @return ClippingNode#ClippingNode ret (return value: cc.ClippingNode)
 
 --------------------------------
 -- @function [parent=#ClippingNode] visit 

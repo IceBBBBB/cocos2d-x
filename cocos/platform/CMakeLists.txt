@@ -12,6 +12,47 @@ set(COCOS_PLATFORM_SPECIFIC_SRC
 
 elseif(APPLE)
 
+
+elseif(OHOS)
+    include_directories(
+          ../../cocos/base
+          platform/ohos
+          platform/ohos/napi
+          platform/ohos/napi/modules
+          platform/ohos/napi/common
+          platform/ohos/napi/render
+	  platform/ohos/napi/plugin_manager.h
+          platform/ohos/napi/helper/NapiValueConverter.h
+          platform/ohos/napi/helper/Js_Cocos2dxHelper.h
+          platform/ohos/napi/helper/NapiHelper.h
+          ../../external/freetype2/include/ohos/
+          ../../external/freetype2/include/ohos/freetype
+          ../../external/opengles/apiP
+    )
+    set(COCOS_PLATFORM_SPECIFIC_SRC
+          platform/ohos/CCApplication.cpp
+          platform/ohos/CCCommon.cpp
+          platform/ohos/CCDevice.cpp
+          platform/ohos/CCGLView.cpp
+          platform/ohos/CCFileUtils-ohos.cpp
+          platform/ohos/CCTextBitmap.cpp
+          platform/ohos/JsAudioEngine.cpp        
+	  platform/ohos/napi/modules/RawFileUtils.cpp
+          platform/ohos/napi/modules/TouchesNapi.cpp
+          platform/ohos/napi/modules/InputNapi.cpp
+          platform/ohos/napi/modules/MouseNapi.cpp
+          platform/ohos/napi/modules/WebViewNapi.cpp
+          platform/ohos/napi/modules/SensorNapi.cpp
+          platform/ohos/napi/modules/VideoPlayerNapi.cpp
+          platform/ohos/napi/helper/NapiValueConverter.cpp
+          platform/ohos/napi/helper/Js_Cocos2dxHelper.cpp
+          platform/ohos/napi/helper/NapiHelper.cpp
+
+          platform/ohos/napi/render/egl_core.cpp
+          platform/ohos/napi/render/plugin_render.cpp
+          platform/ohos/napi/plugin_manager.cpp
+          platform/ohos/napi/WorkerMessageQueue.cpp
+    )
 else()
 
 set(COCOS_PLATFORM_SPECIFIC_SRC
@@ -27,7 +68,20 @@ endif()
 include_directories(
   ../external/ConvertUTF
 )
-
+if(OHOS)
+  set(COCOS_PLATFORM_SRC
+    platform/CCSAXParser.cpp
+    platform/CCThread.cpp
+    platform/CCGLViewProtocol.cpp
+    platform/CCFileUtils.cpp
+    platform/CCImage.cpp
+    platform/ohos/CCGLView.cpp
+    ../external/edtaa3func/edtaa3func.cpp
+    ../external/ConvertUTF/ConvertUTFWrapper.cpp
+    ../external/ConvertUTF/ConvertUTF.c
+    ${COCOS_PLATFORM_SPECIFIC_SRC}
+  )
+else()
 set(COCOS_PLATFORM_SRC
   platform/CCSAXParser.cpp
   platform/CCThread.cpp
@@ -40,4 +94,4 @@ set(COCOS_PLATFORM_SRC
   ../external/ConvertUTF/ConvertUTF.c
   ${COCOS_PLATFORM_SPECIFIC_SRC}
 )
-
+endif()

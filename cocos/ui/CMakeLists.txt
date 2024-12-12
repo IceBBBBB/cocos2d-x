@@ -1,4 +1,12 @@
+if(OHOS)
+  set(COCOS_UI_SPECIFIC_SRC
+      ui/UIVideoPlayer.h
+      ui/UIVideoPlayer-ohos.h
+      ui/UIVideoPlayer-ohos.cpp
+      )
+endif()
 set(COCOS_UI_SRC
+  ${COCOS_UI_SPECIFIC_SRC}
   ui/CCProtectedNode.cpp
   ui/CocosGUI.cpp
   ui/UIButton.cpp

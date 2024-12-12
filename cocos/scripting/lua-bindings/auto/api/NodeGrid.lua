@@ -15,7 +15,7 @@
 --          
 -- @function [parent=#NodeGrid] getGrid
 -- @param self
--- @return GridBase#GridBase ret (retunr value: cc.GridBase)
+-- @return GridBase#GridBase ret (return value: cc.GridBase)
 
 --------------------------------
 -- @function [parent=#NodeGrid] setGrid 

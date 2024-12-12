@@ -413,6 +413,7 @@ void Renderer::drawBatchedQuads()
         return;
     }
 
+// TBD need fixed ohos platform not support glUnmapBufferOES,can not use vao
     if (Configuration::getInstance()->supportsShareableVAO())
     {
         //Set VBO data
@@ -426,10 +427,11 @@ void Renderer::drawBatchedQuads()
 
         // option 3: orphaning + glMapBuffer
         glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * (_numQuads), nullptr, GL_DYNAMIC_DRAW);
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)        
         void *buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
         memcpy(buf, _quads, sizeof(_quads[0])* (_numQuads));
         glUnmapBuffer(GL_ARRAY_BUFFER);
-
+#endif
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         //Bind VAO

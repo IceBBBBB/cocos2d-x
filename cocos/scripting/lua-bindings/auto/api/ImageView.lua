@@ -43,7 +43,7 @@
 -- @param self
 -- @param #string str
 -- @param #ccui.Widget::TextureResType texturerestype
--- @return ImageView#ImageView ret (retunr value: ccui.ImageView)
+-- @return ImageView#ImageView ret (return value: ccui.ImageView)
 
 --------------------------------
 -- @function [parent=#ImageView] createInstance 

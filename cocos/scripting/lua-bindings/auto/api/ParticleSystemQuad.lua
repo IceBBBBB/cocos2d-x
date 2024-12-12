@@ -24,7 +24,7 @@
 -- @function [parent=#ParticleSystemQuad] create
 -- @param self
 -- @param #map_table map
--- @return ParticleSystemQuad#ParticleSystemQuad ret (retunr value: cc.ParticleSystemQuad)
+-- @return ParticleSystemQuad#ParticleSystemQuad ret (return value: cc.ParticleSystemQuad)
 
 --------------------------------
 -- @function [parent=#ParticleSystemQuad] createWithTotalParticles 

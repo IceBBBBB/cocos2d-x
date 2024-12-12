@@ -32,7 +32,7 @@
 --          
 -- @function [parent=#TMXTiledMap] getObjectGroups
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- @function [parent=#TMXTiledMap] getTileSize 

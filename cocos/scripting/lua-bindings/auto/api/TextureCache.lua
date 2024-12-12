@@ -37,7 +37,7 @@
 -- @param self
 -- @param #cc.Image image
 -- @param #string str
--- @return Texture2D#Texture2D ret (retunr value: cc.Texture2D)
+-- @return Texture2D#Texture2D ret (return value: cc.Texture2D)
 
 --------------------------------
 -- @function [parent=#TextureCache] getTextureForKey 

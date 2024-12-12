@@ -121,7 +121,7 @@
 --          
 -- @function [parent=#TMXLayer] getProperties
 -- @param self
--- @return map_table#map_table ret (retunr value: map_table)
+-- @return map_table#map_table ret (return value: map_table)
 
 --------------------------------
 -- @function [parent=#TMXLayer] getTileAt 

@@ -58,7 +58,7 @@
 -- @param self
 -- @param #string str
 -- @param #float float
--- @return LoadingBar#LoadingBar ret (retunr value: ccui.LoadingBar)
+-- @return LoadingBar#LoadingBar ret (return value: ccui.LoadingBar)
 
 --------------------------------
 -- @function [parent=#LoadingBar] createInstance 

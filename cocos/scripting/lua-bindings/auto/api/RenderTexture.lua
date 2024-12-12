@@ -72,7 +72,7 @@
 -- @param self
 -- @param #string str
 -- @param #cc.Image::Format format
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#RenderTexture] setAutoDraw 
@@ -148,7 +148,7 @@
 -- @param #int int
 -- @param #cc.Texture2D::PixelFormat pixelformat
 -- @param #unsigned int int
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- overload function: create(int, int, cc.Texture2D::PixelFormat)
@@ -163,7 +163,7 @@
 -- @param #int int
 -- @param #cc.Texture2D::PixelFormat pixelformat
 -- @param #unsigned int int
--- @return RenderTexture#RenderTexture ret (retunr value: cc.RenderTexture)
+-- @return RenderTexture#RenderTexture ret (return value: cc.RenderTexture)
 
 --------------------------------
 -- @function [parent=#RenderTexture] draw 

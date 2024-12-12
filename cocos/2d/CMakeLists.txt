@@ -7,7 +7,11 @@ endif()
 include_directories(
   ../external/ConvertUTF
 )
-
+if(OHOS)
+include_directories(
+  ../external/freetype2/include/ohos/freetype2
+)
+endif()
 set(COCOS_2D_SRC
   2d/CCActionCamera.cpp
   2d/CCActionCatmullRom.cpp

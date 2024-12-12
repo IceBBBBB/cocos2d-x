@@ -13,7 +13,7 @@
 -- @param #char char
 -- @param #char char
 -- @param #cc.CallFunc callfunc
--- @return ActionObject#ActionObject ret (retunr value: ccs.ActionObject)
+-- @return ActionObject#ActionObject ret (return value: ccs.ActionObject)
 
 --------------------------------
 -- @function [parent=#ActionManagerEx] getActionByName 

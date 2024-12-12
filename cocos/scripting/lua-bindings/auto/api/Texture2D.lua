@@ -22,7 +22,7 @@
 -- @param self
 -- @param #cc.Image image
 -- @param #cc.Texture2D::PixelFormat pixelformat
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Texture2D] getMaxS 
@@ -67,7 +67,7 @@
 -- @function [parent=#Texture2D] getBitsPerPixelForFormat
 -- @param self
 -- @param #cc.Texture2D::PixelFormat pixelformat
--- @return unsigned int#unsigned int ret (retunr value: unsigned int)
+-- @return unsigned int#unsigned int ret (return value: unsigned int)
 
 --------------------------------
 -- @function [parent=#Texture2D] getName 
@@ -87,7 +87,7 @@
 -- @param #size_table size
 -- @param #cc.TextHAlignment texthalignment
 -- @param #cc.TextVAlignment textvalignment
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Texture2D] setMaxT 

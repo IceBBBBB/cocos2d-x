@@ -78,7 +78,7 @@
 -- @param self
 -- @param #string str
 -- @param #ccs.Bone bone
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#Armature] setParentBone 
@@ -136,7 +136,7 @@
 -- @param self
 -- @param #string str
 -- @param #ccs.Bone bone
--- @return Armature#Armature ret (retunr value: ccs.Armature)
+-- @return Armature#Armature ret (return value: ccs.Armature)
 
 --------------------------------
 -- @function [parent=#Armature] setAnchorPoint 

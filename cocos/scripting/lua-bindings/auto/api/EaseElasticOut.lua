@@ -12,7 +12,7 @@
 -- @param self
 -- @param #cc.ActionInterval actioninterval
 -- @param #float float
--- @return EaseElasticOut#EaseElasticOut ret (retunr value: cc.EaseElasticOut)
+-- @return EaseElasticOut#EaseElasticOut ret (return value: cc.EaseElasticOut)
 
 --------------------------------
 -- @function [parent=#EaseElasticOut] clone 

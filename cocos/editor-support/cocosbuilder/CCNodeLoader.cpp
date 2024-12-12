@@ -5,7 +5,7 @@
 #include "CCBMemberVariableAssigner.h"
 #include "CCBAnimationManager.h"
 #include "CCNode+CCBRelativePositioning.h"
-
+#include <assert.h>
 
 using namespace std;
 using namespace cocos2d;

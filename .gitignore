@@ -114,6 +114,10 @@ tests/*/publish/
 project.properties
 
 # Ignore prebuilt libraries folder
+/external/openssl/
+/external/zlib/
+/external/opengles/
+/external/ohos-specific/
 /external/xxhash/
 /external/curl/
 /external/edtaa3func/

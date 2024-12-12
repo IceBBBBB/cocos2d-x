@@ -184,6 +184,13 @@ THE SOFTWARE.
     #include "platform/android/CCStdC.h"
 #endif // CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    #include "platform/ohos/CCApplication.h"
+    #include "platform/ohos/CCGLView.h"
+    #include "platform/ohos/CCGL.h"
+    #include "platform/ohos/CCStdC.h"
+#endif // CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
     #include "platform/blackberry/CCApplication.h"
     #include "platform/blackberry/CCGLView.h"

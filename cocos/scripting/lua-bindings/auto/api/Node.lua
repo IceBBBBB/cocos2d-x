@@ -54,7 +54,7 @@
 --          
 -- @function [parent=#Node] getChildren
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- @function [parent=#Node] pause 
@@ -408,7 +408,7 @@
 --          
 -- @function [parent=#Node] getScheduler
 -- @param self
--- @return Scheduler#Scheduler ret (retunr value: cc.Scheduler)
+-- @return Scheduler#Scheduler ret (return value: cc.Scheduler)
 
 --------------------------------
 -- @function [parent=#Node] getParentToNodeAffineTransform 
@@ -442,7 +442,7 @@
 --          
 -- @function [parent=#Node] getParent
 -- @param self
--- @return Node#Node ret (retunr value: cc.Node)
+-- @return Node#Node ret (return value: cc.Node)
 
 --------------------------------
 -- @function [parent=#Node] getPositionZ 
@@ -672,7 +672,7 @@
 --          
 -- @function [parent=#Node] getActionManager
 -- @param self
--- @return ActionManager#ActionManager ret (retunr value: cc.ActionManager)
+-- @return ActionManager#ActionManager ret (return value: cc.ActionManager)
 
 --------------------------------
 -- @function [parent=#Node] create 

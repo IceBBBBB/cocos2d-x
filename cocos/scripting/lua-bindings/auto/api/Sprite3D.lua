@@ -36,6 +36,6 @@
 -- @param self
 -- @param #string str
 -- @param #string str
--- @return Sprite3D#Sprite3D ret (retunr value: cc.Sprite3D)
+-- @return Sprite3D#Sprite3D ret (return value: cc.Sprite3D)
 
 return nil

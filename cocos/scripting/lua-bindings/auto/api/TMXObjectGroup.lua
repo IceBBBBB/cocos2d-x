@@ -32,7 +32,7 @@
 --          
 -- @function [parent=#TMXObjectGroup] getObjects
 -- @param self
--- @return array_table#array_table ret (retunr value: array_table)
+-- @return array_table#array_table ret (return value: array_table)
 
 --------------------------------
 -- @function [parent=#TMXObjectGroup] setGroupName 
@@ -46,7 +46,7 @@
 --          
 -- @function [parent=#TMXObjectGroup] getProperties
 -- @param self
--- @return map_table#map_table ret (retunr value: map_table)
+-- @return map_table#map_table ret (return value: map_table)
 
 --------------------------------
 -- @function [parent=#TMXObjectGroup] getGroupName 

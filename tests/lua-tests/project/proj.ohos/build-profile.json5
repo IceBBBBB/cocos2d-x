@@ -1,0 +1,46 @@
+{
+  "app": {
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "targetSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS"
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_o_rvZMzK7dt-WLtpXLW0Tosm4-jxqEAjXPYGvB2vP_o=.cer",
+          "storePassword": "0000001B2233A8E27BB9DF37933B6148FD244FF59018FA1A67211E52C9FA47EDF0C8D0252C69F7D9FD74F5",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BE5ABCA7DD3BBA27D4530AE3DD38378902849DBDBB595B60669DD69EB675F70E434522B70CC9292",
+          "profile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_o_rvZMzK7dt-WLtpXLW0Tosm4-jxqEAjXPYGvB2vP_o=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_o_rvZMzK7dt-WLtpXLW0Tosm4-jxqEAjXPYGvB2vP_o=.p12"
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "libSysCapabilities",
+      "srcPath": "./libSysCapabilities"
+    }
+  ]
+}

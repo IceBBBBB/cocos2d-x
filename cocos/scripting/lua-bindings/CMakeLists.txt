@@ -37,6 +37,12 @@ include_directories(
   ../../../external/lua/tolua
 )
 
+if(OHOS)
+  list(APPEND LUABINDING_SRC 
+	  manual/lua_extensions.c
+	  manual/Lua_web_socket.cpp)
+  add_definitions(-D_GNU_SOURCE)
+endif()
 
 add_library(luabinding STATIC
   ${LUABINDING_SRC}
@@ -47,7 +53,9 @@ target_link_libraries(luabinding
   lua
   spine
 )
-
+if(OHOS)
+  target_link_libraries(luabinding cocos2d ${GLES-lib} ${EGL-lib} ext_luasocket)
+endif()
 set_target_properties(luabinding
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

@@ -74,7 +74,7 @@
 -- @param #size_table size
 -- @param #cc.Texture2D texture2d
 -- @param #bool bool
--- @return bool#bool ret (retunr value: bool)
+-- @return bool#bool ret (return value: bool)
 
 --------------------------------
 -- @function [parent=#GridBase] setReuseGrid 
@@ -100,6 +100,6 @@
 -- @param #size_table size
 -- @param #cc.Texture2D texture2d
 -- @param #bool bool
--- @return GridBase#GridBase ret (retunr value: cc.GridBase)
+-- @return GridBase#GridBase ret (return value: cc.GridBase)
 
 return nil

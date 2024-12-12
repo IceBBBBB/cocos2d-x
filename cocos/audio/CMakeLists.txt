@@ -12,6 +12,42 @@ if(WIN32)
   )
 elseif(APPLE)
 
+
+elseif(OHOS)
+    set(AUDIO_SRC
+            ohos/AudioEngine.cpp
+            ohos/SimpleAudioEngine.cpp
+            ohos/AudioEngine-inl.cpp
+            ohos/CCThreadPool.cpp
+            ohos/AssetFd.cpp
+            ohos/AudioDecoder.cpp
+            ohos/AudioDecoderProvider.cpp
+            ohos/AudioDecoderSLES.cpp
+            ohos/AudioDecoderOgg.cpp
+            ohos/AudioDecoderMp3.cpp
+            ohos/AudioDecoderWav.cpp
+            ohos/AudioPlayerProvider.cpp
+            ohos/AudioResampler.cpp
+            ohos/AudioResamplerCubic.cpp
+            ohos/CCData.cpp
+            ohos/PcmBufferProvider.cpp
+            ohos/PcmAudioPlayer.cpp
+            ohos/PcmData.cpp
+            ohos/PcmAudioService.cpp
+            ohos/UrlAudioPlayer.cpp
+            ohos/AudioMixerController.cpp
+            ohos/AudioMixer.cpp
+            ohos/mp3reader.cpp
+            ohos/tinysndfile.cpp
+            ohos/Track.cpp
+
+            ohos/audio_utils/RefCounted.cpp
+            ohos/audio_utils/Value.cpp
+            ohos/audio_utils/minifloat.cpp
+            ohos/audio_utils/primitives.cpp
+            ohos/utils/Utils.cpp
+            ohos/utils/CCAudioFileUtilsOhos.cpp
+    )
 else()
   set(AUDIO_SRC
     linux/SimpleAudioEngineFMOD.cpp
@@ -28,7 +64,18 @@ add_library(audio STATIC
   ${AUDIO_SRC}
 )
 
-if((NOT APPLE) AND (NOT WIN32))
+if(OHOS)
+  include_directories(
+    ../../cocos/2d
+  )
+  target_link_libraries(audio 
+      # ext_cpufeatures  TBD need fixed?
+      ext_pvmp3dec 
+      ext_tremolo
+  )
+endif()
+
+if((NOT APPLE) AND (NOT WIN32) AND (NOT OHOS) )
 
 if ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 set(FMOD_LIB "fmodex64")
