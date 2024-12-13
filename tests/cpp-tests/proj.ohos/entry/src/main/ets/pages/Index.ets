@@ -79,7 +79,7 @@ struct Index {
         buttons: [
           {
             text: '取消',
-            // 颜色可自定义
+            // Color can be customized
             color: '#000000'
           },
           {
