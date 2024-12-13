@@ -15,8 +15,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/../resources/rawfile)
 endif()
 
 add_library(${PROJECT_NAME} SHARED main.cpp napi_init.cpp)
-
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
+ 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CLASSES_PATH}
         ${COCOS2DX_ROOT_PATH}/cocos
         ${COCOS2DX_ROOT_PATH}/cocos/base

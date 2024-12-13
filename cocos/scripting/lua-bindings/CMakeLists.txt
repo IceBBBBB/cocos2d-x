@@ -47,8 +47,7 @@ if(OHOS)
 	  )
   include_directories(
     ../../../cocos/2d
-    ../../../cocos/2d/platform/ohos
-    ../../../external/opengles/api 
+    ../../../cocos/2d/platform/ohos 
     ../../../external/lua
     ../../../cocos
     ../../../cocos/2d

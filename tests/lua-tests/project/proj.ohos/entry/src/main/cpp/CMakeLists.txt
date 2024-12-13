@@ -92,7 +92,7 @@ target_include_directories(${PROJECT_NAME}  PUBLIC  ${CLASSES_PATH}
 )
 
 
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api
+include_directories( 
                     ${COCOS2DX_ROOT_PATH}/cocos/2d/platform/ohos 
                     ${COCOS2DX_ROOT_PATH}/external/openssl/include/ohos 
                     ${COCOS2DX_ROOT_PATH}/external/sqlit3/include)

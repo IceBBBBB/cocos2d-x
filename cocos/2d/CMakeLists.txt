@@ -26,8 +26,7 @@ elseif(OHOS)
           platform/ohos/napi/helper/Js_Cocos2dxHelper.h
           platform/ohos/napi/helper/NapiHelper.h
           ../../external/freetype2/include/ohos/
-          ../../external/freetype2/include/ohos/freetype
-          ../../external/opengles/api
+          ../../external/freetype2/include/ohos/freetype 
     )
     set(PLATFORM_SRC
           platform/ohos/CCApplication.cpp
