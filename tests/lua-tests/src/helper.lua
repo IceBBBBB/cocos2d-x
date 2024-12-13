@@ -179,6 +179,7 @@ function TestCastScene.newScene()
 end
 
 function TestCastScene.initWithLayer(scene)
+    print(string.format("LUA-TEST helper initWithLayer"))
     local size = cc.Director:getInstance():getVisibleSize()
     local origin = cc.Director:getInstance():getVisibleOrigin()
 

@@ -63,7 +63,7 @@ VertexBuffer::VertexBuffer()
 , _vertexNumber(0)
 {
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     auto callBack = [this](EventCustom* event)
     {
         this->recreateVBO();
@@ -81,7 +81,7 @@ VertexBuffer::~VertexBuffer()
         glDeleteBuffers(1, &_vbo);
         _vbo = 0;
     }
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     Director::getInstance()->getEventDispatcher()->removeEventListener(_recreateVBOEventListener);
 #endif
 }
@@ -191,7 +191,7 @@ IndexBuffer::IndexBuffer()
 , _indexNumber(0)
 , _recreateVBOEventListener(nullptr)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
     auto callBack = [this](EventCustom* event)
     {
         this->recreateVBO();
@@ -208,7 +208,7 @@ IndexBuffer::~IndexBuffer()
         glDeleteBuffers(1, &_vbo);
         _vbo = 0;
     }
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
     Director::getInstance()->getEventDispatcher()->removeEventListener(_recreateVBOEventListener);
 #endif
 }

@@ -119,11 +119,107 @@ include_directories(../external/clipper)
 
 list(APPEND COCOS_SRC ${COCOS_HEADER})
 
+if (OHOS)
+    message("real add_compile_options")
+    add_compile_options(-DUSE_FILE32API
+    -Wno-absolute-value
+    -Wno-extra
+    -Wno-implicit-int-float-conversion
+    -Wno-overloaded-virtual
+    -Wno-unused-function
+    -Wno-unused-private-field
+    -Wno-reorder-ctor
+    -Wno-unsequenced
+    -Wno-extra
+    -Wno-c++11-narrowing
+    -DOpenHarmony
+    )    
+endif()
+
 add_library(cocos2d ${COCOS_SRC})
 
 # use necessary external libs and system libs
+if (OHOS)
+    message("****************  include opengles2")
+    INCLUDE_DIRECTORIES(${ENGINE_BINARY_PATH}/external/opgngles/api)
+    find_library( # Sets the name of the path variable.
+              Drawing-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              native_drawing )
+    find_library( # Sets the name of the path variable.
+              libace-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              ace_ndk.z )
+    find_library( # Sets the name of the path variable.
+              libnapi-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              ace_napi.z )
+    find_library( # Sets the name of the path variable.
+              GLES-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              GLESv3 )
+    find_library( # Sets the name of the path variable.
+              libuv-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              uv )
+    find_library( # Sets the name of the path variable.
+              rawfile-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              rawfile.z )
+    find_library( # Sets the name of the path variable.
+              EGL-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              EGL )
+    
+    find_library( # Sets the name of the path variable.
+              hilog-lib
+              # Specifies the name of the NDK library that
+              # you want CMake to locate.
+              hilog_ndk.z )
+    message("****************  native_drawing:${Drawing-lib}  *************************")
+    target_link_libraries(cocos2d ${Drawing-lib} ${libace-lib} ${GLES-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib} ${EGL-lib} ${hilog-lib} libohaudio.so libavplayer.so libnative_window.so libnative_buffer.so)
+endif()
+
 include(CocosUseLibs)
 target_use_cocos2d_depend_libs(cocos2d)
+
+if(OHOS)
+    # set(BULLET_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/bullet/include ${COCOS2DX_ROOT_PATH}/external/bullet/src)
+    # add_subdirectory(${COCOS2DX_ROOT_PATH}/external/bullet ${ENGINE_BINARY_PATH}/external/bullet)
+    # set(BULLET_LIBRARIES bullet)
+    # include_directories(${BULLET_INCLUDE_DIRS})
+
+     set(PVMP3DEC_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/ohos-specific/pvmp3dec/include ${COCOS2DX_ROOT_PATH}/external/ohos-specific/pvmp3dec/src)
+     if(USE_COCOS_PREBUILT)
+         cocos_find_prebuilt_lib_by_name(pvmp3dec PVMP3DEC_LIBRARIES)
+     else()
+         add_subdirectory(${COCOS2DX_ROOT_PATH}/external/ohos-specific/pvmp3dec ${ENGINE_BINARY_PATH}/external/ohos-specific/pvmp3dec)
+         set(PVMP3DEC_LIBRARIES pvmp3dec)
+     endif()
+     include_directories(${PVMP3DEC_INCLUDE_DIRS})
+
+     set(TREMOLO_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/ohos-specific/tremolo)
+     if(USE_COCOS_PREBUILT)
+         cocos_find_prebuilt_lib_by_name(tremolo TREMOLO_LIBRARIES)
+     else()
+         add_subdirectory(${COCOS2DX_ROOT_PATH}/external/ohos-specific/tremolo ${ENGINE_BINARY_PATH}/external/ohos-specific/tremolo)
+         set(TREMOLO_LIBRARIES tremolo)
+     endif()
+     include_directories(${TREMOLO_INCLUDE_DIRS})
+ 
+     target_link_libraries(cocos2d ext_pvmp3dec ext_tremolo)
+
+     target_include_directories(cocos2d PUBLIC ${COCOS2DX_ROOT_PATH}/external/chipmunk/include)
+     target_include_directories(cocos2d PUBLIC ${COCOS2DX_ROOT_PATH}/external)
+     target_compile_definitions(cocos2d PUBLIC -DOpenHarmony)
+ endif()
 
 set_target_properties(cocos2d
                       PROPERTIES

@@ -45,7 +45,7 @@
 
  # Recast (not prebuilded, exists as source)
  if(USE_RECAST)
-     if(USE_EXTERNAL_PREBUILT)
+     if(USE_EXTERNAL_PREBUILT OR OHOS)
          set(_recast_prefix RECAST)
          set(RECAST_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/recast)
          if(USE_COCOS_PREBUILT)
@@ -65,7 +65,7 @@
  endif(USE_RECAST)
 
  # Tinyxml2 (not prebuilded, exists as source)
- if(USE_EXTERNAL_PREBUILT)
+ if(USE_EXTERNAL_PREBUILT OR OHOS)
      set(_tinyxml2_prefix TinyXML2)
      set(TinyXML2_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/tinyxml2)
      if(USE_COCOS_PREBUILT)
@@ -122,7 +122,7 @@
  # dists have packages from zlib, thats very old for us.
  # moreover our embedded version modified to quick provide
  # functionality needed by cocos.
- if(USE_EXTERNAL_PREBUILT)
+ if(USE_EXTERNAL_PREBUILT OR OHOS)
      set(_unzip_prefix MINIZIP)
      include_directories(${ZLIB_INCLUDE_DIRS})
      set(MINIZIP_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/unzip ${ZLIB_INCLUDE_DIRS})
@@ -172,22 +172,28 @@
  endif()
 
  # flatbuffers
- if(USE_EXTERNAL_PREBUILT)
-     set(_flatbuffers_prefix FLATBUFFERS)
-     set(FLATBUFFERS_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external)
-     if(USE_COCOS_PREBUILT)
-         cocos_find_prebuilt_lib_by_name(flatbuffers FLATBUFFERS_LIBRARIES)
-     else()
-         add_subdirectory(${COCOS2DX_ROOT_PATH}/external/flatbuffers ${ENGINE_BINARY_PATH}/external/flatbuffers)
-         set(FLATBUFFERS_LIBRARIES flatbuffers)
-     endif()
-     message(STATUS "Flatbuffers include dirs: ${FLATBUFFERS_INCLUDE_DIRS}")
+ if(USE_EXTERNAL_PREBUILT OR OHOS)
+    if(OHOS)
+        add_subdirectory(${COCOS2DX_ROOT_PATH}/external/flatbuffers  ${ENGINE_BINARY_PATH}/external/flatbuffers)
+        set(FLATBUFFERS_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external)
+        message(STATUS "Flatbuffers include dirs: ${FLATBUFFERS_INCLUDE_DIRS}")
+    else()
+        set(_flatbuffers_prefix FLATBUFFERS)
+        set(FLATBUFFERS_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external)
+        if(USE_COCOS_PREBUILT)
+            cocos_find_prebuilt_lib_by_name(flatbuffers FLATBUFFERS_LIBRARIES)
+        else()
+            add_subdirectory(${COCOS2DX_ROOT_PATH}/external/flatbuffers ${ENGINE_BINARY_PATH}/external/flatbuffers)
+            set(FLATBUFFERS_LIBRARIES flatbuffers)
+        endif()
+        message(STATUS "Flatbuffers include dirs: ${FLATBUFFERS_INCLUDE_DIRS}")
+    endif()
  else()
      cocos_find_package(flatbuffers FLATBUFFERS REQUIRED)
  endif()
 
  # xxhash
- if(USE_EXTERNAL_PREBUILT)
+ if(USE_EXTERNAL_PREBUILT OR OHOS)
      set(_xxhash_prefix XXHASH)
      set(XXHASH_INCLUDE_DIRS ${COCOS2DX_ROOT_PATH}/external/xxhash)
      if(USE_COCOS_PREBUILT)

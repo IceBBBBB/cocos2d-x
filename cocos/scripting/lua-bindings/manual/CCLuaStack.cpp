@@ -89,6 +89,9 @@ namespace {
         std::string t;
         get_string_for_print(L, &t);
         CCLOG("[LUA-print] %s", t.c_str());
+		#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+        	OHOS_LOGD("[LUA-print] %s", t.c_str());
+		#endif 
 
         return 0;
     }
@@ -98,6 +101,9 @@ namespace {
         std::string t;
         get_string_for_print(L, &t);
         log("[LUA-print] %s", t.c_str());
+		#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+        	OHOS_LOGD("[LUA-print] %s", t.c_str());
+		#endif 
 
         return 0;
     }

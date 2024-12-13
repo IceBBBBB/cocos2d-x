@@ -43,10 +43,29 @@ if(APPLE OR VS)
     set(cc_common_res ${res_res} ${res_src} ${res_script})
 endif()
 
+if(OHOS)
+    set(res_raw_folders
+            "${CMAKE_CURRENT_LIST_DIR}/proj.ohos/entry/src/main/resources/rawfile"
+            )
+    file(GLOB ALL_RESOURCES_FILES ${res_res_folders}/* ${res_src_folders}/*)
+    file(COPY ${ALL_RESOURCES_FILES} DESTINATION ${res_raw_folders})
+    file(GLOB ALL_RESOURCES_FILES ${COCOS2DX_ROOT_PATH}/cocos/scripting/lua-bindings/script/*)
+    file(COPY ${ALL_RESOURCES_FILES} DESTINATION ${res_raw_folders}/cocos)
+
+    set(res_raw_ccs_res_folders "${COCOS2DX_ROOT_PATH}/tests/cpp-tests/Resources/ccs-res/*")
+    file(GLOB CCS_RESOURCES_FILES ${res_raw_ccs_res_folders})
+    file(COPY ${CCS_RESOURCES_FILES} DESTINATION ${res_raw_folders})
+
+    #set(cc_common_res ${res_raw_folders}/res ${res_raw_folders}/src ${res_raw_folders}/src/cocos)
+endif()
+
 if(ANDROID)
     # change APP_NAME to the share library name for Android, it's value depend on AndroidManifest.xml
     set(APP_NAME lua_tests)
     list(APPEND GAME_SOURCE proj.android/app/jni/main.cpp)
+elseif(OHOS)
+    set(APP_NAME lua_test)
+    list(APPEND GAME_SOURCE proj.ohos/entry/src/main/cpp/main.cpp ${cc_common_res})
 elseif(LINUX)
     list(APPEND GAME_SOURCE proj.linux/main.cpp)
 elseif(WINDOWS)
@@ -103,13 +122,18 @@ include_directories(
 include_directories(${LUAJIT_INCLUDE_DIRS})
 
 set(APP_SRC ${GAME_HEADER} ${GAME_SOURCE})
-# mark app complie info and libs info
-cocos_build_app(${APP_NAME}
-                APP_SRC "${APP_SRC}"
-                DEPEND_COMMON_LIBS "luacocos2d" "cocos2d"
-                DEPEND_ANDROID_LIBS "cocos2d_android"
-                )
 
+if(OHOS)
+    add_library(${APP_NAME} SHARED ${APP_SRC})
+    target_link_libraries(${APP_NAME} luacocos2d cocos2d)
+elseif()
+    # mark app complie info and libs info
+    cocos_build_app(${APP_NAME}
+                    APP_SRC "${APP_SRC}"
+                    DEPEND_COMMON_LIBS "luacocos2d" "cocos2d"
+                    DEPEND_ANDROID_LIBS "cocos2d_android"
+                    )
+endif()
 # mark app resources
 if(APPLE)
     set_target_properties(${APP_NAME} PROPERTIES RESOURCE "${APP_UI_RES}")

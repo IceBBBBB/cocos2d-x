@@ -26,7 +26,7 @@
 #ifndef __COCOS2D_UI_VIDEOWEIGTH_H_
 #define __COCOS2D_UI_VIDEOWEIGTH_H_
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) && !defined(CC_PLATFORM_OS_TVOS)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) && !defined(CC_PLATFORM_OS_TVOS)
 
 #include "ui/UIWidget.h"
 
@@ -58,9 +58,22 @@ namespace experimental{
                 PLAYING = 0,
                 PAUSED,
                 STOPPED,
-                COMPLETED
+                COMPLETED,
+                ERROR
             };
-
+            
+			#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)    
+	            /**
+	             * Styles of how the the video player is presented
+	             * For now only used on iOS to use either MPMovieControlStyleEmbedded (DEFAULT) or 
+	             * MPMovieControlStyleNone (NONE)
+	             */
+	            enum class StyleType
+	            {
+	                DEFAULT = 0,
+	                NONE
+	            };
+			#endif
             /**
              * A callback which will be called after specific VideoPlayer event happens.
              */
@@ -95,7 +108,44 @@ namespace experimental{
              * @return A remoting URL address.
              */
             virtual const std::string& getURL() const { return _videoURL;}
+            
+			#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)    
+	            /**
+	             * @brief Set if playback is done in loop mode
+	             *
+	             * @param looping the video will or not automatically restart at the end
+	             */
+	            virtual void setLooping(bool looping);
+            
+	            /**
+	             * Set if the player will enable user input for basic pause and resume of video
+	             *
+	             * @param enableInput If true, input will be handled for basic functionality (pause/resume)
+	             */
+	            virtual void setUserInputEnabled(bool enableInput);
+            
+	            /**
+	             * Set the style of the player
+	             *
+	             * @param style The corresponding style
+	             */
+	            virtual void setStyle(StyleType style);
+            
+	            /**
+	             * Checks whether the VideoPlayer is set with looping mode.
+	             *
+	             * @return true if the videoplayer is set to loop, false otherwise.
+	             */
+	            virtual bool isLooping() const;
 
+
+	            /**
+	             * Checks whether the VideoPlayer is set to listen user input to resume and pause the video
+	             *
+	             * @return true if the videoplayer user input is set, false otherwise.
+	             */            
+	            virtual bool isUserInputEnabled() const;
+            #endif
             /**
              * Starts playback.
              */
@@ -195,7 +245,13 @@ namespace experimental{
                 URL
             };
 
-            bool _isPlaying;
+            bool _isPlaying;		
+			#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)    
+	            bool _isLooping;
+	            bool _isUserInputEnabled;
+
+	            StyleType _styleType;
+			#endif
             bool _fullScreenDirty;
             bool _fullScreenEnabled;
             bool _keepAspectRatioEnabled;

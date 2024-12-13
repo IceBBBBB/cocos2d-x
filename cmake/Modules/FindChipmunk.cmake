@@ -71,7 +71,11 @@ IF(CHIPMUNK_LIBRARY)
   ENDIF(UNIX AND NOT APPLE)
 ENDIF(CHIPMUNK_LIBRARY)
 
-INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+if(OHOS)
+  INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs_ohos.cmake)
+else()
+  INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+endif()
 # handle the QUIETLY and REQUIRED arguments and set CHIPMUNK_FOUND to TRUE if 
 # all listed variables are TRUE
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Chipmunk DEFAULT_MSG CHIPMUNK_LIBRARIES CHIPMUNK_INCLUDE_DIR)

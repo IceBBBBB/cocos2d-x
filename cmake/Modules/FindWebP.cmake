@@ -61,7 +61,11 @@ FIND_LIBRARY(WEBP_LIBRARY
 set(WEBP_INCLUDE_DIRS "${WEBP_INCLUDE_DIR}")
 set(WEBP_LIBRARIES "${WEBP_LIBRARY}")
 
-INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+if(OHOS)
+  INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs_ohos.cmake)
+else()
+  INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+endif()
 # handle the QUIETLY and REQUIRED arguments and set WEBP_FOUND to TRUE if 
 # all listed variables are TRUE
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(WebP DEFAULT_MSG WEBP_LIBRARIES WEBP_INCLUDE_DIR)

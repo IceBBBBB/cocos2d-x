@@ -35,6 +35,17 @@ if(ANDROID)
          Classes/JNITest/JNITest.cpp
          proj.android/app/jni/main.cpp
          )
+elseif(OHOS)
+    # change APP_NAME to the share library name for ohos
+    set(APP_NAME cpp_tests)
+    # list(APPEND GAME_HEADER
+    #      Classes/JNITest/JNITest.h
+    #      )
+    list(APPEND GAME_SOURCE
+        #  Classes/JNITest/JNITest.cpp
+            proj.ohos/entry/src/main/cpp/main.cpp
+            proj.ohos/entry/src/main/cpp/napi_init.cpp
+         )
 elseif(LINUX)
     list(APPEND GAME_SOURCE
          proj.linux/main.cpp
@@ -463,13 +474,53 @@ set(APP_SRC
     ${GAME_HEADER}
     ${GAME_SOURCE}
     )
-cocos_build_app(${APP_NAME}
-                APP_SRC "${APP_SRC}"
-                DEPEND_COMMON_LIBS "cocos2d"
-                DEPEND_ANDROID_LIBS "cocos2d_android"
-                COMMON_USE_PKGS "FREETYPE" "CURL"
-                LINUX_USE_PKGS "FONTCONFIG" "GTK3"
-                )
+# mark app complie info and libs info
+if(OHOS)
+    add_library(${APP_NAME} SHARED ${APP_SRC})
+    include_directories(${COCOS2DX_ROOT_PATH}/external/freetype2/include/ohos/freetype2)
+    include_directories(${COCOS2DX_ROOT_PATH}/external/curl/include/ohos)
+    # include_directories(${COCOS2DX_ROOT_PATH}/external/openssl/include/ohos/openssl)
+
+    find_library( # Sets the name of the path variable.
+        GLES-lib
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        GLESv3 )
+    find_library( # Sets the name of the path variable.
+        hilog-lib
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        hilog_ndk.z )
+
+    find_library( # Sets the name of the path variable.
+        libnapi-lib
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        ace_napi.z )
+
+    target_include_directories(${APP_NAME}
+    PRIVATE Classes
+    )
+    target_include_directories(${APP_NAME}  PUBLIC  ${COCOS2DX_ROOT_PATH}
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/base
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/editor-support
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/extensions
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi/common
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi/modules
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi
+            PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos
+            )
+    target_link_libraries(${APP_NAME} cocos2d ${GLES-lib} ${hilog-lib} ${libnapi-lib})
+else()
+    cocos_build_app(${APP_NAME}
+                    APP_SRC "${APP_SRC}"
+                    DEPEND_COMMON_LIBS "cocos2d"
+                    DEPEND_ANDROID_LIBS "cocos2d_android"
+                    COMMON_USE_PKGS "FREETYPE" "CURL"
+                    LINUX_USE_PKGS "FONTCONFIG" "GTK3"
+                    )
+endif()
 
 # mark app resources
 if(APPLE)

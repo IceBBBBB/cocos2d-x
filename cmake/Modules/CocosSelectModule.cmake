@@ -8,6 +8,16 @@ set(USE_EXTERNAL_PREBUILT_DEFAULT ON)
 set(BUILD_LUA_LIBS_DEFAULT OFF)
 set(BUILD_JS_LIBS_DEFAULT OFF)
 
+# OHOS single test switch
+if(OHOS)
+    set(BUILD_CPP_EMPTY_TEST_DEFAULT ON)
+    set(BUILD_CPP_TESTS_DEFAULT ON)
+    set(BUILD_LUA_LIBS_DEFAULT OFF)
+    set(BUILD_LUA_TESTS_DEFAULT OFF)
+    set(BUILD_JS_LIBS_DEFAULT OFF)
+    set(BUILD_JS_TESTS_DEFAULT OFF)
+endif()
+
 option(USE_CHIPMUNK "Use chipmunk for physics library" ON)
 option(USE_BOX2D "Use box2d for physics library" OFF)
 option(USE_BULLET "Use bullet for physics3d library" ON)

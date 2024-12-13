@@ -8,7 +8,11 @@ include_directories(
         ${cocos_root}/cocos
         ${cocos_root}/cocos/editor-support
 )
-
+if(OHOS)
+    include_directories(
+        ${cocos_root}/external/lua/luajit/include
+    )
+endif()
 if(ANDROID)
     include_directories(
             manual/platform/android
@@ -55,6 +59,9 @@ elseif(UNIX OR ANDROID)
         add_definitions(-D_DARWIN_C_SOURCE)
     endif()
 
+    if(OHOS)
+        add_definitions(-D_GNU_SOURCE)
+    endif()
     list(APPEND lua_cocos2d_source_files
          ${cocos_root}/external/lua/luasocket/serial.c
          ${cocos_root}/external/lua/luasocket/unix.c
@@ -215,9 +222,29 @@ elseif(ANDROID)
         auto/lua_cocos2dx_experimental_webview_auto.cpp
         manual/ui/lua_cocos2dx_experimental_webview_manual.cpp
         )
+elseif(OHOS)
+    set(lua_bindings_manual_headers
+        ${lua_bindings_manual_headers}
+        auto/lua_cocos2dx_experimental_webview_auto.hpp
+        manual/ui/lua_cocos2dx_experimental_webview_manual.hpp
+        auto/lua_cocos2dx_experimental_video_auto.hpp
+        manual/ui/lua_cocos2dx_experimental_video_manual.hpp
+        )
+    set(lua_bindings_manual_files
+        ${lua_bindings_manual_files}
+        auto/lua_cocos2dx_experimental_webview_auto.cpp
+        manual/ui/lua_cocos2dx_experimental_webview_manual.cpp
+        auto/lua_cocos2dx_experimental_video_auto.cpp
+        manual/ui/lua_cocos2dx_experimental_video_manual.cpp
+        )
 endif()
 
 if(USE_BULLET)
+    if(OHOS)
+        add_subdirectory(${cocos_root}/external/bullet bullet_dir)
+        set(BULLET_INCLUDE_DIRS ${cocos_root}/external/bullet)
+        message(STATUS "Bullet include dirs: ${BULLET_INCLUDE_DIRS}")
+    endif()
     include_directories(${BULLET_INCLUDE_DIRS})
 endif()
 

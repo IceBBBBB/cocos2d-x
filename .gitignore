@@ -155,6 +155,7 @@ tests/cpp-empty-test/proj.tizen/res/
 tests/cpp-tests/proj.tizen/res/
 tests/lua-empty-test/project/proj.tizen/res/
 tests/lua-tests/project/proj.tizen/res/
+tests/lua-tests/project/proj.ohos/entry/src/main/resources/rawfile
 
 # Ignore vscode folder
 .vscode/

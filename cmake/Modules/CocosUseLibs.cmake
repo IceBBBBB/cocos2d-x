@@ -21,6 +21,9 @@ macro(cocos2d_depend_libs)
     elseif(ANDROID)
         list(APPEND PLATFORM_SPECIFIC_LIBS GLESv2 EGL log android OpenSLES)
         list(APPEND PREBUILT_SPECIFIC_LIBS TREMOLO PVMP3DEC CPUFEATURES)
+    elseif(OHOS)
+        list(APPEND PLATFORM_SPECIFIC_LIBS  EGL OpenSLES)  # TBD GLESV2 and log needed?
+        # list(APPEND PREBUILT_SPECIFIC_LIBS TREMOLO PVMP3DEC) # CPUFEATURES
     elseif(APPLE)
 
         include_directories(/System/Library/Frameworks)

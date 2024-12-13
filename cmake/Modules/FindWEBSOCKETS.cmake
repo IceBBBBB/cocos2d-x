@@ -42,7 +42,11 @@ find_library(WEBSOCKETS_LIBRARY NAMES websockets libwebsockets
 set(WEBSOCKETS_INCLUDE_DIRS ${WEBSOCKETS_INCLUDE_DIR})
 set(WEBSOCKETS_LIBRARIES ${WEBSOCKETS_LIBRARY})
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+if(OHOS)
+  INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs_ohos.cmake)
+else()
+  include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+endif()
 find_package_handle_standard_args(WEBSOCKETS DEFAULT_MSG WEBSOCKETS_LIBRARIES WEBSOCKETS_INCLUDE_DIRS)
 
 mark_as_advanced(WEBSOCKETS_LIBRARIES WEBSOCKETS_INCLUDE_DIRS)

@@ -5,11 +5,14 @@
  #IOS    =  iOS
  #MACOSX    =  MacOS X
  #LINUX      =   Linux
+ #OHOS = Ohos
  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
      set(WINDOWS TRUE)
      set(SYSTEM_STRING "Windows Desktop")
  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Android")
      set(SYSTEM_STRING "Android")
+ elseif(${CMAKE_SYSTEM_NAME} MATCHES "OHOS")
+     set(SYSTEM_STRING "OHOS")
  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
      if(ANDROID)
          set(SYSTEM_STRING "Android")
@@ -114,7 +117,11 @@
      set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
      set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -fPIC")
-     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations -Wno-reorder -Wno-invalid-offsetof -fPIC")
+     if(OHOS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-deprecated-declarations -Wno-reorder -Wno-invalid-offsetof -fPIC")
+     else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations -Wno-reorder -Wno-invalid-offsetof -fPIC")
+     endif()
      if(CLANG AND NOT ANDROID)
          set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
      endif()
@@ -161,7 +168,23 @@
          string(REPLACE "-mthumb" "-marm" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
          string(REPLACE "-mthumb" "-marm" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
      endif()
-
+ elseif(OHOS)
+    add_compile_options(-DUSE_FILE32API
+			-Wno-absolute-value
+			-Wno-extra
+			-Wno-implicit-int-float-conversion
+			-Wno-overloaded-virtual
+			-Wno-unused-function
+			-Wno-unused-private-field
+			-Wno-unused-parameter
+			-Wno-reorder-ctor
+			-Wno-unsequenced
+			-Wno-extra
+			-Wno-c++11-narrowing
+			-Wno-expansion-to-defined
+			-Wno-unused-command-line-argument
+			)
+	set(PLATFORM_FOLDER ohos)
  else()
      message(FATAL_ERROR "Unsupported platform, CMake will exit")
      return()
