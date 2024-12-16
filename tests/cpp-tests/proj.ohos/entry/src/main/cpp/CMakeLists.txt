@@ -65,7 +65,6 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/../resources/rawfile)
 endif()
 
 include_directories(
-        ${COCOS2DX_ROOT_PATH}/external/opengles/api
         ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos
 )
 
@@ -84,7 +83,6 @@ set(COCOS2DX_HEADER_PUBLIC
         ${COCOS2DX_ROOT_PATH}/cocos/base
         ${COCOS2DX_ROOT_PATH}/cocos/math
         ${COCOS2DX_ROOT_PATH}/cocos/physics
-        ${COCOS2DX_ROOT_PATH}/external/opengles/api
         )
 
 
