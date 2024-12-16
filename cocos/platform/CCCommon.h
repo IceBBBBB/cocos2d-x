@@ -65,6 +65,13 @@ enum class LanguageType
     ARABIC,
     NORWEGIAN,
     POLISH
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    ,
+    TURKISH,
+    UKRAINIAN,
+    ROMANIAN,
+    BULGARIAN
+    #endif
 };
 
 // END of platform group

@@ -768,9 +768,14 @@ std::string FileUtils::fullPathForFilename(const std::string &filename)
         CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
     }
 
-    // FIXME: Should it return nullptr ? or an empty string ?
-    // The file wasn't found, return the file name passed in.
-    return filename;
+	#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	    // The file wasn't found, return empty string.
+    	return "";
+	#else
+    	// FIXME: Should it return nullptr ? or an empty string ?
+    	// The file wasn't found, return the file name passed in.
+    	return filename;
+	#endif
 }
 
 std::string FileUtils::fullPathFromRelativeFile(const std::string &filename, const std::string &relativeFile)
@@ -1288,7 +1293,12 @@ bool FileUtils::renameFile(const std::string &path, const std::string &oldname, 
 
     if (0 != errorCode)
     {
-        CCLOGERROR("Fail to rename file %s to %s !Error code is %d", oldPath.c_str(), newPath.c_str(), errorCode);
+        #if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+        	CCLOGERROR("Fail to rename file %s to %s !Error code is %d sys errno is %d", oldPath.c_str(), newPath.c_str(), errorCode, errno);
+        #else
+        	CCLOGERROR("Fail to rename file %s to %s !Error code is %d", oldPath.c_str(), newPath.c_str(), errorCode);
+        #endif
+
         return false;
     }
     return true;
@@ -1337,6 +1347,22 @@ bool FileUtils::isPopupNotify()
 {
     return s_popupNotify;
 }
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	std::string FileUtils::getFileExtension(const std::string& filePath) const
+	{
+	    std::string fileExtension;
+	    size_t pos = filePath.find_last_of('.');
+	    if (pos != std::string::npos)
+	    {
+	        fileExtension = filePath.substr(pos, filePath.length());
+
+	        std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
+	    }
+
+	    return fileExtension;
+	}
+#endif
 
 NS_CC_END
 

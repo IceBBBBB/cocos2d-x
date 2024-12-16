@@ -465,6 +465,9 @@ public:
         , _vertAlignment(TextVAlignment::TOP)
     	, _dimensions(Size::ZERO)
         , _fontFillColor(Color3B::WHITE)
+        #if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS 
+          , _fontAlpha(255)
+        #endif
     {}
     
     // font name
@@ -479,6 +482,11 @@ public:
     Size                  _dimensions;
     // font color
     Color3B               _fontFillColor;
+    
+    #if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS 
+      //font alpha
+      GLubyte               _fontAlpha;
+    #endif
     // font shadow
     FontShadow            _shadow;
     // font stroke

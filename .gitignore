@@ -139,6 +139,10 @@ project.properties
 /external/winrt_8.1-specific/
 /external/wp8-specific/
 /external/wp_8.1-specific/
+/external/ohos-specific/
+/external/openssl/
+/external/fbx-conv/
+/external/uv/
 /external/version.json
 /templates/lua-template-runtime/runtime
 /v*-deps-*.zip
