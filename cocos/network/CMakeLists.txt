@@ -18,7 +18,9 @@ elseif(MACOSX)
         network/CCDownloader-apple.mm
         )
 endif()
-
+if(OHOS)
+    include_directories(../../external/curl/include/ohos)
+endif()
 set(COCOS_NETWORK_SRC
     ${COCOS_NETWORK_PLATFORM_SRC}
     network/HttpClient.cpp
