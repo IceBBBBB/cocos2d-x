@@ -51,10 +51,7 @@ find_library( # Sets the name of the path variable.
               rawfile-lib
               # Specifies the name of the NDK library that
               # you want CMake to locate.
-              rawfile.z )
-
-
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
+              rawfile.z ) 
 
 add_definitions(-DOpenHarmony)
 add_library(${PROJECT_NAME} SHARED  main.cpp

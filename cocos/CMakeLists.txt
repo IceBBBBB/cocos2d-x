@@ -140,8 +140,6 @@ add_library(cocos2d ${COCOS_SRC})
 
 # use necessary external libs and system libs
 if (OHOS)
-    message("****************  include opengles2")
-    INCLUDE_DIRECTORIES(${ENGINE_BINARY_PATH}/external/opgngles/api)
     find_library( # Sets the name of the path variable.
               Drawing-lib
               # Specifies the name of the NDK library that
