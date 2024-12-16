@@ -65,8 +65,6 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/../resources/rawfile)
         DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../resources/rawfile)
 endif()
 
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
-
 add_library(${PROJECT_NAME} SHARED  main.cpp
                                     napi_init.cpp
                                     )

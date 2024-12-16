@@ -163,7 +163,6 @@ elseif(OHOS)
       ${COCOS2DX_ROOT_PATH}/external/ohos-specific/tremolo
       ${COCOS2DX_ROOT_PATH}/external/ohos-specific/pvmp3dec/include
       ${COCOS2DX_ROOT_PATH}/external/ohos-specific/pvmp3dec/src
-      ${COCOS2DX_ROOT_PATH}/external/opengles/api
       )
   target_include_directories(cocos2d PUBLIC ${COCOS2DX_HEADER_PUBLIC})
   target_compile_definitions(cocos2d PUBLIC -DUSE_FILE32API -DOpenHarmony)

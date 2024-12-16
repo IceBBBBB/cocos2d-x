@@ -56,9 +56,6 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               rawfile.z )
 
-
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
-
 add_library(${PROJECT_NAME} SHARED main.cpp
                                    napi_init.cpp)
 

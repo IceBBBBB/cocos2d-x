@@ -112,8 +112,6 @@ add_library(${PROJECT_NAME} SHARED  main.cpp
 target_include_directories(${PROJECT_NAME} PUBLIC ${CLASSES_PATH})
 target_include_directories(${PROJECT_NAME} PUBLIC ${COCOS2DX_ROOT_PATH}/cocos)
 
-# 基础的依赖使用include_directories
-include_directories(${COCOS2DX_ROOT_PATH}/external/opengles/api)
 include_directories(
         ${COCOS2DX_ROOT_PATH}
         ${COCOS2DX_ROOT_PATH}/cocos
