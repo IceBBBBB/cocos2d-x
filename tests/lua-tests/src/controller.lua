@@ -1,4 +1,7 @@
 
+-- jit off
+-- local jit = require("jit")
+-- jit.off()
 -- avoid memory leak
 collectgarbage("setpause", 100) 
 collectgarbage("setstepmul", 5000)
@@ -8,8 +11,10 @@ collectgarbage("setstepmul", 5000)
 -- run
 local director = cc.Director:getInstance()
 local glView   = director:getOpenGLView()
+local widthx = 1024
+local heighty = 2112
 if nil == glView then
-    glView = cc.GLView:createWithRect("Lua Tests", cc.rect(0,0,900,640))
+    glView = cc.GLView:createWithRect("Lua Tests", cc.rect(0,0,widthx,heighty))
     director:setOpenGLView(glView)
 end
 
@@ -21,14 +26,14 @@ director:setAnimationInterval(1.0 / 60)
 
 local screenSize = glView:getFrameSize()
 
-local designSize = {width = 480, height = 320}
+local designSize = {width = widthx / 2, height = heighty / 2}
 
 if screenSize.height > 320 then
-    local resourceSize = {width = 960, height = 640}
+    local resourceSize = {width = widthx, height = heighty}
     cc.Director:getInstance():setContentScaleFactor(resourceSize.height/designSize.height)
 end
 
-glView:setDesignResolutionSize(designSize.width, designSize.height, cc.ResolutionPolicy.FIXED_HEIGHT)
+glView:setDesignResolutionSize(designSize.width, designSize.height, cc.ResolutionPolicy.NO_BORDER)
 
 local fileUtils = cc.FileUtils:getInstance()
 local function addSearchPath(resPrefix, height)
@@ -66,6 +71,7 @@ local function addSearchPath(resPrefix, height)
     end
 
     fileUtils:setSearchPaths(searchPaths)
+    fileUtils:setSearchPaths("")
 
 end
 
@@ -73,7 +79,7 @@ addSearchPath("res/", screenSize.height)
 addSearchPath("", screenSize.height)
 
 
-require "src/mainMenu"
+require "mainMenu"
 
 local scene = cc.Scene:create()
 scene:addChild(CreateTestMenu())

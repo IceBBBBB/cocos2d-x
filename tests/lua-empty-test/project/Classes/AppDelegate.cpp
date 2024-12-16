@@ -28,7 +28,8 @@ bool AppDelegate::applicationDidFinishLaunching()
     
     //The call was commented because it will lead to ZeroBrane Studio can't find correct context when debugging
     //engine->executeScriptFile("src/hello.lua");
-    engine->executeString("require 'src/hello.lua'");
+    FileUtils::getInstance()->addSearchPath("");
+    engine->executeScriptFile("hello.lua");
 
     return true;
 }

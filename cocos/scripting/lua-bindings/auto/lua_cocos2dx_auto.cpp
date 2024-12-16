@@ -6,8 +6,7 @@
 #include "CCAnimate3D.h"
 #include "tolua_fix.h"
 #include "LuaBasicConversions.h"
-
-
+#include <assert.h>
 
 int lua_cocos2dx_Ref_release(lua_State* tolua_S)
 {

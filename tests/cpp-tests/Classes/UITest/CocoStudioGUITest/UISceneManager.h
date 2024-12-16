@@ -108,7 +108,7 @@ enum
     KUIFocusTest_NestedLayout2,
     KUIFocusTest_NestedLayout3,
     kUIFocusTest_ListView,
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     kUIVideoPlayerTest,
 #endif
     kUITestMax

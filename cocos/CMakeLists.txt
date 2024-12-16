@@ -72,33 +72,51 @@ endif()
 
 elseif(APPLE)
 
+elseif(OHOS)
+  find_library(hilog-lib hilog_ndk.z)
+  find_library(Drawing-lib native_drawing)
+  find_library(libace-lib ace_ndk.z)
+  find_library(libnapi-lib ace_napi.z)
+  find_library(libuv-lib uv)
+  find_library(rawfile-lib rawfile.z)
+  set(COCOS_LINK ext_freetype ext_png ext_jpeg ext_tiff ext_webp ext_zlib ext_pvmp3dec ext_tremolo EGL OpenSLES GLESv3 ${hilog-lib} ${Drawing-lib} ${libace-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib})
 else()
-set(COCOS_LINK
-  jpeg
-  webp
-  tiff
-  freetype
-  fontconfig
-  png
-  pthread
-  glfw
-  GLEW
-  GL
-  X11
-  rt
-  z
-)
+    set(COCOS_LINK
+      jpeg
+      webp
+      tiff
+      freetype
+      fontconfig
+      png
+      pthread
+      glfw
+      GLEW
+      GL
+      X11
+      rt
+      z
+    )
 endif()
 
-target_link_libraries(cocos2d
-  chipmunk_static
-  tinyxml2
-  unzip
-  xxhash
-  ${COCOS_STORAGE_LINK}
+if (OHOS)
+    target_link_libraries(cocos2d ${Drawing-lib} ${libace-lib} ${GLES-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib} ${EGL-lib} ${hilog-lib} libohaudio.so libavplayer.so libnative_window.so libnative_buffer.so)
+endif()
+
+set(COMMON_LINK chipmunk_static tinyxml2 unzip xxhash)
+if(OHOS) 
+  target_link_libraries(cocos2d
+  ${COMMON_LINK}
   ${COCOS_NETWORK_LINK}
   ${COCOS_LINK}
-)
+  )
+else()
+  target_link_libraries(cocos2d
+    ${COMMON_LINK}
+    ${COCOS_STORAGE_LINK}
+    ${COCOS_NETWORK_LINK}
+    ${COCOS_LINK}
+  )
+endif()
 
 set_target_properties(cocos2d
     PROPERTIES

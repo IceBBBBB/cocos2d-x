@@ -1,4 +1,4 @@
-require ("CocoStudio")
+require ("cocos/CocoStudio")
 
 local NodeInRect = class("NodeInRect")
 NodeInRect._tag  = -1

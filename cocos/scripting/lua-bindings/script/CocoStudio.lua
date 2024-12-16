@@ -1,5 +1,5 @@
-require "json"
-require "extern"
+require "cocos/json"
+require "cocos/extern"
 
 ccs = ccs or {}
 

@@ -2,6 +2,7 @@
 #include "CocosGUI.h"
 #include "tolua_fix.h"
 #include "LuaBasicConversions.h"
+#include <assert.h>
 
 
 

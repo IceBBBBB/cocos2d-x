@@ -40,6 +40,7 @@ THE SOFTWARE.
 #include "CCGL.h"
 
 #include "deprecated/CCString.h"
+#include <assert.h>
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 #include "CCPrecompiledShaders.h"

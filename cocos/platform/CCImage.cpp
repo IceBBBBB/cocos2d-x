@@ -81,6 +81,8 @@ extern "C"
 #include "base/ZipUtils.h"
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "android/CCFileUtilsAndroid.h"
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "ohos/CCFileUtils-ohos.h"
 #endif
 
 #define CC_GL_ATC_RGB_AMD                                          0x8C92

@@ -1,5 +1,5 @@
-require "extern"
-require "src/VisibleRect"
+require "cocos/extern"
+require "VisibleRect"
 
 Paddle = class("Paddle", function(texture)
     return cc.Sprite:createWithTexture(texture)

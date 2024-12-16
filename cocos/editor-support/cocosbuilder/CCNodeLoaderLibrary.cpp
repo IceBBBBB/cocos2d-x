@@ -14,6 +14,7 @@
 #include "CCControlButtonLoader.h"
 #include "CCParticleSystemQuadLoader.h"
 #include "CCScrollViewLoader.h"
+#include <assert.h>
 
 using namespace cocos2d;
 

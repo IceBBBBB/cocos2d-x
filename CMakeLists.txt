@@ -97,7 +97,7 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-std=c99")
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 endif()
 
-if(MINGW)
+if(MINGW AND NOT OHOS)
   add_definitions(-DGLEW_STATIC)
   add_definitions(-D__SSIZE_T)
   set(CMAKE_C_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} -lws2_32")
@@ -126,6 +126,8 @@ if(WIN32) # Win32
   set(PLATFORM_FOLDER win32)
 elseif(APPLE)# osx or ios
   set(PLATFORM_FOLDER mac)
+elseif(OHOS)
+  set(PLATFORM_FOLDER ohos)
 else() # Assume Linux
   set(PLATFORM_FOLDER linux)
 endif()
@@ -133,7 +135,6 @@ endif()
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/cocos
-  ${CMAKE_CURRENT_SOURCE_DIR}/cocos/platform/desktop
   ${CMAKE_CURRENT_SOURCE_DIR}/cocos/platform/${PLATFORM_FOLDER}
   ${CMAKE_CURRENT_SOURCE_DIR}/cocos/audio/include
   ${CMAKE_CURRENT_SOURCE_DIR}/cocos/editor-support
@@ -155,6 +156,10 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/external/xxhash
   ${CMAKE_CURRENT_SOURCE_DIR}/external/xxtea
 )
+
+if(NOT OHOS) 
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cocos/platform/desktop)
+endif()
 
 if(WIN32 AND NOT MINGW)
   include_directories(
@@ -223,6 +228,24 @@ add_subdirectory(external/tinyxml2)
 # xxhash library
 add_subdirectory(external/xxhash)
 
+# pvmp3dec  tremolo  library
+if(OHOS)
+  add_subdirectory(external/webp)
+  add_subdirectory(external/freetype2)
+  add_subdirectory(external/png)
+  add_subdirectory(external/jpeg)
+  add_subdirectory(external/tiff)
+  add_subdirectory(external/zlib)
+  add_subdirectory(external/ohos-specific/pvmp3dec)
+  add_subdirectory(external/ohos-specific/tremolo)
+  add_subdirectory(external/websockets)
+  add_subdirectory(external/lua/luajit)
+  
+  add_subdirectory(external/lua/luasocket)
+  add_subdirectory(external/curl)
+  add_subdirectory(external/openssl)
+endif()
+
 # audio
 add_subdirectory(cocos/audio)
 
@@ -268,13 +291,16 @@ endif(BUILD_LIBS_LUA)
 
 # build tests 
 
-add_subdirectory(tests/cpp-empty-test)
-
+if(NOT OHOS)
+ add_subdirectory(tests/cpp-empty-test)
+endif()
 if(BUILD_CppTests)
 add_subdirectory(tests/cpp-tests)
 endif(BUILD_CppTests)
 
 if(BUILD_LuaTests)
 add_subdirectory(tests/lua-tests/project)
-add_subdirectory(tests/lua-empty-test/project)
+if(NOT OHOS)
+  add_subdirectory(tests/lua-empty-test/project)
+endif()
 endif(BUILD_LuaTests)

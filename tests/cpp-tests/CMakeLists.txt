@@ -1,5 +1,10 @@
 set(APP_NAME cpp-tests)
 
+if(OHOS)
+  project(${APP_NAME})
+  set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+endif()
+
 if(WIN32)
   set(PLATFORM_SRC
     Classes/ExtensionsTest/EditBoxTest/EditBoxTest.cpp
@@ -7,6 +12,12 @@ if(WIN32)
     Classes/ExtensionsTest/NetworkTest/SocketIOTest.cpp
     proj.win32/main.cpp
   )
+elseif(OHOS)
+  set(PLATFORM_SRC proj.ohos/entry/src/main/cpp/main.cpp
+    Classes/ExtensionsTest/EditBoxTest/EditBoxTest.cpp
+    Classes/ExtensionsTest/NetworkTest/SocketIOTest.cpp
+    Classes/ExtensionsTest/NetworkTest/WebSocketTest.cpp
+    Classes/UITest/CocoStudioGUITest/UIVideoPlayerTest/UIVideoPlayerTest.cpp)
 else()
   set(PLATFORM_SRC
     proj.linux/main.cpp
@@ -193,9 +204,14 @@ include_directories(
 )
 
 # add the executable
-add_executable(${APP_NAME}
-  ${SAMPLE_SRC}
-)
+
+if(OHOS)
+    add_library(${PROJECT_NAME} SHARED ${SAMPLE_SRC})
+else()
+  add_executable(${APP_NAME}
+    ${SAMPLE_SRC}
+  )
+endif()
 
 target_link_libraries(${APP_NAME}
   spine

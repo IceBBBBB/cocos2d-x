@@ -30,6 +30,10 @@
 #include "cocostudio/CocoStudio.h"
 #include "extensions/cocos-ext.h"
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    #include "audio/ohos/AudioEngine.h"
+#endif
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate()
@@ -63,14 +67,18 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     auto screenSize = glview->getFrameSize();
 
-    auto designSize = Size(480, 320);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+  auto designSize = Size(1024/2, 2112/2);
+#else
+  auto designSize = Size(1024/2, 2112/2);
+#endif
 
     auto fileUtils = FileUtils::getInstance();
     std::vector<std::string> searchPaths;
     
     if (screenSize.height > 320)
     {
-        auto resourceSize = Size(960, 640);
+        auto resourceSize = Size(1024, 2112);
         searchPaths.push_back("hd");
         searchPaths.push_back("ccs-res/hd");
         searchPaths.push_back("ccs-res/hd/scenetest");
@@ -140,12 +148,19 @@ bool AppDelegate::applicationDidFinishLaunching()
 void AppDelegate::applicationDidEnterBackground()
 {
     Director::getInstance()->stopAnimation();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    cocos2d::experimental::AudioEngine::onEnterBackground();
+#endif
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground()
 {
     Director::getInstance()->startAnimation();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    // resume audioEngine, otherwise the opensl audioPlayer will always be suspended.
+    cocos2d::experimental::AudioEngine::onEnterForeground();
+#endif
 }
 
 void AppDelegate::setCurrentTest(BaseTest* curTest)
@@ -156,4 +171,18 @@ void AppDelegate::setCurrentTest(BaseTest* curTest)
 BaseTest* AppDelegate::getCurrentTest()
 {
     return _curTest;
+}
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight)
+{
+    auto director = cocos2d::Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set ResolutionPolicy to a proper value. here use the original value when the game is started.
+        ResolutionPolicy resolutionPolicy = glview->getResolutionPolicy();
+        Size designSize = glview->getDesignResolutionSize();
+         glview->setFrameSize(newWidth, newHeight);
+         // Set the design resolution to a proper value. here use the original value when the game is started. 
+         glview->setDesignResolutionSize(designSize.width, designSize.height, resolutionPolicy);
+    }
 }

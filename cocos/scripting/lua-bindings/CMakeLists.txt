@@ -28,6 +28,16 @@ set(LUABINDING_SRC
   manual/lua_cocos2dx_experimental_manual.cpp
 )
 
+if(OHOS)
+  add_definitions(-D_GNU_SOURCE)
+  set(LUABINDING_SRC
+      ${LUABINDING_SRC}
+      manual/lua_extensions.c
+      manual/Lua_web_socket.cpp
+      manual/lua_cocos2dx_experimental_video_manual.cpp
+      auto/lua_cocos2dx_experimental_video_auto.cpp
+  )
+endif()
 include_directories(
   auto
   manual
@@ -53,7 +63,9 @@ target_link_libraries(luabinding
   spine
   xxtea
 )
-
+if(OHOS)
+  target_link_libraries(luabinding cocos2d ${GLES-lib} ${EGL-lib} ext_luasocket)
+endif()
 set_target_properties(luabinding
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

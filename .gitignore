@@ -122,8 +122,11 @@ project.properties
 /external/jpeg/
 /external/json/
 /external/linux-specific/
+/external/ohos-specific/
+/external/openssl/
 /external/lua/
 /external/png/
+/external/zlib/
 /external/sqlite3/
 /external/tiff/
 /external/tinyxml2/

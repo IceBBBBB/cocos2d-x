@@ -1,3 +1,10 @@
+if(OHOS)
+  set(COCOS_UI_SPECIFIC_SRC
+      ui/UIVideoPlayer.h
+      ui/UIVideoPlayer-ohos.h
+      ui/UIVideoPlayer-ohos.cpp
+      )
+endif()
 set(COCOS_UI_SRC
   ui/CCProtectedNode.cpp
   ui/CocosGUI.cpp
@@ -23,5 +30,6 @@ set(COCOS_UI_SRC
   ui/UIVBox.cpp
   ui/UIWidget.cpp
   ui/UIDeprecated.cpp
+  ${COCOS_UI_SPECIFIC_SRC}
 )
 
