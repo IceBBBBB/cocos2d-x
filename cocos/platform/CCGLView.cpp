@@ -198,7 +198,12 @@ Rect GLView::getVisibleRect() const
     ret.origin = getVisibleOrigin();
     return ret;
 }
-
+#if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
+	Rect GLView::getSafeAreaRect() const
+	{
+	    return getVisibleRect();
+	}
+#endif
 Size GLView::getVisibleSize() const
 {
     if (_resolutionPolicy == ResolutionPolicy::NO_BORDER)

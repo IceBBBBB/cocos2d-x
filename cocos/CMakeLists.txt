@@ -25,7 +25,7 @@
 
 # this CMakeLists is to generate libcocos2d.a
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.6)
 
 if(WINDOWS)
   ADD_DEFINITIONS(-DUNICODE -D_UNICODE)
@@ -121,8 +121,83 @@ elseif(MACOSX OR APPLE)
 
 elseif(ANDROID)
   set(PLATFORM_SPECIFIC_LIBS GLESv2 log android)
+elseif(OHOS)
+  find_library( # Sets the name of the path variable.
+                Drawing-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                native_drawing )
+  find_library( # Sets the name of the path variable.
+                libace-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                ace_ndk.z )
+  find_library( # Sets the name of the path variable.
+                libnapi-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                ace_napi.z )
+  find_library( # Sets the name of the path variable.
+                libuv-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                uv )
+  find_library( # Sets the name of the path variable.
+                GLES-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                GLESv3 )
+  find_library( # Sets the name of the path variable.
+                rawfile-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                rawfile.z )
+  find_library( # Sets the name of the path variable.
+                EGL-lib
+                # Specifies the name of the NDK library that
+                # you want CMake to locate.
+                EGL )
+  set(PLATFORM_SPECIFIC_LIBS ${Drawing-lib} ${libace-lib} ${libnapi-lib} ${libuv-lib} ${GLES-lib}  ${rawfile-lib} ${EGL-lib}  EGL OpenSLES libc++.a)
+
+  set(COCOS2DX_HEADER_PUBLIC
+        ${CLASSES_PATH}
+        ${COCOS2DX_ROOT_PATH}/cocos
+        # ${COCOS2DX_ROOT_PATH}/cocos/cocoa
+        # ${COCOS2DX_ROOT_PATH}/cocos/include
+        ${COCOS2DX_ROOT_PATH}/cocos/math
+        ${COCOS2DX_ROOT_PATH}/cocos/platform
+        ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi/modules
+        ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos
+        ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi/common
+        ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi
+        ${COCOS2DX_ROOT_PATH}/cocos/platform/ohos/napi/render
+        )
+  target_link_directories(cocos2d PUBLIC ../external/lib)
+  target_include_directories(cocos2d PUBLIC ${COCOS2DX_HEADER_PUBLIC})
+  target_compile_definitions(cocos2d PUBLIC -DUSE_FILE32API -DOpenHarmony)
+  target_compile_options(cocos2d PUBLIC -Wno-psabi)
+  target_link_libraries(cocos2d ${PLATFORM_SPECIFIC_LIBS} ${glfw_other_linker_flags})
+  
+   cocos_use_pkg(cocos2d OPENSSL)
+   target_link_libraries(cocos2d
+        ext_pvmp3dec
+        ext_tremolo
+        ${Drawing-lib}
+        ${libace-lib}
+        ${GLES-lib}
+        ${libnapi-lib}
+        ${libuv-lib}
+        ${rawfile-lib}
+        ${EGL-lib}
+        ${hilog-lib}
+        libohaudio.so
+        libavplayer.so
+        libnative_window.so
+        libnative_buffer.so
+        )
 else()
-  message( FATAL_ERROR "Unsupported platform, CMake will exit" )
+     message( FATAL_ERROR "Unsupported platform, CMake will exit" )
+     target_link_libraries(cocos2d ${PLATFORM_SPECIFIC_LIBS} ${glfw_other_linker_flags})
 endif()
 
 foreach(pkg ZLIB MINIZIP JPEG PNG TIFF TinyXML2 FREETYPE WEBSOCKETS CURL FLATBUFFERS XXHASH)
@@ -133,7 +208,6 @@ if(LINUX)
   set(glfw_other_linker_flags X11)
 endif(LINUX)
 
-target_link_libraries(cocos2d ${PLATFORM_SPECIFIC_LIBS} ${glfw_other_linker_flags})
 
 if(USE_WEBP)
   add_definitions(-DCC_USE_WEBP=1)

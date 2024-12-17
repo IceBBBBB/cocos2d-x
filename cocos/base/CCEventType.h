@@ -44,5 +44,7 @@
 // This message is posted in cocos/platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxRenderer.cpp and cocos\platform\wp8-xaml\cpp\Cocos2dRenderer.cpp.
 #define EVENT_COME_TO_BACKGROUND    "event_come_to_background"
 
+#define EVENT_ORIENTATION_CHANGED  "event_orientation_changed"
+
 /// @endcond
 #endif // __CCEVENT_TYPE_H__

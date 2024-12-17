@@ -57,7 +57,8 @@ public:
         OS_EMSCRIPTEN,/** Emscripten */
         OS_TIZEN,/** Tizen */
         OS_WINRT,/** Winrt */
-        OS_WP8/** WP8 */
+        OS_WP8,/** WP8 */
+        OS_OHOS/** OHOS */
     };
 
     /**
@@ -135,7 +136,15 @@ public:
      * @lua NA
      */
     virtual Platform getTargetPlatform() = 0;
-    
+	
+    #if CC_TARGET_PLATFORM == CC_PLATFORM_OHOS
+	    /**
+	     @brief Get application version.
+	     * @js NA
+	     * @lua NA
+	     */
+	    virtual std::string getVersion() = 0;
+    #endif
     /**
      @brief Open url in default browser.
      @param String with url to open.
