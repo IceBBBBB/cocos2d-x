@@ -23,6 +23,7 @@ enum TargetPlatform
     kTargetIphone,
     kTargetIpad,
     kTargetBlackBerry,
+    kTargetOhos,
 };
 
 class CCApplication

@@ -14,7 +14,8 @@ enum TargetPlatform
     kTargetBlackBerry,
     kTargetNaCl,
     kTargetEmscripten,
-    kTargetTizen
+    kTargetTizen,
+    kTargetOhos      /**< HARMONY */
 };
 
 /**

@@ -33,6 +33,9 @@ THE SOFTWARE.
 #include "png.h"
 #include "jpeglib.h"
 #include "tiffio.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "platform/ohos/CCFileUtilsOhos.h"
+#endif
 #include <string>
 #include <ctype.h>
 
@@ -136,7 +139,12 @@ bool CCImage::initWithImageFileThreadSafe(const char *fullpath, EImageFormat ima
 {
     bool bRet = false;
     unsigned long nSize = 0;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    CCFileUtilsOhos *fileUitls = (CCFileUtilsOhos*)CCFileUtils::sharedFileUtils();
+    unsigned char *pBuffer = fileUitls->getFileDataForAsync(fullpath, "rb", &nSize);
+#else
     unsigned char *pBuffer = CCFileUtils::sharedFileUtils()->getFileData(fullpath, "rb", &nSize);
+#endif
     if (pBuffer != NULL && nSize > 0)
     {
         bRet = initWithImageData(pBuffer, nSize, imageType);

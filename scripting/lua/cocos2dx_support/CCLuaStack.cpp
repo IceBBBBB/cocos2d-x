@@ -78,6 +78,9 @@ int lua_print(lua_State * luastate)
             t += "\t";
     }
     CCLOG("[LUA-print] %s", t.c_str());
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	OHOS_LOGD("[LUA-print] %s", t.c_str());
+#endif
 
     return 0;
 }
@@ -185,7 +188,7 @@ int CCLuaStack::executeString(const char *codes)
 
 int CCLuaStack::executeScriptFile(const char* filename)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     std::string code("require \"");
     code.append(filename);
     code.append("\"");

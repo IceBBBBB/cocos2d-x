@@ -441,7 +441,8 @@ bool CCTexture2D::initWithString(const char *text, const char *fontName, float f
 
 bool CCTexture2D::initWithString(const char *text, const char *fontName, float fontSize, const CCSize& dimensions, CCTextAlignment hAlignment, CCVerticalTextAlignment vAlignment)
 {
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || \
+        (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     
         ccFontDefinition tempDef;
         
@@ -511,12 +512,17 @@ bool CCTexture2D::initWithString(const char *text, const char *fontName, float f
 
 bool CCTexture2D::initWithString(const char *text, ccFontDefinition *textDefinition)
 {
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) || \
+        (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     
     #if CC_ENABLE_CACHE_TEXTURE_DATA
         // cache the texture data
-        VolatileTexture::addStringTexture(this, text, dimensions, hAlignment, vAlignment, fontName, fontSize);
-    #endif
+		#if(CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+            VolatileTexture::addStringTexture(this, text, textDefinition->m_dimensions, textDefinition->m_alignment, textDefinition->m_vertAlignment, textDefinition->m_fontName.c_str(), textDefinition->m_fontSize);
+    	#else
+		    VolatileTexture::addStringTexture(this, text, dimensions, hAlignment, vAlignment, fontName, fontSize);
+		#endif
+	#endif
         
         bool bRet = false;
         CCImage::ETextAlign eAlign;

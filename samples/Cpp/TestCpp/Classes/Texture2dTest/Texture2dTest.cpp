@@ -677,7 +677,7 @@ void TexturePVRRGBA4444GZ::onEnter()
     TextureDemo::onEnter();
     CCSize s = CCDirector::sharedDirector()->getWinSize();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     // android can not pack .gz file into apk file
     CCSprite *img = CCSprite::create("Images/test_image_rgba4444.pvr");
 #else

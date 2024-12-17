@@ -1,0 +1,10 @@
+.hvigor
+.idea
+entry/build
+entry/.idea
+entry/.cxx
+local.properties
+oh-package-lock.json5
+entry/src/main/resources/rawfile
+oh_modules
+libSysCapabilities/build

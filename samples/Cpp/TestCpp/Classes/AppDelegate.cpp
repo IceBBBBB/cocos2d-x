@@ -32,7 +32,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
 
-    CCSize designSize = CCSizeMake(480, 320);
+    CCSize designSize = CCSizeMake(960, 960);
 
     CCFileUtils* pFileUtils = CCFileUtils::sharedFileUtils();
     
@@ -72,3 +72,14 @@ void AppDelegate::applicationWillEnterForeground()
     SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
     SimpleAudioEngine::sharedEngine()->resumeAllEffects();
 }
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight) {
+    auto director = CCDirector::sharedDirector();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set the design resolution to a proper value. here use a value
+         glview->setFrameSize(newWidth, newHeight);
+        // different with the game is started.
+        glview->setDesignResolutionSize(newWidth / 2, newHeight / 2, kResolutionNoBorder);
+    }
+} 
