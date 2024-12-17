@@ -67,12 +67,12 @@ void FontTest::showFont(const std::string& fontFile)
     removeChildByTag(kTagColor2, true);
     removeChildByTag(kTagColor3, true);
 
-    auto top = Label::createWithTTF(fontFile, fontFile, 24);
-    auto left = Label::createWithTTF("alignment left", fontFile, fontSize,
+    auto top = Label::createWithSystemFont(fontFile, fontFile, 24);
+    auto left = Label::createWithSystemFont("alignment left", fontFile, fontSize,
                                           blockSize, TextHAlignment::LEFT, verticalAlignment[vAlignIdx]);
-    auto center = Label::createWithTTF("alignment center", fontFile, fontSize,
+    auto center = Label::createWithSystemFont("alignment center", fontFile, fontSize,
                                             blockSize, TextHAlignment::CENTER, verticalAlignment[vAlignIdx]);
-    auto right = Label::createWithTTF("alignment right", fontFile, fontSize,
+    auto right = Label::createWithSystemFont("alignment right", fontFile, fontSize,
                                            blockSize, TextHAlignment::RIGHT, verticalAlignment[vAlignIdx]);
 
     auto leftColor = LayerColor::create(Color4B(100, 100, 100, 255), blockSize.width, blockSize.height);

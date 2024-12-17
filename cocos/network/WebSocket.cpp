@@ -316,10 +316,10 @@ bool WebSocket::init(const Delegate& delegate,
     {
         protocolCount = 1;
     }
-#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-	_wsProtocols = new libwebsocket_protocols[protocolCount+1];
-	memset(_wsProtocols, 0, sizeof(libwebsocket_protocols)*(protocolCount+1));
-#endif
+    #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+        _wsProtocols = new libwebsocket_protocols[protocolCount+1];
+        memset(_wsProtocols, 0, sizeof(libwebsocket_protocols)*(protocolCount+1));
+    #endif
     if (protocols && protocols->size() > 0)
     {
         int i = 0;
@@ -327,20 +327,20 @@ bool WebSocket::init(const Delegate& delegate,
         {
             char* name = new char[(*iter).length()+1];
             strcpy(name, (*iter).c_str());
-		#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-            _wsProtocols[i].name = name;
-            _wsProtocols[i].callback = WebSocketCallbackWrapper::onSocketCallback;
-		#endif
+            #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                _wsProtocols[i].name = name;
+                _wsProtocols[i].callback = WebSocketCallbackWrapper::onSocketCallback;
+            #endif
         }
     }
     else
     {
         char* name = new char[20];
         strcpy(name, "default-protocol");
-	#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-        _wsProtocols[0].name = name;
-        _wsProtocols[0].callback = WebSocketCallbackWrapper::onSocketCallback;
-	#endif
+        #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+            _wsProtocols[0].name = name;
+            _wsProtocols[0].callback = WebSocketCallbackWrapper::onSocketCallback;
+        #endif
     }
     
     // WebSocket thread needs to be invoked at the end of this method.
@@ -419,10 +419,10 @@ int WebSocket::onSubThreadLoop()
         return 1;
     }
     #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-    if (_wsContext && _readyState != State::CLOSED && _readyState != State::CLOSING)
-    {
-        libwebsocket_service(_wsContext, 0);
-    }
+        if (_wsContext && _readyState != State::CLOSED && _readyState != State::CLOSING)
+        {
+            libwebsocket_service(_wsContext, 0);
+        }
     #endif
     // Sleep 50 ms
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -499,10 +499,10 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
                      void *user, void *in, ssize_t len)
 {
 	//CCLOG("socket callback for %d reason", reason);
-#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-   CCASSERT(_wsContext == nullptr || ctx == _wsContext, "Invalid context.");
-   CCASSERT(_wsInstance == nullptr || wsi == nullptr || wsi == _wsInstance, "Invaild websocket instance.");
-#endif
+    #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+        CCASSERT(_wsContext == nullptr || ctx == _wsContext, "Invalid context.");
+        CCASSERT(_wsInstance == nullptr || wsi == nullptr || wsi == _wsInstance, "Invaild websocket instance.");
+    #endif
 	switch (reason)
     {
         case LWS_CALLBACK_DEL_POLL_FD:
@@ -541,9 +541,9 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
                  * start the ball rolling,
                  * LWS_CALLBACK_CLIENT_WRITEABLE will come next service
                  */
-			#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-               libwebsocket_callback_on_writable(ctx, wsi);
-			#endif
+                #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                    libwebsocket_callback_on_writable(ctx, wsi);
+                #endif
                 _wsHelper->sendMessageToUIThread(msg);
             }
             break;
@@ -597,31 +597,30 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
                         	if (remaining != n)
                         		writeProtocol |= LWS_WRITE_NO_FIN;
                         }
-	#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-                        auto bytesWrite = libwebsocket_write(wsi,  &buf[LWS_SEND_BUFFER_PRE_PADDING], n, (libwebsocket_write_protocol)writeProtocol);
-	
-                        // Buffer overrun?
-                        if (bytesWrite < 0)
-                        {
-                            //break;
-                       }
-					       // Do we have another fragments to send?
-					    else if (remaining != n)
-                        {
-                            data->issued += n;
-                            //break;
-                        }
-                        // Safely done!
-                        else
-                        {
-                            CC_SAFE_DELETE_ARRAY(data->bytes);
-                            CC_SAFE_DELETE(data);
-                            CC_SAFE_DELETE_ARRAY(buf);
-                            _wsHelper->_subThreadWsMessageQueue->erase(iter++);
-                            CC_SAFE_DELETE(subThreadMsg);
-                        }
-					   
-	#else
+	                    #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                            auto bytesWrite = libwebsocket_write(wsi,  &buf[LWS_SEND_BUFFER_PRE_PADDING], n, (libwebsocket_write_protocol)writeProtocol);
+        
+                            // Buffer overrun?
+                            if (bytesWrite < 0)
+                            {
+                                //break;
+                            }
+                            // Do we have another fragments to send?
+                            else if (remaining != n)
+                            {
+                                data->issued += n;
+                                //break;
+                            }
+                            // Safely done!
+                            else
+                            {
+                                CC_SAFE_DELETE_ARRAY(data->bytes);
+                                CC_SAFE_DELETE(data);
+                                CC_SAFE_DELETE_ARRAY(buf);
+                                _wsHelper->_subThreadWsMessageQueue->erase(iter++);
+                                CC_SAFE_DELETE(subThreadMsg);
+                            }
+	                    #else
 	   					 // Do we have another fragments to send?
 						 if (remaining != n)
                         {
@@ -637,16 +636,16 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
                             _wsHelper->_subThreadWsMessageQueue->erase(iter++);
                             CC_SAFE_DELETE(subThreadMsg);
                         }
-	#endif
+	                    #endif
                     
 
                     }
                 }
                 
                 /* get notified as soon as we can write again */
-    #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-                libwebsocket_callback_on_writable(ctx, wsi);
-	#endif
+                #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                    libwebsocket_callback_on_writable(ctx, wsi);
+                #endif
             }
             break;
             
@@ -687,9 +686,9 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
                         _currentData = new_data;
                         _currentDataLen = _currentDataLen + len;
                     }
-	#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-                    _pendingFrameDataLen = libwebsockets_remaining_packet_payload (wsi);
- 	#endif
+                    #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                         _pendingFrameDataLen = libwebsockets_remaining_packet_payload (wsi);
+                    #endif
                     if (_pendingFrameDataLen > 0)
                     {
                         //CCLOG("%ld bytes of pending data to receive, consider increasing the libwebsocket rx_buffer_size value.", _pendingFrameDataLen);
@@ -703,24 +702,24 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
 
 						char* bytes = nullptr;
 						Data* data = new (std::nothrow) Data();
-#if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
-						if (lws_frame_is_binary(wsi))
-						{
+                        #if(CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+                            if (lws_frame_is_binary(wsi))
+                            {
 
-							bytes = new char[_currentDataLen];
-							data->isBinary = true;
-						}
-						else
-						{
-							bytes = new char[_currentDataLen+1];
-							bytes[_currentDataLen] = '\0';
-							data->isBinary = false;
-						}
-#else
-						bytes = new char[_currentDataLen+1];
-						bytes[_currentDataLen] = '\0';
-						data->isBinary = false;
-#endif
+                                bytes = new char[_currentDataLen];
+                                data->isBinary = true;
+                            }
+                            else
+                            {
+                                bytes = new char[_currentDataLen+1];
+                                bytes[_currentDataLen] = '\0';
+                                data->isBinary = false;
+                            }
+                        #else
+                            bytes = new char[_currentDataLen+1];
+                            bytes[_currentDataLen] = '\0';
+                            data->isBinary = false;
+                        #endif
 						memcpy(bytes, _currentData, _currentDataLen);
 
 						data->bytes = bytes;
