@@ -58,6 +58,19 @@ FIND_LIBRARY(WEBP_LIBRARY
   /opt
 )
 
+if(OHOS)
+    # 主动set路径
+    if(${WEBP_INCLUDE_DIR} STREQUAL "WEBP_INCLUDE_DIR-NOTFOUND")
+        set(WEBP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/webp/include/ohos)
+    endif()
+
+    if(${WEBP_LIBRARY} STREQUAL "WEBP_LIBRARY-NOTFOUND")
+        set(WEBP_LIBRARY
+                ${CMAKE_CURRENT_SOURCE_DIR}/external/webp/prebuilt/ohos/libwebp.a
+                )
+    endif()
+endif()
+
 set(WEBP_INCLUDE_DIRS "${WEBP_INCLUDE_DIR}")
 set(WEBP_LIBRARIES "${WEBP_LIBRARY}")
 

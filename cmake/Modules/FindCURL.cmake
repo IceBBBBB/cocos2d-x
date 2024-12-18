@@ -58,6 +58,19 @@ if(NOT CURL_FOUND)
       # Windows older "Win32 - MSVC" prebuilts (libcurl.lib, e.g. libcurl-7.15.5-win32-msvc.zip):
         libcurl
     )
+    if(OHOS)
+        # 主动set路径
+        if(${CURL_INCLUDE_DIR} STREQUAL "CURL_INCLUDE_DIR-NOTFOUND")
+            set(CURL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/curl/include/ohos)
+        endif()
+
+        if(${CURL_LIBRARY} STREQUAL "CURL_LIBRARY-NOTFOUND")
+            set(CURL_LIBRARY
+                    ${CMAKE_CURRENT_SOURCE_DIR}/external/curl/prebuilt/ohos/libcurl.a
+                    )
+        endif()
+    endif()
+
     mark_as_advanced(CURL_LIBRARY)
 
     if(CURL_INCLUDE_DIR)

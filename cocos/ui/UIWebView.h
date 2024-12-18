@@ -27,9 +27,7 @@
 
 #include "platform/CCPlatformConfig.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) && !defined(CC_PLATFORM_OS_TVOS)
-
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_TIZEN) && !defined(CC_PLATFORM_OS_TVOS)
 
 #include "ui/UIWidget.h"
 #include "ui/GUIExport.h"
@@ -94,6 +92,13 @@ public:
      * @param url Content URL.
      */
     void loadURL(const std::string &url);
+
+    /**
+     * Loads the given URL with cleaning cached data or not.
+     * @param url Content URL.
+     * @cleanCachedData Whether to clean cached data.
+     */
+    void loadURL(const std::string &url, bool cleanCachedData);
 
     /**
      * Loads the given fileName.
@@ -209,6 +214,20 @@ public:
      * Toggle visibility of WebView.
      */
     virtual void setVisible(bool visible) override;
+    /**
+     * SetOpacity of webview.
+     */
+    virtual void setOpacityWebView(float opacity);
+    
+    /**
+     * getOpacity of webview.
+     */
+    virtual float getOpacityWebView() const;
+    
+    /**
+     * set the background transparent
+     */
+    virtual void setBackgroundTransparent();
     virtual void onEnter() override;
     virtual void onExit() override;
     

@@ -60,6 +60,19 @@ FIND_LIBRARY(CHIPMUNK_LIBRARY
 
 set(CHIPMUNK_INCLUDE_DIRS "${CHIPMUNK_INCLUDE_DIR}")
 
+if(OHOS)
+  # 主动set路径
+  if(${CHIPMUNK_INCLUDE_DIR} STREQUAL "CHIPMUNK_INCLUDE_DIR-NOTFOUND")
+    set(CHIPMUNK_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/chipmunk/include)
+  endif()
+
+  if(${CHIPMUNK_LIBRARY} STREQUAL "CHIPMUNK_LIBRARY-NOTFOUND")
+    set(CHIPMUNK_LIBRARY
+            ${CMAKE_CURRENT_SOURCE_DIR}/external/chipmunk/prebuilt/ohos/libchipmunk.a
+            )
+  endif()
+endif()
+
 IF(CHIPMUNK_LIBRARY)
   # include the math library for Unix
   IF(UNIX AND NOT APPLE)

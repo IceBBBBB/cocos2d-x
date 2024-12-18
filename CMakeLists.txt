@@ -98,9 +98,11 @@ include(BuildModules)
 BuildModules()
 
 # build cpp-empty-test
+if(!OHOS)
 if(BUILD_CPP_EMPTY_TEST)
   add_subdirectory(tests/cpp-empty-test)
 endif(BUILD_CPP_EMPTY_TEST)
+endif()
 
 # build cpp-tests
 if(BUILD_CPP_TESTS)
@@ -114,12 +116,15 @@ if(BUILD_LUA_LIBS)
   # build lua tests
   if(BUILD_LUA_TESTS)
     add_subdirectory(tests/lua-tests/project)
+    if(!OHOS)
     add_subdirectory(tests/lua-empty-test/project)
+    endif()
   endif(BUILD_LUA_TESTS)
 
 endif(BUILD_LUA_LIBS)
 
 ## JS
+if(!OHOS)
 if(BUILD_JS_LIBS)
   add_subdirectory(cocos/scripting/js-bindings)
 
@@ -129,3 +134,4 @@ if(BUILD_JS_LIBS)
   endif(BUILD_JS_TESTS)
 
 endif(BUILD_JS_LIBS)
+endif()
