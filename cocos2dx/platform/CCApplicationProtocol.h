@@ -40,7 +40,8 @@ enum TargetPlatform
     kTargetEmscripten,
     kTargetTizen,
     kTargetWinRT,
-    kTargetWP8
+    kTargetWP8,
+    kTargetOhos      /**< HARMONY */
 };
 
 /**

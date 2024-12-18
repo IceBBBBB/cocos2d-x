@@ -61,14 +61,14 @@ bool CCImage::_initWithWebpData(void *pData, int nDataLen)
         config.output.u.RGBA.stride = m_nWidth * 4;
         config.output.u.RGBA.size = bufferSize;
         config.output.is_external_memory = 1;
-
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS) 
         if (WebPDecode((uint8_t*)pData, nDataLen, &config) != VP8_STATUS_OK)
         {
             delete []m_pData;
             m_pData = NULL;
             break;
         }
-               
+#endif
         bRet = true;
 	} while (0);
 	return bRet;

@@ -66000,6 +66000,7 @@ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
   tolua_constant(tolua_S,"kTargetTizen",kTargetTizen);
   tolua_constant(tolua_S,"kTargetWinRT",kTargetWinRT);
   tolua_constant(tolua_S,"kTargetWP8",kTargetWP8);
+  tolua_constant(tolua_S,"kTargetOhos",kTargetOhos);
   #ifdef __cplusplus
   tolua_cclass(tolua_S,"CCApplication","CCApplication","",tolua_collect_CCApplication);
   #else

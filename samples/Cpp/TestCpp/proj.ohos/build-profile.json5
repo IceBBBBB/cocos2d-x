@@ -1,0 +1,47 @@
+{
+  "app": {
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        //指定HarmonyOS应用/服务目标版本。若没有设置，默认为compatibleSdkVersion
+        "runtimeOS": "HarmonyOS"
+        //指定为HarmonyOS/OpenHarmony
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_XmK1pgPvet8NEEmjNkFkDedQwFNf85P0Ok8w_kN2qNI=.cer",
+          "storePassword": "0000001B16570A166369BFD4E791B8B425B9ACD57FB381C03C823231769EC254C6B5C759CE59528D324FC5",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BAB57CC2F4BD8A89565AC3F93ED93DCF37008687DDFE9902E8E8BFCB405BD8DECA20C421CF735A3",
+          "profile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_XmK1pgPvet8NEEmjNkFkDedQwFNf85P0Ok8w_kN2qNI=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\cocos\\.ohos\\config\\default_proj.ohos_XmK1pgPvet8NEEmjNkFkDedQwFNf85P0Ok8w_kN2qNI=.p12"
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "libSysCapabilities",
+      "srcPath": "./libSysCapabilities"
+    }
+  ]
+}

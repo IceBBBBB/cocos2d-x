@@ -1223,7 +1223,8 @@ local function ExtensionsMainLayer()
     local bSupportEdit = false
     if (kTargetIphone == targetPlatform) or (kTargetIpad == targetPlatform) or 
         (kTargetAndroid == targetPlatform) or (kTargetWindows == targetPlatform) or 
-        (kTargetMacOS == targetPlatform) or (kTargetTizen == targetPlatform) then
+        (kTargetMacOS == targetPlatform) or (kTargetTizen == targetPlatform) or
+        (kTargetOhos  == targetPlatform) then
         bSupportEdit = true
     end
     for i = 1, ExtensionTestEnum.TEST_MAX_COUNT do

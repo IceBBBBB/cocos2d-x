@@ -1,27 +1,3 @@
-/****************************************************************************
-Copyright (c) 2010-2013 cocos2d-x.org
-Copyright (c) Microsoft Open Technologies, Inc.
-
-http://www.cocos2d-x.org
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-****************************************************************************/
 #include "AppDelegate.h"
 
 #include "cocos2d.h"
@@ -56,14 +32,14 @@ bool AppDelegate::applicationDidFinishLaunching()
     pDirector->setDisplayStats(true);
     CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
 
-    CCSize designSize = CCSizeMake(480, 320);
+    CCSize designSize = CCSizeMake(screenSize.width/3, screenSize.height/3);
 
     CCFileUtils* pFileUtils = CCFileUtils::sharedFileUtils();
     std::vector<std::string> searchPaths;
 
     if (screenSize.height > 320)
     {
-        CCSize resourceSize = CCSizeMake(960, 640);
+        CCSize resourceSize = CCSizeMake(screenSize.width, screenSize.height);
         searchPaths.push_back("hd");
         searchPaths.push_back("ccs-res/hd");
         searchPaths.push_back("ccs-res/hd/scenetest/ArmatureComponentTest");
@@ -125,4 +101,15 @@ void AppDelegate::applicationWillEnterForeground()
     CCDirector::sharedDirector()->startAnimation();
     SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
     SimpleAudioEngine::sharedEngine()->resumeAllEffects();
+}
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight) {
+    auto director = CCDirector::sharedDirector();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        glview->setFrameSize(newWidth, newHeight);
+        // Set the design resolution to a proper value. here use a value
+        // different with the game is started.
+        glview->setDesignResolutionSize(newWidth / 2, newHeight / 2, kResolutionNoBorder);
+    }
 }

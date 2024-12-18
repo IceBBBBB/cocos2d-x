@@ -27,6 +27,12 @@ THE SOFTWARE.
 #ifndef __CCSCHEDULER_H__
 #define __CCSCHEDULER_H__
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include <functional>
+#include <mutex>
+#include <set>
+#include <vector>
+#endif
 #include "cocoa/CCObject.h"
 #include "support/data_support/uthash.h"
 
@@ -57,6 +63,10 @@ public:
      *  @lua NA
      */
     CCTimer(void);
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	virtual ~CCTimer(void);
+#endif
     
     /** get interval in seconds */
     float getInterval(void) const;
@@ -254,7 +264,9 @@ public:
      @lua NA
      */
     void resumeTarget(CCObject *pTarget);
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    void performFunctionInCocosThread( const std::function<void()> &function);
+#endif
     /** Returns whether or not the target is paused
      @since v1.0.0
      @lua NA
@@ -309,6 +321,10 @@ protected:
     // If true unschedule will not remove anything from a hash. Elements will only be marked for deletion.
     bool m_bUpdateHashLocked;
     CCArray* m_pScriptHandlerEntries;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    std::vector<std::function<void()>> _functionsToPerform;
+    std::mutex _performMutex;
+#endif
 };
 
 // end of global group

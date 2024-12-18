@@ -43,6 +43,10 @@ THE SOFTWARE.
 #include "platform/android/CCFileUtilsAndroid.h"
 #endif
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+#include "platform/ohos/CCFileUtilsOhos.h"
+#endif
+
 #include <string>
 #include <ctype.h>
 
@@ -153,6 +157,9 @@ bool CCImage::initWithImageFileThreadSafe(const char *fullpath, EImageFormat ima
     unsigned long nSize = 0;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     CCFileUtilsAndroid *fileUitls = (CCFileUtilsAndroid*)CCFileUtils::sharedFileUtils();
+    unsigned char *pBuffer = fileUitls->getFileDataForAsync(fullpath, "rb", &nSize);
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+    CCFileUtilsOhos *fileUitls = (CCFileUtilsOhos*)CCFileUtils::sharedFileUtils();
     unsigned char *pBuffer = fileUitls->getFileDataForAsync(fullpath, "rb", &nSize);
 #else
     unsigned char *pBuffer = CCFileUtils::sharedFileUtils()->getFileData(fullpath, "rb", &nSize);

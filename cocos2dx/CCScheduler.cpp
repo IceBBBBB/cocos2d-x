@@ -84,6 +84,14 @@ CCTimer::CCTimer()
 {
 }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+CCTimer::~CCTimer()
+{
+	if(m_nScriptHandler) {
+		CCScriptEngineManager::sharedManager()->getScriptEngine()->removeScriptHandler(m_nScriptHandler);
+	}
+}
+#endif
 CCTimer* CCTimer::timerWithTarget(CCObject *pTarget, SEL_SCHEDULE pfnSelector)
 {
     CCTimer *pTimer = new CCTimer();
@@ -779,6 +787,16 @@ void CCScheduler::resumeTargets(CCSet* pTargetsToResume)
     }
 }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+void CCScheduler::performFunctionInCocosThread(const std::function<void ()> &function)
+{
+	_performMutex.lock();
+
+	_functionsToPerform.push_back(function);
+
+	_performMutex.unlock();
+}
+#endif
 // main loop
 void CCScheduler::update(float dt)
 {
@@ -906,6 +924,21 @@ void CCScheduler::update(float dt)
     m_bUpdateHashLocked = false;
 
     m_pCurrentTarget = NULL;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
+	// Testing size is faster than locking / unlocking.
+	// And almost never there will be functions scheduled to be called.
+	if( !_functionsToPerform.empty() ) {
+		_performMutex.lock();
+		// fixed #4123: Save the callback functions, they must be invoked after '_performMutex.unlock()', otherwise if new functions are added in callback, it will cause thread deadlock.
+		auto temp = _functionsToPerform;
+		_functionsToPerform.clear();
+		_performMutex.unlock();
+		for( const auto &function : temp ) {
+			function();
+		}
+
+	}
+#endif
 }
 
 

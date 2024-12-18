@@ -32,7 +32,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
-    
+
     // register lua engine
     CCLuaEngine* pEngine = CCLuaEngine::defaultEngine();
     CCScriptEngineManager::sharedManager()->setScriptEngine(pEngine);
@@ -47,13 +47,17 @@ bool AppDelegate::applicationDidFinishLaunching()
     tolua_web_socket_open(tolua_s);
 #endif
     
-    CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
-    CCSize designSize = CCSizeMake(480, 320);
+ CCSize screenSize = CCEGLView::sharedOpenGLView()->getFrameSize();
+
+    CCSize designSize = CCSizeMake(screenSize.width / 3, screenSize.height / 3);
+
+    auto pFileUtils = CCFileUtils::sharedFileUtils();
+    
     std::vector<std::string> searchPaths;
     searchPaths.push_back("cocosbuilderRes");
     if (screenSize.height > 320)
     {
-        CCSize resourceSize = CCSizeMake(960, 640);
+        auto resourceSize = CCSizeMake(screenSize.width, screenSize.height);
         searchPaths.insert(searchPaths.begin(), "ccs-res");
         searchPaths.insert(searchPaths.begin(), "ccs-res/hd/scenetest/ArmatureComponentTest");
         searchPaths.insert(searchPaths.begin(), "ccs-res/hd/scenetest/AttributeComponentTest");
@@ -67,7 +71,9 @@ bool AppDelegate::applicationDidFinishLaunching()
         searchPaths.insert(searchPaths.begin(), "ccs-res/hd/scenetest/TriggerTest");
         searchPaths.insert(searchPaths.begin(), "ccs-res/hd");
         searchPaths.insert(searchPaths.begin(),  "hd");
-        pDirector->setContentScaleFactor(resourceSize.height/designSize.height);
+        pFileUtils->setSearchPaths(searchPaths);
+        pDirector->setContentScaleFactor(resourceSize.height /
+                                         designSize.height);
     }
     else
     {
@@ -83,11 +89,14 @@ bool AppDelegate::applicationDidFinishLaunching()
         searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/UIComponentTest");
         searchPaths.insert(searchPaths.begin(), "ccs-res/scenetest/TriggerTest");
     }
+    CCEGLView::sharedOpenGLView()->setDesignResolutionSize(
+        designSize.width, designSize.height, kResolutionNoBorder);
+    searchPaths.push_back("luaScript");
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY
     searchPaths.push_back("TestCppResources");
     searchPaths.push_back("script");
-#endif
+#endif   
     CCFileUtils::sharedFileUtils()->setSearchPaths(searchPaths);
 
     pEngine->executeScriptFile("luaScript/controller.lua");
@@ -99,14 +108,25 @@ bool AppDelegate::applicationDidFinishLaunching()
 void AppDelegate::applicationDidEnterBackground()
 {
     CCDirector::sharedDirector()->stopAnimation();
-
     SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    SimpleAudioEngine::sharedEngine()->pauseAllEffects();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground()
 {
     CCDirector::sharedDirector()->startAnimation();
-
     SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    SimpleAudioEngine::sharedEngine()->resumeAllEffects();
 }
+
+void AppDelegate::applicationScreenSizeChanged(int newWidth, int newHeight) {
+    auto director = CCDirector::sharedDirector();
+    auto glview = director->getOpenGLView();
+    if (glview != NULL) {
+        // Set the design resolution to a proper value. here use a value
+         glview->setFrameSize(newWidth, newHeight);
+        // different with the game is started.
+        glview->setDesignResolutionSize(newWidth / 2, newHeight / 2, kResolutionNoBorder);
+    }
+} 
