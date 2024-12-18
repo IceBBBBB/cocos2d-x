@@ -73,14 +73,14 @@ bool AppDelegate::applicationDidFinishLaunching()
     director->setAnimationInterval(1.0 / 60);
 
     auto screenSize = glview->getFrameSize();
-    auto designSize = Size(480, 320);
+    auto designSize = Size(1024/2, 2112/2);
 
     auto fileUtils = FileUtils::getInstance();
     std::vector<std::string> searchPaths;
     
     if (screenSize.height > 320)
     {
-        auto resourceSize = Size(960, 640);
+        auto resourceSize = Size(1024, 2112);
         searchPaths.push_back("hd");
         searchPaths.push_back("ccs-res/hd");
         searchPaths.push_back("ccs-res/hd/scenetest");
@@ -165,7 +165,13 @@ bool AppDelegate::applicationDidFinishLaunching()
     
     fileUtils->setSearchPaths(searchPaths);
 
+    
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_OHOS)
+    // a bug in DirectX 11 level9-x on the device prevents ResolutionPolicy::NO_BORDER from working correctly
     glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
+#else
+    glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::NO_BORDER);
+#endif
     
     // Enable Remote Console
     auto console = director->getConsole();
