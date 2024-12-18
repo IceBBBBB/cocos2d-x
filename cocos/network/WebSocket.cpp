@@ -700,9 +700,9 @@ int WebSocket::onSocketCallback(struct libwebsocket_context *ctx,
 							data->isBinary = false;
 						}
 #else
-                            bytes = new char[_currentDataLen+1];
-                            bytes[_currentDataLen] = '\0';
-                            data->isBinary = false;
+						bytes = new char[_currentDataLen+1];
+						bytes[_currentDataLen] = '\0';
+						data->isBinary = false;
 #endif
 						memcpy(bytes, _currentData, _currentDataLen);
 
