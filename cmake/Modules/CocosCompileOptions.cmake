@@ -5,14 +5,14 @@
  #IOS    =  iOS
  #MACOSX    =  MacOS X
  #LINUX      =   Linux
- #OHOS = Ohos
+ #OHOS = HarmonyOS Next
  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
      set(WINDOWS TRUE)
      set(SYSTEM_STRING "Windows Desktop")
  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Android")
      set(SYSTEM_STRING "Android")
  elseif(${CMAKE_SYSTEM_NAME} MATCHES "OHOS")
-     set(SYSTEM_STRING "OHOS")
+     set(SYSTEM_STRING "HarmonyOS Next")
  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
      if(ANDROID)
          set(SYSTEM_STRING "Android")

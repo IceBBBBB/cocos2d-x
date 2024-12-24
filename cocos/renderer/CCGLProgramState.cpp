@@ -419,9 +419,6 @@ GLProgramState::GLProgramState()
 , _vertexAttribsFlags(0)
 , _glprogram(nullptr)
 , _nodeBinding(nullptr)
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-, _backToForegroundlistener(nullptr)
-#endif
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     /** listen the event that renderer was recreated on Android/WP8 */
