@@ -55,9 +55,6 @@ MeshCommand::MeshCommand()
 , _glProgramState(nullptr)
 , _stateBlock(nullptr)
 , _textureID(0)
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-, _rendererRecreatedListener(nullptr)
-#endif
 {
     _type = RenderCommand::Type::MESH_COMMAND;
 
