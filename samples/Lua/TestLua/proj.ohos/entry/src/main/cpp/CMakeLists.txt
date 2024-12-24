@@ -105,7 +105,7 @@ include_directories(${PROJECT_NAME}  PUBLIC  ${CLASSES_PATH}
                                             PUBLIC  ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/webp/include
 )
 
-add_subdirectory(${COCOS2DX_ROOT_PATH}/external/webp webp.bin)
+#add_subdirectory(${COCOS2DX_ROOT_PATH}/external/webp webp.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/external/openssl openssl.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/external/curl curl.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/scripting/lua/cocos2dx_support luasupport.bin)
@@ -115,5 +115,5 @@ add_subdirectory(${COCOS2DX_ROOT_PATH}/scripting/lua/xxtea xxtea.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/CocosDenshion/ohos cocosDenshionOut.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos2dx cocos2dx)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/extensions extensions.bin)
-target_link_libraries(${PROJECT_NAME} PUBLIC cocos2dx_static cocosdenshion luabinding xxtea ext_webp ext_ssl ext_crypto ext_curl extensions ${libnapi-lib} ${GLES-lib} ${libace-lib} ${EGL-lib} ${hilog-lib} ${rawfile-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib})
+target_link_libraries(${PROJECT_NAME} PUBLIC cocos2dx_static cocosdenshion luabinding xxtea ext_ssl ext_crypto ext_curl extensions ${libnapi-lib} ${GLES-lib} ${libace-lib} ${EGL-lib} ${hilog-lib} ${rawfile-lib} ${libnapi-lib} ${libuv-lib} ${rawfile-lib})
 
