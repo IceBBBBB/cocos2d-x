@@ -59,11 +59,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CLASSES_PATH})
 
 include_directories(${PROJECT_NAME} PUBLIC
                                    ${COCOS2DX_ROOT_PATH}/cocos2dx/kazmath/include
-                                   ${COCOS2DX_ROOT_PATH}/external/pvmp3dec/include
+                                   ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/pvmp3dec/include
                                    ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/curl/include
-                                   ${COCOS2DX_ROOT_PATH}/external/pvmp3dec/src
-                                   ${COCOS2DX_ROOT_PATH}/external/tremolo
-                                   ${COCOS2DX_ROOT_PATH}/external/tremolo/Tremolo)
+                                   ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/pvmp3dec/src
+                                   ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/tremolo
+                                   ${COCOS2DX_ROOT_PATH}/cocos2dx/platform/third_party/ohos/tremolo/Tremolo)
 
 add_subdirectory(${COCOS2DX_ROOT_PATH}/CocosDenshion/ohos cocosDenshionOut.bin)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/samples/Cpp/TestCpp testcpp)

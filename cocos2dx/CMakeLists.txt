@@ -167,11 +167,11 @@ if(OHOS)
 	)
 
 	include_directories(${COCOS2DX_HEADER}
-	    ../external/libpng
-	    ../external/libjepg
-	    ../external/zlib
-	    ../external/libxml2
-	    ../external/libwebp-0.4.2/src/webp
+	    ../cocos2dx/platform/third_party/ohos/libpng
+	    ../cocos2dx/platform/third_party/ohos/libjepg
+	    ../cocos2dx/platform/third_party/ohos/zlib
+	    ../cocos2dx/platform/third_party/ohos/libxml2
+	    ../cocos2dx/platform/third_party/ohos/libwebp-0.4.2/src/webp
 	)
 
 
@@ -191,7 +191,7 @@ if(OHOS)
 
 	add_library(${PROJECT_NAME} STATIC ${COCOS2DX_SRC})
 
-	target_link_directories(${PROJECT_NAME} PUBLIC ../external/lib)
+	target_link_directories(${PROJECT_NAME} PUBLIC ../cocos2dx/platform/third_party/ohos/lib)
 	target_link_libraries(${PROJECT_NAME} PUBLIC png_static z libtiff turbojpeg_static)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${COCOS2DX_HEADER_PUBLIC})
 	target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_FILE32API -DOpenHarmony)
@@ -238,5 +238,5 @@ if(OHOS)
 	target_link_libraries(${PROJECT_NAME} PUBLIC libnative_drawing.so)
 	
 	target_link_libraries(${PROJECT_NAME} PUBLIC libnative_window.so libnative_buffer.so)
-	add_subdirectory(../external/tiff_4_0_3 libtiff)
+	add_subdirectory(../cocos2dx/platform/third_party/ohos/tiff_4_0_3 libtiff)
 endif()

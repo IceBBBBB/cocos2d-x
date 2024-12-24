@@ -8,16 +8,16 @@ if(OHOS)
 
 	include_directories(${NATIVERENDER_ROOT_PATH}
 	                    ${NATIVERENDER_ROOT_PATH}/include
-	                    ../../../external
-	                    ../../../external/lib
-	                    ../../../external/Box2D
+	                    ../../../cocos2dx/platform/third_party/ohos/
+	                    ../../../cocos2dx/platform/third_party/ohos/lib
+	                    ../../../cocos2dx/platform/third_party/ohos/Box2D
 	                    ../../../../curl
 	                    ../../../CocosDenshion/include
-	                    ../../../external/chipmunk/include/chipmunk
+	                    ../../../cocos2dx/platform/third_party/ohos/chipmunk/include/chipmunk
 	                    Classes
 	                    Classes/ExtensionsTest
-	                    ../../../external/tiff_4_0_3
-	                    ../../../external/tiff_4_0_3/libtiff
+	                    ../../../cocos2dx/platform/third_party/ohos/tiff_4_0_3
+	                    ../../../cocos2dx/platform/third_party/ohos/tiff_4_0_3/libtiff
 	                    #../../Cpp/TestCpp
 	                    )
 
@@ -27,8 +27,8 @@ if(OHOS)
 	    platform/ohos
 	    platform/ohos/napi/modules
 	    Classes/ExtensionsTest
-	    ../../../external/tiff_4_0_3
-	    ../../../external/tiff_4_0_3/libtiff
+	    ../../../cocos2dx/platform/third_party/ohos/tiff_4_0_3
+	    ../../../cocos2dx/platform/third_party/ohos/tiff_4_0_3/libtiff
 	)
 
 	set(TEST_COMMON_SRC
@@ -176,8 +176,8 @@ if(OHOS)
 
 	add_library(${PROJECT_NAME} SHARED ${TEST_COMMON_SRC})
 
-	target_link_directories(${PROJECT_NAME} PUBLIC ../external/lib)
-	add_subdirectory(../../../external/libwebp-0.4.2 webp)
+	target_link_directories(${PROJECT_NAME} PUBLIC ../cocos2dx/platform/third_party/ohos/lib)
+	add_subdirectory(../../../cocos2dx/platform/third_party/ohos/libwebp-0.4.2 webp)
 	target_link_libraries(${PROJECT_NAME} PUBLIC png_static z turbojpeg_static webp)
 
 	find_library( # Sets the name of the path variable.
