@@ -1,7 +1,11 @@
 
--- jit off
-local jit = require("jit")
-jit.off()
+
+local currPlatform = cc.Application:getInstance():getTargetPlatform()
+if (cc.PLATFORM_OS_OHOS == currPlatform) then
+    -- jit off
+    local jit = require("jit")
+    jit.off()
+end
 -- avoid memory leak
 collectgarbage("setpause", 100) 
 collectgarbage("setstepmul", 5000)
