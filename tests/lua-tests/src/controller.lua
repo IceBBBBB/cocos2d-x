@@ -71,7 +71,6 @@ local function addSearchPath(resPrefix, height)
     end
 
     fileUtils:setSearchPaths(searchPaths)
-    fileUtils:setSearchPaths("")
 
 end
 
