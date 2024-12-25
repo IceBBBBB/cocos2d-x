@@ -1,4 +1,4 @@
-require "cocos/AudioEngine"
+require "AudioEngine"
 local EFFECT_FILE = "effect2.ogg"
 
 local MUSIC_FILE = nil 

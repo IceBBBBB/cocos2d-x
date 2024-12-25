@@ -53,8 +53,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     register_assetsmanager_test_sample(stack->getLuaState());
 #endif
 
-    FileUtils::getInstance()->addSearchPath("");
-    pEngine->executeScriptFile("controller.lua");
+    pEngine->executeScriptFile("src/controller.lua");
 
     return true;
 }
