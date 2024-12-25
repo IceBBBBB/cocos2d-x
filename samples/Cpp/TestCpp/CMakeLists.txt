@@ -8,7 +8,9 @@ if(OHOS)
 	include_directories(${NATIVERENDER_ROOT_PATH}
 	                    ${NATIVERENDER_ROOT_PATH}/include
 	                    ../../../external
-	                    ../../../external/lib
+	                    ../../../external/png/include/ohos
+	                    ../../../external/jpeg/include/ohos
+	                    ../../../external/zlib/include
 	                    ../../../external/Box2D
 	                    ../../../../curl
 	                    ../../../CocosDenshion/include
@@ -223,8 +225,7 @@ if(OHOS)
 
 	add_library(${PROJECT_NAME} SHARED ${TEST_COMMON_SRC})
 
-	target_link_directories(${PROJECT_NAME} PUBLIC ../external/lib)
-	target_link_libraries(${PROJECT_NAME} PUBLIC png_static z turbojpeg_static)
+	target_link_libraries(${PROJECT_NAME} PUBLIC  ext_png ext_jpeg ext_zlib)
 
 	find_library( # Sets the name of the path variable.
 	              EGL-lib

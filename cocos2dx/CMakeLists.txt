@@ -168,9 +168,9 @@ if(OHOS)
 	)
 
 	include_directories(${COCOS2DX_HEADER}
-	    ../external/libpng
-	    ../external/libjepg
-	    ../external/zlib
+	    ../external/png/include/ohos
+	    ../external/jpeg/include/ohos
+	    ../external/zlib/include
 	    ../external/libxml2
 	    ../external/libwebp-0.4.2/src/webp
 	)
@@ -192,8 +192,11 @@ if(OHOS)
 
 	add_library(${PROJECT_NAME} STATIC ${COCOS2DX_SRC})
 
-	target_link_directories(${PROJECT_NAME} PUBLIC ../external/lib)
-	target_link_libraries(${PROJECT_NAME} PUBLIC png_static z libtiff turbojpeg_static)
+	add_subdirectory(../external/png ext_png)
+	add_subdirectory(../external/jpeg ext_jpeg)
+	add_subdirectory(../external/zlib ext_zlib)
+
+	target_link_libraries(${PROJECT_NAME} PUBLIC ext_png ext_zlib libtiff ext_jpeg)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${COCOS2DX_HEADER_PUBLIC})
 	target_compile_definitions(${PROJECT_NAME} PUBLIC -DUSE_FILE32API -DOpenHarmony)
 	target_compile_options(${PROJECT_NAME} PUBLIC -Wno-psabi)
