@@ -79,7 +79,7 @@ addSearchPath("res/", screenSize.height)
 addSearchPath("", screenSize.height)
 
 
-require "mainMenu"
+require "src/mainMenu"
 
 local scene = cc.Scene:create()
 scene:addChild(CreateTestMenu())
