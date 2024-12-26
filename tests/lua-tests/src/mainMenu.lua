@@ -11,6 +11,7 @@ require "AssetsManagerTest/AssetsManagerTest"
 require "AssetsManagerExTest/AssetsManagerExTest"
 require "BillBoardTest/BillBoardTest"
 require "BugsTest/BugsTest"
+local currPlatform = cc.Application:getInstance():getTargetPlatform()
 if (cc.PLATFORM_OS_OHOS ~= currPlatform) then
 require "ByteCodeEncryptTest/ByteCodeEncryptTest"
 end
@@ -75,7 +76,6 @@ local CurPos = {x = 0, y = 0}
 local BeginPos = {x = 0, y = 0}
 
 local audioEndineSupported = false
-local currPlatform = cc.Application:getInstance():getTargetPlatform()
 if (cc.PLATFORM_OS_WINDOWS == currPlatform or cc.PLATFORM_OS_MAC == currPlatform or cc.PLATFORM_OS_IPHONE == currPlatform or cc.PLATFORM_OS_IPAD == currPlatform or cc.PLATFORM_OS_ANDROID == currPlatform or cc.PLATFORM_OS_OHOS == currPlatform) then
     audioEndineSupported = true
 end
