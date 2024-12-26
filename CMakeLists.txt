@@ -115,6 +115,9 @@ if(BUILD_LUA_LIBS)
 
   # build lua tests
   if(BUILD_LUA_TESTS)
+    if(OHOS)
+    add_subdirectory(external/lua/luajit)
+    endif()
     add_subdirectory(tests/lua-tests/project)
     if(!OHOS)
     add_subdirectory(tests/lua-empty-test/project)
