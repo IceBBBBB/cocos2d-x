@@ -51,7 +51,6 @@ bool AppDelegate::applicationDidFinishLaunching()
     lua_pop(L, 1);
 
 	#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
-	    FileUtils::getInstance()->addSearchPath("");
     	pEngine->executeScriptFile("controller.lua");
 	#else
 	    pEngine->executeScriptFile("src/controller.lua");
