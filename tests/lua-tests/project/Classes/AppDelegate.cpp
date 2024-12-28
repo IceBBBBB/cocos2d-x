@@ -53,8 +53,9 @@ bool AppDelegate::applicationDidFinishLaunching()
 
 	#if (CC_TARGET_PLATFORM == CC_PLATFORM_OHOS)
     	pEngine->executeScriptFile("controller.lua");
-	#else
+    #else
 	    pEngine->executeScriptFile("src/controller.lua");
+    #endif
     return true;
 }
 
