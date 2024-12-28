@@ -1,11 +1,3 @@
-local currPlatform = cc.Application:getInstance():getTargetPlatform()
-
--- ohos jit off
-if (cc.PLATFORM_OS_OHOS == currPlatform) then
-    local jit = require("jit")
-    jit.off()
-end
-
 require "helper"
 require "testResource"
 require "VisibleRect"
@@ -19,7 +11,10 @@ require "AssetsManagerTest/AssetsManagerTest"
 require "AssetsManagerExTest/AssetsManagerExTest"
 require "BillBoardTest/BillBoardTest"
 require "BugsTest/BugsTest"
----require "ByteCodeEncryptTest/ByteCodeEncryptTest"
+local currPlatform = cc.Application:getInstance():getTargetPlatform()
+if (cc.PLATFORM_OS_OHOS ~= currPlatform) then
+require "ByteCodeEncryptTest/ByteCodeEncryptTest"
+end
 require "Camera3DTest/Camera3DTest"
 require "ClickAndMoveTest/ClickAndMoveTest"
 require "CocosDenshionTest/CocosDenshionTest"
